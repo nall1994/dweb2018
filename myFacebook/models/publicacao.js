@@ -79,7 +79,9 @@ var publicacaoSchema = new Schema({
     username: {type:String, required:true},
     tipo: {type:String, required:true},
     dados: PubSchema,
-    classificacoes: [String]
+    classificacoes: [String],
+    groupId: {type: String},
+    isPrivate: {type:Boolean, required:true, default:true}
 })
 
 PubSchema.pre('save', next => {
