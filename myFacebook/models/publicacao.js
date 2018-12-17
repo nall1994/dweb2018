@@ -3,13 +3,11 @@ var Schema = mongoose.Schema
 
 var ReceitaSchema = new Schema({
     titulo: {type:String, required:true},
-    data: {type:String, required:true},
     textoEstruturado: {type:String, required:true}
 })
 
 var DesportivoSchema = new Schema({
     titulo: {type:String, required:true},
-    data: {type:String, required:true},
     atividade: {type:String, required:true},
     duracao: {type:String, required:true},
     descricao: {type:String, required:true},
@@ -19,7 +17,6 @@ var DesportivoSchema = new Schema({
 
 var EventoSchema = new Schema({
     titulo: {type:String, required:true},
-    data: {type:String, required:true},
     local: {type:String, required:true},
     convidados: [{
         nome: {type:String, required:true}
@@ -29,7 +26,6 @@ var EventoSchema = new Schema({
 
 var FormacaoSchema = new Schema({
     titulo: {type:String, required:true},
-    data: {type: String, required:true},
     creditacao: {type: String, required:true},
     instituicao: {type:String},
     descricao: {type:String, required:true}
@@ -37,7 +33,6 @@ var FormacaoSchema = new Schema({
 
 var IdeiaSchema = new Schema({
     titulo: {type:String, required:true},
-    data: {type:String, required:true},
     classificadores: [{type:String}],
     descricao: {type:String, required:true}
 })
@@ -51,14 +46,12 @@ var FotoInfoSchema = new Schema({
 
 var AlbumSchema = new Schema({
     titulo: {type:String, required:true},
-    data: {type:String, required:true},
     descricao: {type:String, required:true},
     fotos: [FotoInfoSchema]
 })
 
 var EventoProfissionalSchema = new Schema({
     titulo: {type:String, required:true},
-    data: {type:String, required:true},
     local:{type:String, required:true},
     oradores: [{type:String}],
     descricao: {type:String, required:true},
@@ -78,6 +71,7 @@ var PubSchema = new Schema({
 var publicacaoSchema = new Schema({
     username: {type:String, required:true},
     tipo: {type:String, required:true},
+    data: {type:String, required:true},
     dados: PubSchema,
     classificacoes: [String],
     groupId: {type: String},
