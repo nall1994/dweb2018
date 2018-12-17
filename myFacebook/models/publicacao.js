@@ -76,6 +76,7 @@ var PubSchema = new Schema({
 })
 
 var publicacaoSchema = new Schema({
+    username: {type:String, required:true},
     tipo: {type:String, required:true},
     dados: PubSchema,
     classificacoes: [String]
