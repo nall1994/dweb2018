@@ -4,10 +4,40 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+var passport = require('passport')
+var mongoose = require('mongoose')
+var uuid = require('uuid/v4')
+var session = require('express-session')
+var FileStore = require('session-file-store')(session)
+
+require('./auth/authentication')
+
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var usersRouter = require('./routes/api/users');
+var pubsRouter = require('./routes/api/pubs')
+var groupsRouter = require('./routes/api/groups')
 
 var app = express();
+
+//Conexão à base de dados
+mongoose.connect('mongodb://127.0.0.1:27017/myFacebook',{useNewUrlParser:true})
+  .then(() => console.log('Mongo Ready: ' + mongoose.connection.readyState))
+  .catch(erro => console.log('erro de conexão: ' + erro))
+
+//Configuração da sessão
+app.use(session({
+  genid: () => {
+    return uuid()
+  },
+  store: new FileStore(),
+  secret: 'myFacebook',
+  resave: false,
+  saveUninitialized: false
+}))
+
+//inicialização do passport
+app.use(passport.initialize())
+app.use(passport.session())
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -20,7 +50,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/api/users', usersRouter);
+app.use('/api/groups',groupsRouter);
+app.use('/api/pubs',pubsRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

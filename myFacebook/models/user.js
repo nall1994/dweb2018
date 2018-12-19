@@ -1,6 +1,6 @@
 var mongoose = require('mongoose')
-var bcrypt = require('bcrypt')
 var Schema = mongoose.Schema
+var bcrypt = require('bcrypt')
 
 var UserSchema = new Schema({
     email: {type:String, required:true, unique: true},
@@ -10,13 +10,8 @@ var UserSchema = new Schema({
     classificadores: [String]
 })
 
-UserSchema.pre('save', async next => {
-    var hash = await bcrypt.hash(this.password,10)
-    this.password = hash
-    next()
-})
-
-UserSchema.methods.isValidPassword = async password => {
+//Método de validação da password
+UserSchema.methods.isValidPassword = async function(password) {
     var compare = await bcrypt.compare(password,this.password)
     return compare
 }

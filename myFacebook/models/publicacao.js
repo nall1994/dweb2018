@@ -97,4 +97,4 @@ PubSchema.pre('save', next => {
     else next()
 })
 
-module.exports = mongoose.model('Publicacao', publicacaoSchema,'publicacoes')
+module.exports = mongoose.model('Publicacao', publicacaoSchema,'pubs')
