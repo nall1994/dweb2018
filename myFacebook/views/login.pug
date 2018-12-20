@@ -1,7 +1,7 @@
 extends layout
 block content
     .w3-top
-      .w3-bar.w3-green.w3-card.w3-left-align.w3-large
+      .w3-bar.w3-blue-grey.w3-card.w3-left-align.w3-large
         a.w3-bar-item.w3-button.w3-hide-medium.w3-hide-large.w3-right.w3-padding-large.w3-hover-white.w3-large.w3-red(href='javascript:void(0);', onclick='myFunction()', title='Toggle Navigation Menu')
           i.fa.fa-bars
         a.w3-bar-item.w3-button.w3-padding-large.w3-hover-white(href='http://localhost:3000/') Home
@@ -9,17 +9,19 @@ block content
         a.w3-bar-item.w3-button.w3-hide-small.w3-padding-large.w3-white(href='http://localhost:3000/users/login') Login
         a.w3-bar-item.w3-button.w3-hide-small.w3-padding-large.w3-hover-white(href='http://localhost:3000/contacts') Contactos
         a.w3-bar-item.w3-button.w3-hide-small.w3-padding-large.w3-hover-white(href='http://localhost:3000/about') Sobre
-      // Navbar on small screens
       #navDemo.w3-bar-block.w3-white.w3-hide.w3-hide-large.w3-hide-medium.w3-large
         a.w3-bar-item.w3-button.w3-padding-large(href='http://localhost:3000/users/registo') Registar
         a.w3-bar-item.w3-button.w3-padding-large(href='http://localhost:3000/users/login') Login
         a.w3-bar-item.w3-button.w3-padding-large(href='http://localhost:3000/contacts') Contactos
         a.w3-bar-item.w3-button.w3-padding-large(href='http://localhost:3000/about') Sobre
     .w3-container(style='padding:128px 16px')
-        .w3-container
-            form(action='login' method='POST')
-                input.w3-input.w3-border.w3-light-grey(type='text' name='email' placeholder='Insira o seu email')
-                input.w3-input.w3-border.w3-light-grey(type='password' name='password' placeholder='Insira a password')
+        .w3-card-4
+          .w3-container.w3-indigo
+            h2(align='center') Autenticação de utilizador
+          .w3-container
+            form.w3-center(action='login' method='POST')
+                input.w3-input.w3-border.w3-light-grey.w3-center(type='text' name='email' placeholder='Insira o seu email')
+                input.w3-input.w3-border.w3-light-grey.w3-center(type='password' name='password' placeholder='Insira a password')
                 br
-                input.w3-btn.w3-blue-grey(type='submit' value='login')
+                input.w3-btn.w3-indigo(type='submit' value='Login')
             
