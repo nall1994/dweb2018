@@ -13,9 +13,15 @@ var FileStore = require('session-file-store')(session)
 require('./auth/authentication')
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/api/users');
-var pubsRouter = require('./routes/api/pubs')
-var groupsRouter = require('./routes/api/groups')
+var apiUsersRouter = require('./routes/api/users');
+var apiPubsRouter = require('./routes/api/pubs')
+var apiGroupsRouter = require('./routes/api/groups')
+var usersRouter = require('./routes/users')
+var pubsRouter = require('./routes/pubs')
+var groupsRouter = require('./routes/groups')
+
+var axios = require('axios')
+axios.defaults.withCredentials = true
 
 var app = express();
 
@@ -50,9 +56,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/api/users', usersRouter);
-app.use('/api/groups',groupsRouter);
-app.use('/api/pubs',pubsRouter)
+app.use('/users', usersRouter);
+app.use('/pubs',pubsRouter)
+app.use('/groups',groupsRouter)
+app.use('/api/users', apiUsersRouter);
+app.use('/api/groups',apiGroupsRouter);
+app.use('/api/pubs',apiPubsRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -5,12 +5,13 @@ var jwt = require('jsonwebtoken')
 var bcrypt = require('bcrypt')
 var passport = require('passport')
 
-/* GET users listing. */
 router.post('/', async (req,res) => {
-  var user = req.body
+  var user = new Object()
   user.role = 'user'
-  var hash = await bcrypt.hash(user.password,10)
+  var hash = await bcrypt.hash(req.body.password,10)
   user.password = hash
+  user.email = req.body.email
+  user.nome = req.body.nome
   user = userController.iniciarDefault(user)
   userController.inserir(user)
     .then(message => res.jsonp(message))
@@ -18,8 +19,9 @@ router.post('/', async (req,res) => {
 })
 
 //Consulta de utilizador por nome/email
-router.get('/', (req,res) => {
+router.get('/',passport.authenticate('jwt',{session:false}), (req,res) => {
   if(req.query.nome) {
+    console.log('got here!')
     userController.consultaNome(req.query.nome)
       .then(dados => res.jsonp(dados))
       .catch(error => res.status(500).send('Erro na consulta de utilizador por nome!'))
@@ -44,8 +46,7 @@ router.post('/login',async (req,res,next) => {
         if(error) return next(error)
         var loggedUser = {email: user.email, role: user.role,nome: user.nome}
         var token = jwt.sign({user: loggedUser}, 'myFacebook')
-        req.session.token = token
-        res.jsonp(loggedUser)
+        res.jsonp(token)
       })
     }
     catch(error) {

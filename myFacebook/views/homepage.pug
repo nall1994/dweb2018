@@ -1,4 +1,65 @@
 extends layout
-
 block content
-  h1 title
+    .w3-top
+      .w3-bar.w3-green.w3-card.w3-left-align.w3-large
+        a.w3-bar-item.w3-button.w3-hide-medium.w3-hide-large.w3-right.w3-padding-large.w3-hover-white.w3-large.w3-red(href='javascript:void(0);', onclick='myFunction()', title='Toggle Navigation Menu')
+          i.fa.fa-bars
+        a.w3-bar-item.w3-button.w3-padding-large.w3-white(href='http://localhost:3000/') Home
+        a.w3-bar-item.w3-button.w3-hide-small.w3-padding-large.w3-hover-white(href='http://localhost:3000/users/registo') Registar
+        a.w3-bar-item.w3-button.w3-hide-small.w3-padding-large.w3-hover-white(href='http://localhost:3000/users/login') Login
+        a.w3-bar-item.w3-button.w3-hide-small.w3-padding-large.w3-hover-white(href='http://localhost:3000/contacts') Contactos
+        a.w3-bar-item.w3-button.w3-hide-small.w3-padding-large.w3-hover-white(href='http://localhost:3000/about') Sobre
+      // Navbar on small screens
+      #navDemo.w3-bar-block.w3-white.w3-hide.w3-hide-large.w3-hide-medium.w3-large
+        a.w3-bar-item.w3-button.w3-padding-large(href='http://localhost:3000/users/registo') Registar
+        a.w3-bar-item.w3-button.w3-padding-large(href='http://localhost:3000/users/login') Login
+        a.w3-bar-item.w3-button.w3-padding-large(href='http://localhost:3000/contacts') Contactos
+        a.w3-bar-item.w3-button.w3-padding-large(href='http://localhost:3000/about') Sobre
+    // Header
+    header.w3-container.w3-green.w3-center(style='padding:128px 16px')
+      h1.w3-margin MyFacebook
+    // First Grid
+    .w3-row-padding.w3-padding-64.w3-container
+      .w3-content
+        .w3-third
+          h1 Publique
+          h5.w3-padding-32
+            | O myFacebook oferece-lhe formas de publicação de conteúdo que lhe permite manter as suas ideias organizadas.
+          p.w3-text-grey
+            | As publicações feitas são separadas por um tipo escolhido por si e classificadas com elementos que também são escolhidos por si.
+            | Além disso, pode criar os seus próprios classificadores, tornando única a sua experiência.
+        .w3-third.w3-right
+          img(src='/images/homepage_images/post.png' width='350px' height='350px')
+    // Second Grid
+    .w3-row-padding.w3-light-grey.w3-padding-64.w3-container
+      .w3-content
+        .w3-third
+          h1 Consulte
+          h5.w3-padding-32
+            | Consulte as publicações de outros utilizadores.
+          p.w3-text-grey
+            | O myFacebook permite-lhe pesquisar utilizadores e visualizar a sua linha cronológica, sendo assim possível visualizar as publicações que são públicas dos mesmos.
+            | Tem também a possibilidade de guardar um utilizador como favorito para que não tenha que estar sempre a pesquisar pelo mesmo.
+        .w3-third.w3-right
+          img(src='/images/homepage_images/search.png' width='350px' height='350px')
+    .w3-row-padding.w3-padding-64.w3-container
+      .w3-content
+        .w3-third
+          h1 Grupos
+          h5.w3-padding-32
+            | Crie grupos com os seus amigos.
+          p.w3-text-grey
+            | A funcionalidade de grupos permite-lhe publicar o que você quiser com os utilizadores que pertencem a esse grupo.
+            | Assim, é-lhe dada a possibilidade de trocar ideias, partilhar receitas culinárias, entre várias outras coisas, apenas com os seus amigos.
+        .w3-third.w3-right
+          img(src='/images/homepage_images/group.png' width='350px' height='350px')
+    script.
+      // Used to toggle the menu on small screens when clicking on the menu button
+      function myFunction() {
+      var x = document.getElementById("navDemo");
+      if (x.className.indexOf("w3-show") == -1) {
+      x.className += " w3-show";
+      } else {
+      x.className = x.className.replace(" w3-show", "");
+      }
+      }
