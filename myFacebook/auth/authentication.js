@@ -20,6 +20,24 @@ passport.use('login', new localStrategy({
     }
 }))
 
+//Serialização do utilizador
+passport.serializeUser((user,done) => {
+    done(null,user.email)
+  })
+  
+  //Desserialização do utilizador
+  passport.deserializeUser((email,done) => {
+      var axiosConfig = {
+          access_token: req.session.token,
+          email: email
+      }
+    axios.get('http://localhost:3000/api/users', axiosConfig)
+      .then(dados => done(null,dados.data))
+      .catch(erro => done(erro,false))
+  })
+
+
+
 // Autenticação com JWT
 var JWTStrategy = require('passport-jwt').Strategy
 var ExtractJWT = require('passport-jwt').ExtractJwt

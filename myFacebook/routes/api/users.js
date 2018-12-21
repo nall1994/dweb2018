@@ -43,12 +43,7 @@ router.post('/login',async (req,res,next) => {
         if(err) return next(err)
         else res.jsonp({authError: info.message})
       }
-      req.login(user,{session:false},async error => {
-        if(error) return next(error)
-        var loggedUser = {email: user.email, role: user.role,nome: user.nome}
-        var token = jwt.sign({user: loggedUser}, 'myFacebook')
-        res.jsonp(token)
-      })
+      res.jsonp(user)
     }
     catch(error) {
       return next(error)

@@ -1,4 +1,107 @@
 extends layout
 block content
-    header.w3-container.w3-teal
-        h1(align='center') Chapisca
+    .w3-top
+        .w3-bar.w3-blue-grey.w3card.w3-large
+            //Mudar o a que vem para redirecionar para a homepage do utilizador    
+            a.w3-bar-item.w3-button.w3-light-grey(href='http://localhost:3000/example') Home
+            a.w3-bar-item.w3-button.w3-hover-light-grey(href='http://localhost:3000/example') Perfil
+            a.w3-text-white(style="margin-left: 450px;") MyFacebook
+            a.w3-bar-item.w3-button.w3-hover-light-grey.w3-right(href='http://localhost:3000/') Logout
+    .w3-container(style='padding:70px 16px')
+        .w3-row
+            .w3-col.m3
+                .w3-container
+            .w3-col.m6
+                .w3-card-4.w3-round
+                    .w3-input-container
+                        i.fa.fa-search
+                        input.w3-input-field.w3-border-0.w3-round.w3-center( style="width: 85.5%;" type='text' name='searchField' placeholder='Procure pelos seus amigos...')
+                        input.w3-btn.w3-blue-grey.w3-small(type='submit' value='Procurar')
+            .w3-col.m3
+                .w3-container
+        .w3-row(style='padding:30px 16px')
+            .w3-col.m2
+                .w3-card-4.w3-round
+                    //if userData.foto
+                    p.w3-center
+                        b.w3-text-indigo Nuno Leite
+                    p.w3-center
+                        img.w3-circle(src= 'uploaded/nuno.jpg' style='height:120px;width:120px')
+                    hr
+                    p
+                        i.fa.fa-pencil.fa-fw.w3-margin-right.w3-text-theme
+                        | Estudante
+                    p
+                        i.fa.fa-building.fa-fw.w3-margin-right.w3-text-theme
+                        | Universidade do Minho
+                    p
+                        i.fa.fa-home.fa-fw.w3-margin-right.w3-text-theme
+                        | Braga, Portugal
+                    p
+                        i.fa.fa-birthday-cake.fa-fw.w3-margin-right.w3-text-theme
+                        | 19 de Abril
+            .w3-col.m1.w3-center
+                .w3-container
+            .w3-col.m6.w3-center
+                .w3-card-4.w3-round
+                    p.w3-large.w3-text-indigo.w3-center Publicar
+                    hr
+                    select.w3-select.w3-border(id='postType' name='postType')
+                        option(value='none' selected) Escolha o tipo de publicação
+                        option(value='receita') Receita Culinária
+                        option(value='evento') Evento
+                        option(value='eventoProfissional') Evento Profissional
+                        option(value='ideia') Ideia
+                        option(value='formacao') Formação
+                        option(value='desportivo') Desportiva
+                    br
+                    br
+                    form(id='receitaForm' style='display:none')
+                        p Escreva um ingrediente por linha e uma instrução por linha nos campos respetivos.
+                        input.w3-input.w3-border(type='text' name='titulo' placeholder="Nome do cozinhado")
+                        br
+                        textarea.w3-input.w3-border(name='ingredientes' placeholder='Ingredientes')
+                        br
+                        textarea.w3-input.w3-border(name='instrucoes' placeholder='Instruções')
+                        br
+                        input.w3-btn.w3-indigo(type='submit' id='publicar' value='Publicar')
+                    form(id='ideiaForm' style='display:none')
+                        p Escreva os classificadores separados por vírgula.
+                        input.w3-input.w3-border(type='text' name='titulo' placeholder='Título da ideia')
+                        br
+                        textarea.w3-input.w3-border(name='descricao' placeholder='Explique a sua ideia...')
+                        br
+                        input.w3-input.w3-border(name='classificadores' placeholder='Indique classificadores para a publicação.')
+                        br
+                        input.w3-btn.w3-indigo(type='submit' id='publicar' value='Publicar')
+                    form(id='desportivoForm' style="display:none")
+                        input.w3-input.w3-border(type='text' name='titulo' placeholder='Insira o título da sua publicação')
+                        br
+                        input.w3-input.w3-border(type='text' name='atividade' placeholder='Insira o nome da atividade desportiva')
+                        br
+                        input.w3-input.w3-border(type='text' name='duracao' placeholder='Insira a duração da atividade no formato que prefere')
+                        br
+                        textarea.w3-input.w3-border(name='descricao' placeholder='Descreva a atividade desportiva')
+                        br
+                        label.w3-text-blue-grey Fotos da Atividade
+                        input.w3-input.w3-border(type='file' name='fotos' multiple)
+                        br
+                        labe.w3-text-blue-grey Ficheiro GPX
+                        input.w3-input.w3-border(type='file' name='ficheiro_gpx')
+                        br
+                        input.w3-btn.w3-indigo(type='submit' id='publicar' value='Publicar')
+
+                    
+            .w3-col.m1.w3-center
+                .w3-container
+            .w3-col.m2
+                .w3-card-4.w3-round
+                    p
+                        i.fa.fa-star.fa-fw.w3-margin-right.w3-text-theme
+                        | Favoritos
+                    if userData.favoritos
+                        p Fodasse
+                    p.w3-text-grey Não adicionou nenhum favorito
+        //Outra row com os dados do perfil e por aí fora
+        //Uma row tem a foto do utilizador, o nome, 
+        

@@ -11,7 +11,7 @@ var DesportivoSchema = new Schema({
     atividade: {type:String, required:true},
     duracao: {type:String, required:true},
     descricao: {type:String, required:true},
-    foto: {type:String},
+    fotos: [{type:String}],
     ficheiro_gpx: {type:String}
 })
 

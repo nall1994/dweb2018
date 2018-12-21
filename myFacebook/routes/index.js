@@ -17,5 +17,9 @@ router.get('/about',(req,res) => {
   res.render('about')
 })
 
+router.get('/example',(req,res)=> {
+  res.render('user_home',{userData: {}})
+})
+
 
 module.exports = router;
