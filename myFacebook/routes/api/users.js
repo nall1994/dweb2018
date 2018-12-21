@@ -39,8 +39,9 @@ router.post('/login',async (req,res,next) => {
   passport.authenticate('login', async (err,user,info) => {
     try{
       if(err || !user) {
+        console.log(info)
         if(err) return next(err)
-        else return next(new Error('Utilizador inexistente!'))
+        else res.jsonp({authError: info.message})
       }
       req.login(user,{session:false},async error => {
         if(error) return next(error)

@@ -14,14 +14,19 @@ block content
         a.w3-bar-item.w3-button.w3-padding-large(href='http://localhost:3000/users/login') Login
         a.w3-bar-item.w3-button.w3-padding-large(href='http://localhost:3000/contacts') Contactos
         a.w3-bar-item.w3-button.w3-padding-large(href='http://localhost:3000/about') Sobre
-    .w3-container(style='padding:128px 16px')
+    .w3-container(style='padding:60px 16px')
         .w3-card-4
-          .w3-container.w3-indigo
+          .w3-container.w3-blue-grey
             h2(align='center') Autenticação de utilizador
+          br
           .w3-container
             form.w3-center(action='login' method='POST')
+                if errorMessage 
+                  p.w3-text-red= errorMessage
                 input.w3-input.w3-border.w3-light-grey.w3-center(type='text' name='email' placeholder='Insira o seu email')
                 input.w3-input.w3-border.w3-light-grey.w3-center(type='password' name='password' placeholder='Insira a password')
                 br
-                input.w3-btn.w3-indigo(type='submit' value='Login')
+                input.w3-btn.w3-indigo.w3-large(type='submit' value='Login')
+                br
+                br
             

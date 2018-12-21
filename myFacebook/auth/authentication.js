@@ -8,7 +8,6 @@ passport.use('login', new localStrategy({
     passwordField: 'password'
 }, async (email,password,done) => {
     try {
-        //pedir ao userController a pesquisa por email
         var user = await userModel.findOne({email})
         if(!user) return done(null,false, {message: 'Utilizador inserido não existe!'})
         var valid = await user.isValidPassword(password)

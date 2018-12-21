@@ -17,23 +17,27 @@ var axios = require('axios')
 //})
     //Ir buscar o utilizador e os seus dados e fazer o render da sua página principal
   
-router.get('/homepage/:email',passport.authenticate('jwt',{session:false}),(req,res) => {
+router.get('/homepage/:email',(req,res) => {
       req.query.access_token = req.session.token
       req.query.email = req.params.email
       axiosConfig = {
         params: req.query
       }
-      //Ir buscar tudo o que é necessário para fazer o display da página do utilizador com pedidos à api
-      //GET publicacoes/fromUser?email=req.params.email
-      //GET groups/withUser?=email=req.params.email
       var pubs = new Object()
       var groupsInfo = new Object()
       axios.get('http://localhost:3000/api/pubs/fromUser', axiosConfig)
-        .then(dados => pubs = dados.data)
+        .then(dados => {
+          pubs = dados.data
+          /*axios.get('http://localhost:3000/api/groups/withUser', axiosConfig)
+            .then(dados => {
+              groupsInfo = dados.data
+              res.jsonp(pubs)
+            })
+            .catch(error => res.render('error',{e: error}))*/
+            res.jsonp(pubs)
+        })
         .catch(error => res.render('error',{e: error}))
-      axios.get('http://localhost:3000/api/groups/withUser', axiosConfig)
-        .then(dados => groupsInfo = dados.data)
-        .catch(error => res.render('error',{e: error}))
+    
       
       //Aqui já podemos fazer o render da homepage e passar-lhe os dois objetos e também o req.user
   
@@ -63,9 +67,15 @@ router.get('/homepage/:email',passport.authenticate('jwt',{session:false}),(req,
   router.post('/login',(req,res) => {
     axios.post('http://localhost:3000/api/users/login', req.body)
       .then(data => {
-        req.session.token = data.data
-        res.render('contacts', {t: req.session.token})}) //aqui vai ter que renderizar a página do utilizador
-      .catch(erro => res.render('error',{erro})) // Ver como fazer o tratamento de erros!
-  })
+        if(data.data.authError) res.render('login',{errorMessage: data.data.authError})
+        else{
+          req.session.token = data.data
+        res.redirect('/users/homepage/' + req.body.email)
+        }    
+      })
+      .catch(erro =>{
+        res.render('error', {e: erro})
+      } )
+})
 
 module.exports = router

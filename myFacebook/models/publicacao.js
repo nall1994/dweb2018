@@ -69,13 +69,13 @@ var PubSchema = new Schema({
 })
 
 var publicacaoSchema = new Schema({
-    username: {type:String, required:true},
+    origin_email: {type:String, required:true},
     tipo: {type:String, required:true},
     data: {type:String, required:true},
     dados: PubSchema,
     classificacoes: [String],
     comentarios : [{
-        username: {type: String, required:true},
+        origin_email: {type: String, required:true},
         comentario: {type: String, required:true}
     }],
     groupId: {type: String},
