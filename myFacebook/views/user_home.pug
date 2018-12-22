@@ -54,27 +54,43 @@ block content
                         option(value='ideia') Ideia
                         option(value='formacao') Formação
                         option(value='desportivo') Desportiva
+                        option(value='album') Álbum
                     br
                     br
                     form(id='receitaForm' style='display:none')
                         p Escreva um ingrediente por linha e uma instrução por linha nos campos respetivos.
+                        input(type='hidden' name='origin_email' value= userData.email)
                         input.w3-input.w3-border(type='text' name='titulo' placeholder="Nome do cozinhado")
                         br
                         textarea.w3-input.w3-border(name='ingredientes' placeholder='Ingredientes')
                         br
                         textarea.w3-input.w3-border(name='instrucoes' placeholder='Instruções')
                         br
-                        input.w3-btn.w3-indigo(type='submit' id='publicar' value='Publicar')
+                        input.w3-radio(type='radio' name='privacidade' value=true checked)
+                        label Publicação privada
+                        input.w3-radio(type='radio' name='privacidade' value=false)
+                        label Publicação pública
+                        br
+                        br
+                        input.w3-btn.w3-indigo(type='submit' id='publicarReceita' value='Publicar')
                     form(id='ideiaForm' style='display:none')
                         p Escreva os classificadores separados por vírgula.
+                        input(type='hidden' name='origin_email' value= userData.email)
                         input.w3-input.w3-border(type='text' name='titulo' placeholder='Título da ideia')
                         br
                         textarea.w3-input.w3-border(name='descricao' placeholder='Explique a sua ideia...')
                         br
                         input.w3-input.w3-border(name='classificadores' placeholder='Indique classificadores para a publicação.')
                         br
-                        input.w3-btn.w3-indigo(type='submit' id='publicar' value='Publicar')
+                        input.w3-radio(type='radio' name='privacidade' value=true checked)
+                        label Publicação privada
+                        input.w3-radio(type='radio' name='privacidade' value=false)
+                        label Publicação pública
+                        br
+                        br
+                        input.w3-btn.w3-indigo(type='submit' id='publicarIdeia' value='Publicar')
                     form(id='desportivoForm' style="display:none")
+                        input(type='hidden' name='origin_email' value= userData.email)
                         input.w3-input.w3-border(type='text' name='titulo' placeholder='Insira o título da sua publicação')
                         br
                         input.w3-input.w3-border(type='text' name='atividade' placeholder='Insira o nome da atividade desportiva')
@@ -83,13 +99,99 @@ block content
                         br
                         textarea.w3-input.w3-border(name='descricao' placeholder='Descreva a atividade desportiva')
                         br
+                        input.w3-radio(type='radio' name='privacidade' value=true checked)
+                        label Publicação privada
+                        input.w3-radio(type='radio' name='privacidade' value=false)
+                        label Publicação pública
+                        br
+                        br
                         label.w3-text-blue-grey Fotos da Atividade
                         input.w3-input.w3-border(type='file' name='fotos' multiple)
                         br
-                        labe.w3-text-blue-grey Ficheiro GPX
+                        label.w3-text-blue-grey Ficheiro GPX
                         input.w3-input.w3-border(type='file' name='ficheiro_gpx')
                         br
-                        input.w3-btn.w3-indigo(type='submit' id='publicar' value='Publicar')
+                        input.w3-btn.w3-indigo(type='submit' id='publicarDesportivo' value='Publicar')
+                    form(id='eventoForm' style='display:none')
+                        input(type='hidden' name='origin_email' value= userData.email)
+                        input.w3-input.w3-border(type='text' name='titulo' placeholder='Insira o nome do evento')
+                        br
+                        input.w3-input.w3-border(type='text' name='local' placeholder='Insira o local onde decorrerá o evento')
+                        br
+                        input.w3-input.w3-border(type='date' name='dataEvento')
+                        br
+                        textarea.w3-input.w3-border(name='convidados' placeholder='Indique o email dos convidados, um por linha (poderá adicionar pessoas na mesma posteriormente).')
+                        br
+                        textarea.w3-input.w3-border(name='descricao' placeholder='descreva o evento')
+                        br
+                        input.w3-radio(type='radio' name='privacidade' value=true checked)
+                        label Publicação privada
+                        input.w3-radio(type='radio' name='privacidade' value=false)
+                        label Publicação pública
+                        br
+                        br
+                        input.w3-btn.w3-indigo(type='submit' id='publicarEvento' value='Publicar')
+                    form(id='formacaoForm' style='display:none')
+                        input(type='hidden' name='origin_email' value= userData.email)
+                        input.w3-input.w3-border(type='text' name='titulo' placeholder='Insira um nome para a publicação')
+                        br
+                        input.w3-input.w3-border(type='text' name='creditacao' placeholder='Insira o nome da creditação que obteve')
+                        br
+                        input.w3-input.w3-border(type='text' name='instituicao' placeholder='Insira o nome da instituição que o creditou')
+                        br
+                        textarea.w3-input.w3-border(name='descricao' placeholder='Insira uma descrição para a creditação que obteve')
+                        br
+                        input.w3-radio(type='radio' name='privacidade' value=true checked)
+                        label Publicação privada
+                        input.w3-radio(type='radio' name='privacidade' value=false)
+                        label Publicação pública
+                        br
+                        br
+                        input.w3-btn.w3-indigo(type='submit' id='publicarFormacao' value='Publicar')
+                    form(id='eventoProfissionalForm' style='display:none')
+                        input(type='hidden' name='origin_email' value= userData.email)
+                        input.w3-input.w3-border(type='text' name='titulo' placeholder='Insira o nome do evento')
+                        br
+                        input.w3-input.w3-border(type='text' name='local' placeholder='Insira o local onde decorrerá o evento')
+                        br
+                        input.w3-input.w3-border(type='date' name='dataEvento')
+                        br
+                        textarea.w3-input.w3-border(name='oradores' placeholder='Insira o nome dos oradores,um por linha')
+                        br
+                        textarea.w3-input.w3-border(name='descricao' placeholder='Descreva o evento')
+                        br
+                        input.w3-radio(type='radio' name='privacidade' value=true checked)
+                        label Publicação privada
+                        input.w3-radio(type='radio' name='privacidade' value=false)
+                        label Publicação pública
+                        br
+                        br
+                        label.w3-text-blue-grey Upload de ficheiros
+                        input.w3-input.w3-border(type='file' name='ficheiros' multiple)
+                        input.w3-btn.w3-indigo(type='submit' id='publicarEventoProfissional' value='Publicar')
+                    form(id='albumForm' style='display:none')
+                        input(type='hidden' name='origin_email' value= userData.email)
+                        input.w3-input.w3-border(type='text' name='titulo' placeholder='Insira o nome do seu álbum')
+                        br
+                        textarea.w3-input.w3-border(name='descricao' placeholder='Descreva o álbum')
+                        br
+                        input.w3-radio(type='radio' name='privacidade' value=true checked)
+                        label Publicação privada
+                        input.w3-radio(type='radio' name='privacidade' value=false)
+                        label Publicação pública
+                        br
+                        br
+                        hr
+                        label.w3-text-blue-grey.w3-large Fotos do álbum
+                        p.w3-text-grey.w3-small Insira uma foto e os seus dados. Se pretender inserir mais carregue no botão '+'. Quando terminar publique.
+                        input.w3-input.w3-border(type='date' name='dataFoto' id='dataFoto' placeholder='data da foto')
+                        input.w3-input.w3-border(type='text' name='local' id='localFoto' placeholder='Insira o local desta foto')
+                        input.w3-input.w3-border(type='file' name='foto' id='foto')
+                        button.w3-btn.w3-circle.w3-indigo(id='adicionar') +
+                        hr
+                        input.w3-btn.w3-indigo(type='submit' id='publicarAlbum' value='Publicar')
+
+                    
 
                     
             .w3-col.m1.w3-center

@@ -17,9 +17,10 @@ var DesportivoSchema = new Schema({
 
 var EventoSchema = new Schema({
     titulo: {type:String, required:true},
+    dataEvento: {type:String, required:true},
     local: {type:String, required:true},
     convidados: [{
-        nome: {type:String, required:true}
+        nome: {type:String}
     }],
     descricao: {type:String,required:true}
 })
@@ -52,6 +53,7 @@ var AlbumSchema = new Schema({
 
 var EventoProfissionalSchema = new Schema({
     titulo: {type:String, required:true},
+    dataEvento: {type:String, required:true},
     local:{type:String, required:true},
     oradores: [{type:String}],
     descricao: {type:String, required:true},
@@ -75,8 +77,8 @@ var publicacaoSchema = new Schema({
     dados: PubSchema,
     classificacoes: [String],
     comentarios : [{
-        origin_email: {type: String, required:true},
-        comentario: {type: String, required:true}
+        origin_email: {type: String},
+        comentario: {type: String}
     }],
     groupId: {type: String},
     isPrivate: {type:Boolean, required:true, default:true}
