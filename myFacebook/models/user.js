@@ -12,7 +12,10 @@ var UserSchema = new Schema({
     morada: {type:String},
     role: {type:String, enum:['admin','user'], required:true},
     classificadores: [String],
-    favoritos:[{type:String}],
+    favoritos:[{
+        email: {type:String, required:true},
+        nome: {type:String, required:true}
+    }],
     dataAniversario: {type:String}
 })
 

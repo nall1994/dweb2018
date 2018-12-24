@@ -93,7 +93,6 @@ $(() => {
         e.preventDefault()
         var form = document.getElementById('receitaForm')
         var receitaForm = new FormData(form)
-        alert('receita')
         var receita = new FormData()
         var ingredientes = receitaForm.get('ingredientes')
         var instrucoes = receitaForm.get('instrucoes')
