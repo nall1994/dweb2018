@@ -15,7 +15,7 @@ block content
                 .w3-card-4.w3-round
                     .w3-input-container
                         i.fa.fa-search
-                        input.w3-input-field.w3-border-0.w3-round.w3-center( style="width: 85.5%;" type='text' name='searchField' placeholder='Procure pelos seus amigos...')
+                        input.w3-input-field.w3-border-0.w3-round.w3-center( style="width: 85%;" type='text' name='searchField' placeholder='Procure pelos seus amigos...')
                         input.w3-btn.w3-blue-grey.w3-small(type='submit' value='Procurar')
             .w3-col.m3
                 .w3-container
@@ -79,7 +79,7 @@ block content
                 .w3-container
             .w3-col.m6.w3-center
                 .w3-card-4.w3-round
-                    p.w3-large.w3-text-indigo.w3-center Publicar
+                    p.w3-xlarge.w3-text-indigo.w3-center Publicar
                     hr
                     select.w3-select.w3-border(id='postType' name='postType')
                         option(value='none' selected) Escolha o tipo de publicação
@@ -101,9 +101,9 @@ block content
                         br
                         textarea.w3-input.w3-border(name='instrucoes' placeholder='Instruções')
                         br
-                        input.w3-radio(type='radio' name='privacidade' value=true checked)
+                        input.w3-radio(type='radio' name='privacidade' value='true' checked)
                         label Publicação privada
-                        input.w3-radio(type='radio' name='privacidade' value=false)
+                        input.w3-radio(type='radio' name='privacidade' value='false')
                         label Publicação pública
                         br
                         br
@@ -117,9 +117,9 @@ block content
                         br
                         input.w3-input.w3-border(name='classificadores' placeholder='Indique classificadores para a publicação.')
                         br
-                        input.w3-radio(type='radio' name='privacidade' value=true checked)
+                        input.w3-radio(type='radio' name='privacidade' value='true' checked)
                         label Publicação privada
-                        input.w3-radio(type='radio' name='privacidade' value=false)
+                        input.w3-radio(type='radio' name='privacidade' value='false')
                         label Publicação pública
                         br
                         br
@@ -134,9 +134,9 @@ block content
                         br
                         textarea.w3-input.w3-border(name='descricao' placeholder='Descreva a atividade desportiva')
                         br
-                        input.w3-radio(type='radio' name='privacidade' value=true checked)
+                        input.w3-radio(type='radio' name='privacidade' value='true' checked)
                         label Publicação privada
-                        input.w3-radio(type='radio' name='privacidade' value=false)
+                        input.w3-radio(type='radio' name='privacidade' value='false')
                         label Publicação pública
                         br
                         br
@@ -159,9 +159,9 @@ block content
                         br
                         textarea.w3-input.w3-border(name='descricao' placeholder='descreva o evento')
                         br
-                        input.w3-radio(type='radio' name='privacidade' value=true checked)
+                        input.w3-radio(type='radio' name='privacidade' value='true' checked)
                         label Publicação privada
-                        input.w3-radio(type='radio' name='privacidade' value=false)
+                        input.w3-radio(type='radio' name='privacidade' value='false')
                         label Publicação pública
                         br
                         br
@@ -176,9 +176,9 @@ block content
                         br
                         textarea.w3-input.w3-border(name='descricao' placeholder='Insira uma descrição para a creditação que obteve')
                         br
-                        input.w3-radio(type='radio' name='privacidade' value=true checked)
+                        input.w3-radio(type='radio' name='privacidade' value='true' checked)
                         label Publicação privada
-                        input.w3-radio(type='radio' name='privacidade' value=false)
+                        input.w3-radio(type='radio' name='privacidade' value='false')
                         label Publicação pública
                         br
                         br
@@ -195,9 +195,9 @@ block content
                         br
                         textarea.w3-input.w3-border(name='descricao' placeholder='Descreva o evento')
                         br
-                        input.w3-radio(type='radio' name='privacidade' value=true checked)
+                        input.w3-radio(type='radio' name='privacidade' value='true' checked)
                         label Publicação privada
-                        input.w3-radio(type='radio' name='privacidade' value=false)
+                        input.w3-radio(type='radio' name='privacidade' value='false')
                         label Publicação pública
                         br
                         br
@@ -210,15 +210,15 @@ block content
                         br
                         textarea.w3-input.w3-border(name='descricao' placeholder='Descreva o álbum')
                         br
-                        input.w3-radio(type='radio' name='privacidade' value=true checked)
+                        input.w3-radio(type='radio' name='privacidade' value='true' checked)
                         label Publicação privada
-                        input.w3-radio(type='radio' name='privacidade' value=false)
+                        input.w3-radio(type='radio' name='privacidade' value='false')
                         label Publicação pública
                         br
                         br
                         hr
                         label.w3-text-blue-grey.w3-large Fotos do álbum
-                        p.w3-text-grey.w3-small Insira uma foto e os seus dados. Se pretender inserir mais carregue no botão '+'. Quando terminar publique.
+                        p.w3-text-grey.w3-small(id='bPar') Insira uma foto e os seus dados. Se pretender inserir mais carregue no botão '+'. Quando terminar publique.
                         input.w3-input.w3-border(type='date' name='dataFoto' id='dataFoto' placeholder='data da foto')
                         input.w3-input.w3-border(type='text' name='local' id='localFoto' placeholder='Insira o local desta foto')
                         input.w3-input.w3-border(type='file' name='foto' id='foto')
@@ -229,6 +229,8 @@ block content
                 br
                 br
                 .w3-card-4.w3-round
+                    p.w3-xlarge.w3-text-indigo.w3-center As suas publicações
+                    hr
                     if userData.publicacoes
 
                     else
