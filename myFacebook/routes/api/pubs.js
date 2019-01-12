@@ -13,10 +13,33 @@ router.get('/fromUser',passport.authenticate('jwt',{session:false}),(req,res) =>
         seletores.origin_email = fromUser
         seletores.isPrivate = false
     }
+    console.dir(seletores);
+    
     pubsController.consulta(seletores)
         .then(dados => res.jsonp(dados))
         .catch(erro => res.jsonp({message: 'Erro: ' + erro}))
 
 })
+
+router.get('/',passport.authenticate('jwt',{session:false}),(req,res) => {
+    pubsController.consultaTodas()
+        .then(dados => res.jsonp(dados))
+        .catch(erro => res.jsonp({message: 'Erro: ' + erro}))
+
+})
+
+router.post('/novaPub', async (req,res) => {
+    var pub = new Object()
+    pub.origin_email = req.body.origin_email
+    pub.tipo = req.body.tipo
+    pub.data = req.body.data
+    pub.dados = JSON.stringify(req.body.dados)
+    pub.isPrivate = req.body.isPrivate
+    console.log("pub:"+JSON.stringify(pub))
+    pubsController.inserir(pub)
+      .then(message => res.jsonp(message))
+      .catch(error => res.status(500).send(JSON.stringify(error)))
+})
+  
 
 module.exports = router

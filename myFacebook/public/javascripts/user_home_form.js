@@ -337,3 +337,19 @@ function validateReceita(formData) {
     } 
     return true
 }
+
+function ajaxPost(formData){
+    $.ajax({
+        type:"POST",
+        enctype: "form/multipart",
+        processData: false,
+        contentType: false,
+        url : "http://localhost:3000/pubs",
+        data : formData,    
+        success : f => alert("Publicado com sucesso: "+ f),
+        error : e => {
+            alert('Erro no post: ' + e)
+            console.log("Erro no post: " +e)
+        }        
+    })
+}

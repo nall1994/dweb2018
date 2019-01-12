@@ -5,6 +5,7 @@ var jwt = require('jsonwebtoken')
 var bcrypt = require('bcrypt')
 var passport = require('passport')
 
+//Registar utilizador
 router.post('/', async (req,res) => {
   var user = new Object()
   user.role = 'user'
