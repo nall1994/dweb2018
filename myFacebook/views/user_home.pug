@@ -24,9 +24,9 @@ block content
                 .w3-card-4.w3-round
                     if userData.foto
                         p.w3-center
-                            b.w3-text-indigo Nuno Leite
+                            b.w3-text-indigo= userData.nome
                         p.w3-center
-                            img.w3-circle(src= 'uploaded/nuno.jpg' style='height:120px;width:120px')
+                            img.w3-circle(src= '/public/uploaded/nuno.jpg' style='height:120px;width:120px')
                         hr
                     if userData.profissao
                         p

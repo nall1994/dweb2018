@@ -21,7 +21,8 @@ var fs = require('fs')
     //Ir buscar o utilizador e os seus dados e fazer o render da sua página principal
   
 router.get('/homepage/:email',passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}),(req,res) => {
-      var loggedToken = jwt.verify(req.session.token,'myFacebook',jwt_options.verifyOptions)   
+        
+  var loggedToken = jwt.verify(req.session.token,'myFacebook',jwt_options.verifyOptions)   
       req.query.access_token = req.session.token
       req.query.email = req.params.email
       axiosConfig = {
@@ -29,30 +30,41 @@ router.get('/homepage/:email',passport.authenticate('jwt',{session:false, failur
       }
       if(loggedToken.user.email == req.params.email) {
         //present user_home
+
       } else {
         //present guest_home
       }
       //É preciso ir buscar os dados do utilizador, as suas publicações e os grupos aos quais pertence!
       //Se o email que email que vem no url é diferente do que está logado devemos apresentar a página guest_home
       //Caso contrário devemos apresentar a página user_home
+      
+      /*
       var pubs = new Object()
       var groupsInfo = new Object()
       axios.get('http://localhost:3000/api/pubs/fromUser', axiosConfig)
         .then(dados => {
           pubs = dados.data
-          /*axios.get('http://localhost:3000/api/groups/withUser', axiosConfig)
+          axios.get('http://localhost:3000/api/groups/withUser', axiosConfig)
             .then(dados => {
               groupsInfo = dados.data
               res.jsonp(pubs)
             })
-            .catch(error => res.render('error',{e: error}))*/
+            .catch(error => res.render('error',{e: error}))
             res.jsonp(pubs)
         })
         .catch(error => res.render('error',{e: error}))
-    
+        */
+
+      axios.get('http://localhost:3000/api/users/?email='+loggedToken.user.email,axiosConfig)
+      .then((dados) => {
+        res.render('user_home',{userData: dados.data})
+
+      }).catch((err) => {
+        
+        res.render('error',{error : err})
+      });
       
       //Aqui já podemos fazer o render da homepage e passar-lhe os dois objetos e também o req.user
-  
     })
   
   //Retornar formulário de registo
