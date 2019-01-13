@@ -129,9 +129,10 @@ $(() => {
             ideia.set('tipo','ideia')
             ideia.set('data',parseDate(new Date()))
             ideia.set('isPrivate',ideiaForm.get('privacidade'))
-            var data = {titulo: ideiaForm.get('titulo'), classificadores: ideiaForm.get('classificadores').split(','), descricao: ideiaForm.get('descricao')}
-            ideia.set('dados',data)
-            ajaxPost(ideia)
+            ideia.set("titulo", ideiaForm.get('titulo'))
+            ideia.set("classificadores", ideiaForm.get('classificadores'))
+            ideia.set( "descricao", ideiaForm.get('descricao'))
+            ajaxPostIdeia(ideia)
         }
         
     })
@@ -338,15 +339,15 @@ function validateReceita(formData) {
     return true
 }
 
-function ajaxPost(formData){
+function ajaxPostIdeia(pub){
     $.ajax({
         type:"POST",
         enctype: "form/multipart",
         processData: false,
         contentType: false,
-        url : "http://localhost:3000/pubs",
-        data : formData,    
-        success : f => alert("Publicado com sucesso: "+ f),
+        url : "http://localhost:3000/pubs/newPub",
+        data : pub,    
+        success : m => alert("Publicado com sucesso"),
         error : e => {
             alert('Erro no post: ' + e)
             console.log("Erro no post: " +e)

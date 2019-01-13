@@ -2,6 +2,7 @@ var express = require('express')
 var router = express.Router()
 var passport = require('passport')
 var pubsController = require('../../controllers/Pubs')
+var formidable = require("formidable")
 
 router.get('/fromUser',passport.authenticate('jwt',{session:false}),(req,res) => {
     var fromUser = req.query.email
@@ -28,17 +29,26 @@ router.get('/',passport.authenticate('jwt',{session:false}),(req,res) => {
 
 })
 
-router.post('/novaPub', async (req,res) => {
+router.post('/newPub', async (req,res) => {
     var pub = new Object()
     pub.origin_email = req.body.origin_email
     pub.tipo = req.body.tipo
     pub.data = req.body.data
-    pub.dados = JSON.stringify(req.body.dados)
-    pub.isPrivate = req.body.isPrivate
-    console.log("pub:"+JSON.stringify(pub))
+    if (req.body.isPrivate=="false") pub.isPrivate = false
+    else pub.isPrivate = true
+    var dados = new Object()
+    var ideia = new Object()
+    ideia.titulo = req.body.titulo
+    if (req.body.classificadores!="") ideia.classificadores = req.body.classificadores.split(",")
+    ideia.descricao = req.body.descricao
+    dados.ideia = ideia
+    pub.dados = dados
+    console.log("API:")
+    console.log(pub)
     pubsController.inserir(pub)
-      .then(message => res.jsonp(message))
-      .catch(error => res.status(500).send(JSON.stringify(error)))
+    .then(message => res.jsonp(message))
+    .catch(error => res.status(500).send(JSON.stringify(error)))
+
 })
   
 

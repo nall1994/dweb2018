@@ -84,6 +84,7 @@ var publicacaoSchema = new Schema({
     isPrivate: {type:Boolean, required:true, default:true}
 })
 
+/*
 PubSchema.pre('save', next => {
     var counter = 0
     if(this.PubSchema.receita) counter++
@@ -97,6 +98,6 @@ PubSchema.pre('save', next => {
     if(counter == 0) next(new Error('Tem que preencher um dos tipos de publicação para submeter uma publicação'))
     else if(counter > 1) next(new Error('Apenas pode preencher um tipo de publicacao'))
     else next()
-})
+})*/
 
 module.exports = mongoose.model('Publicacao', publicacaoSchema,'pubs')
