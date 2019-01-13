@@ -11,6 +11,8 @@ $(() => {
         if($('#albumForm').is(':visible')) $('#albumForm').css('display','none')
         if($('#formacaoForm').is(':visible')) $('#formacaoForm').css('display','none')
         $('#' + $('#postType').val() + "Form").css('display','block')
+        $('#hashtagsForm').css('display','inline')
+        if ($('#postType').val()=='none') $('#hashtagsForm').css('display','none')
     })
 
     $('#adicionar').click(e => {
@@ -132,6 +134,7 @@ $(() => {
             ideia.set("titulo", ideiaForm.get('titulo'))
             ideia.set("classificadores", ideiaForm.get('classificadores'))
             ideia.set( "descricao", ideiaForm.get('descricao'))
+            ideia.set("classificacoes",getClassificacoes())
             ajaxPostIdeia(ideia)
         }
         
@@ -171,6 +174,15 @@ $(() => {
         
     })
 })
+
+function getClassificacoes(){
+    var classificacoes = ""
+    var $boxes = $('input[name=hashtag]:checked')
+    $boxes.each(function(){
+        classificacoes= classificacoes+( $(this).val() +",")
+    });
+    return classificacoes
+}
 
 function parseDate(date) {
     var dd = date.getDate();

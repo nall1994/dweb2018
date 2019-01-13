@@ -43,6 +43,7 @@ router.post('/newPub', async (req,res) => {
     ideia.descricao = req.body.descricao
     dados.ideia = ideia
     pub.dados = dados
+    if (req.body.classificadores!="") pub.classificacoes= req.body.classificacoes.split(",").slice(0,-1)
     console.log("API:")
     console.log(pub)
     pubsController.inserir(pub)

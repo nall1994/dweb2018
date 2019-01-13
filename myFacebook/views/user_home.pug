@@ -92,6 +92,16 @@ block content
                         option(value='album') Álbum
                     br
                     br
+                    form(id='hashtagsForm' style='display:none')
+                        p HashTags
+                        div
+                        each hashtag in userData.classificadores
+                            input(class="w3-check" type='checkbox' name="hashtag" value=hashtag)
+                            label(for=hashtag)=hashtag
+                            t
+                            t     
+                        br
+                        br
                     form(id='receitaForm' style='display:none')
                         p Escreva um ingrediente por linha e uma instrução por linha nos campos respetivos.
                         input(type='hidden' name='origin_email' value= userData.email)
