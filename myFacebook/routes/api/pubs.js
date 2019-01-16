@@ -36,21 +36,15 @@ router.post('/newPub', async (req,res) => {
     pub.data = req.body.data
     if (req.body.isPrivate=="false") pub.isPrivate = false
     else pub.isPrivate = true
-    var dados = new Object()
-    var ideia = new Object()
-    ideia.titulo = req.body.titulo
-    if (req.body.classificadores!="") ideia.classificadores = req.body.classificadores.split(",")
-    ideia.descricao = req.body.descricao
-    dados.ideia = ideia
-    pub.dados = dados
+    var dados = req.body.dados
+    pub.dados =dados
     if (req.body.classificadores!="") pub.classificacoes= req.body.classificacoes.split(",").slice(0,-1)
     console.log("API:")
     console.log(pub)
     pubsController.inserir(pub)
-    .then(message => res.jsonp(message))
+    .then( msg => res.jsonp(msg))
     .catch(error => res.status(500).send(JSON.stringify(error)))
 
 })
-  
 
 module.exports = router

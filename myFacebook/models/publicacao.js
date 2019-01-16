@@ -19,9 +19,7 @@ var EventoSchema = new Schema({
     titulo: {type:String, required:true},
     dataEvento: {type:String, required:true},
     local: {type:String, required:true},
-    convidados: [{
-        nome: {type:String}
-    }],
+    convidados: [{type:String}],
     descricao: {type:String,required:true}
 })
 

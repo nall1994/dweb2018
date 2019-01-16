@@ -85,15 +85,27 @@ $(() => {
         e.preventDefault()
         var form = document.getElementById('eventoForm')
         var eventoForm = new FormData(form)
-        if(validateEvento(eventoForm)) {  
-            var evento =  new FormData()
-            evento.set('origin_email',eventoForm.get('origin_email'))
-            evento.set('tipo','evento')
-            evento.set('isPrivate',eventoForm.get('privacidade'))
-            evento.set('data',parseDate(new Date()))
-            var convidados = eventoForm.get('convidados').split('\n')
-            var data = {titulo: eventoForm.get('titulo'),dataEvento: parseDate(eventoForm.get('dataEvento')),local: eventoForm.get('local'),descricao: eventoForm.get('descricao'), convidados: convidados}
-            evento.set('dados',data)
+        if(validateEvento(eventoForm)) { 
+            var convidados 
+            if (eventoForm.get('convidados') !="") convidados =  eventoForm.get('convidados').split('\n')
+            else convidados=[]
+            var data = {
+                titulo:eventoForm.get('titulo'),
+                dataEvento:eventoForm.get('dataEvento') ,
+                local: eventoForm.get('local') ,
+                descricao: eventoForm.get('descricao'),
+                convidados: convidados
+            }
+
+            var data_evento={evento: data}
+            var evento = {
+                dados:data_evento,
+                isPrivate:eventoForm.get('privacidade'),
+                data:parseDate(new Date()),
+                tipo:"evento",
+                origin_email: eventoForm.get('origin_email'),
+                classificacoes : getClassificacoes()
+            }
             ajaxPost(evento)
         }
         
@@ -104,18 +116,19 @@ $(() => {
         var form = document.getElementById('receitaForm')
         var receitaForm = new FormData(form)
         if(validateReceita(receitaForm)) {
-            var receita = new FormData()
             var ingredientes = receitaForm.get('ingredientes')
             var instrucoes = receitaForm.get('instrucoes')
             var data = ingredientes + ";" + instrucoes
-            var dados = {titulo: receitaForm.titulo, dados: data}
-            var classificacoes = receitaForm.get('classificacoes').split(',')
-            receita.set('dados',dados)
-            receita.set('isPrivate',receitaForm.get('privacidade'))
-            receita.set('data',parseDate(new Date()))
-            receita.set('tipo', 'receita')
-            receita.set('origin_email', receitaForm.get('origin_email'))
-            receita.set('classificacoes',classificacoes)
+            var dados = {titulo: receitaForm.get('titulo'), textoEstruturado: data}
+            var data_receita = {receita:dados}
+            var receita = {
+                            dados:data_receita,
+                            isPrivate:receitaForm.get('privacidade'),
+                            data:parseDate(new Date()),
+                            tipo:"receita",
+                            origin_email: receitaForm.get('origin_email'),
+                            classificacoes : getClassificacoes()
+                        }
             ajaxPost(receita)
         }
         
@@ -125,17 +138,24 @@ $(() => {
         e.preventDefault()
         var form = document.getElementById('ideiaForm')
         var ideiaForm = new FormData(form)
-        if(validateIdeia(ideiaForm)) {  
-            var ideia = new FormData()
-            ideia.set('origin_email', ideiaForm.get('origin_email'))
-            ideia.set('tipo','ideia')
-            ideia.set('data',parseDate(new Date()))
-            ideia.set('isPrivate',ideiaForm.get('privacidade'))
-            ideia.set("titulo", ideiaForm.get('titulo'))
-            ideia.set("classificadores", ideiaForm.get('classificadores'))
-            ideia.set( "descricao", ideiaForm.get('descricao'))
-            ideia.set("classificacoes",getClassificacoes())
-            ajaxPostIdeia(ideia)
+        if(validateIdeia(ideiaForm)) { 
+            var classificadores = []
+            if (ideiaForm.get('classificadores') !="") classificadores = ideiaForm.get('classificadores').split(",")
+            data = {
+                    titulo : ideiaForm.get('titulo'),
+                    classificadores: classificadores,
+                    descricao:ideiaForm.get('descricao') 
+                }            
+            data_ideia ={ideia: data}
+            var ideia = {
+                dados:data_ideia,
+                isPrivate:ideiaForm.get('privacidade'),
+                data:parseDate(new Date()),
+                tipo:"ideia",
+                origin_email: ideiaForm.get('origin_email'),
+                classificacoes : getClassificacoes()
+            }
+            ajaxPost(ideia)
         }
         
     })
@@ -161,14 +181,22 @@ $(() => {
         e.preventDefault()
         var form = document.getElementById('formacaoForm')
         var creditacaoForm = new FormData(form)
-        if(validateFormacao(creditacaoForm)) {  
-            var creditacao = new FormData()
-            creditacao.set('origin_email', creditacaoForm.get('origin_email'))
-            creditacao.set('tipo','creditacao')
-            creditacao.set('data',parseDate(new Date()))
-            creditacao.set('isPrivate', creditacaoForm.get('privacidade'))
-            var data = {titulo: creditacaoForm.get('titulo'), creditacao: creditacaoForm.get('creditacao'), instituicao: creditacaoForm.get('instituicao'), descricao: creditacaoForm.get('descricao')}
-            creditacao.set('dados',data)
+        if(validateFormacao(creditacaoForm)) { 
+            var data = {
+                titulo: creditacaoForm.get('titulo'),
+                creditacao: creditacaoForm.get('creditacao'),
+                instituicao: creditacaoForm.get('instituicao'),
+                descricao: creditacaoForm.get('descricao')
+            }
+            var data_creditacao={formacao: data}
+            var creditacao = {
+                dados:data_creditacao,
+                isPrivate:creditacaoForm.get('privacidade'),
+                data:parseDate(new Date()),
+                tipo:"creditacao",
+                origin_email: creditacaoForm.get('origin_email'),
+                classificacoes : getClassificacoes()
+            }
             ajaxPost(creditacao)
         }
         
@@ -351,18 +379,17 @@ function validateReceita(formData) {
     return true
 }
 
-function ajaxPostIdeia(pub){
+function ajaxPost(pub){
     $.ajax({
-        type:"POST",
-        enctype: "form/multipart",
-        processData: false,
-        contentType: false,
-        url : "http://localhost:3000/pubs/newPub",
-        data : pub,    
-        success : m => alert("Publicado com sucesso"),
-        error : e => {
-            alert('Erro no post: ' + e)
-            console.log("Erro no post: " +e)
-        }        
-    })
+        type: "POST",
+        url: "http://localhost:3000/pubs/newPub",
+        data: JSON.stringify(pub), 
+        contentType: "application/json; charset=utf-8",
+      //  dataType: "json",
+        success:  msg => alert("Publicação bem sucessida!"),
+        error: function(msg) {
+            alert('error:'+JSON.stringify(msg));
+        }
+
+    });
 }
