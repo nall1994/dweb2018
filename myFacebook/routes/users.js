@@ -38,32 +38,35 @@ router.get('/homepage/:email',passport.authenticate('jwt',{session:false, failur
       //Se o email que email que vem no url é diferente do que está logado devemos apresentar a página guest_home
       //Caso contrário devemos apresentar a página user_home
       
-      /*
+      
       var pubs = new Object()
       var groupsInfo = new Object()
       axios.get('http://localhost:3000/api/pubs/fromUser', axiosConfig)
-        .then(dados => {
-          pubs = dados.data
+        .then(dadospubs => {
+          pubs = dadospubs.data
+          console.log("pubs:");
+          console.log(JSON.stringify(pubs));
           axios.get('http://localhost:3000/api/groups/withUser', axiosConfig)
-            .then(dados => {
-              groupsInfo = dados.data
-              res.jsonp(pubs)
+            .then(dadosGroups => {
+              groupsInfo = dadosGroups.data
+              axios.get('http://localhost:3000/api/users/?email='+loggedToken.user.email,axiosConfig)
+                  .then((dadosUser) => {
+                    console.log("user:");
+                    console.log(JSON.stringify(dadosUser.data));
+                    res.render('user_home',{userData: dadosUser.data, userPubs: pubs})
+
+                  }).catch((err) => {
+                    
+                    res.render('error',{error : err})
+              });
+          //    res.jsonp(pubs)
             })
-            .catch(error => res.render('error',{e: error}))
-            res.jsonp(pubs)
+            .catch(error => res.render('error',{e: error+"In Groups API"}))
+          //  res.jsonp(pubs)
         })
         .catch(error => res.render('error',{e: error}))
-        */
-
-      axios.get('http://localhost:3000/api/users/?email='+loggedToken.user.email,axiosConfig)
-      .then((dados) => {
-        res.render('user_home',{userData: dados.data})
-
-      }).catch((err) => {
         
-        res.render('error',{error : err})
-      });
-      
+
       //Aqui já podemos fazer o render da homepage e passar-lhe os dois objetos e também o req.user
     })
   

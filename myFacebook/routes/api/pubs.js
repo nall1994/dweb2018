@@ -14,7 +14,9 @@ router.get('/fromUser',passport.authenticate('jwt',{session:false}),(req,res) =>
         seletores.origin_email = fromUser
         seletores.isPrivate = false
     }
-    console.dir(seletores);
+    console.log("seletores:");
+    
+    console.log(seletores);
     
     pubsController.consulta(seletores)
         .then(dados => res.jsonp(dados))

@@ -241,7 +241,63 @@ block content
                 .w3-card-4.w3-round
                     p.w3-xlarge.w3-text-indigo.w3-center As suas publicações
                     hr
-                    if userData.publicacoes
+                    if userPubs
+                        each pub in userPubs
+                            .w3-card-4.w3-round
+                                if pub.tipo=="ideia"
+                                    h3
+                                        b    
+                                            =pub.dados.ideia.titulo
+                                    p.w3-tiny
+                                        each c in pub.dados.ideia.classificadores
+                                            span.w3-tag
+                                                =c
+                                            span &nbsp;
+                                    p.w3-small
+                                        =pub.dados.ideia.descricao
+                                if pub.tipo=="receita"
+                                    h3
+                                        b    
+                                            =pub.dados.receita.titulo
+                                    p.w3-small
+                                        =pub.dados.receita.textoEstruturado
+                                if pub.tipo=="evento"
+                                    h3
+                                        b    
+                                            =pub.dados.evento.titulo
+                                    p
+                                        span
+                                            =pub.dados.evento.dataEvento
+                                        span &nbsp;
+                                        span
+                                            =pub.dados.evento.local
+                                    p.w3-small
+                                        =pub.dados.evento.descricao
+                                    each convidado in pub.dados.evento.convidados
+                                        p.w3-tiny
+                                            =convidado
+                                if pub.tipo=="creditacao"
+                                    h3
+                                        b    
+                                            =pub.dados.formacao.titulo
+                                    p
+                                        =pub.dados.formacao.creditacao
+                                    p
+                                        =pub.dados.formacao.instituicao
+                                    p.w3-small
+                                        =pub.dados.formacao.descricao  
+                                if pub.tipo=="eventoProfissional"
+                                if pub.tipo=="album"
+                                if pub.tipo=="desportivo"
+                                p.w3-tiny
+                                    each c in pub.classificacoes
+                                        span.w3-tag.w3-yellow
+                                            =c
+                                        span &nbsp;
+                                p.w3-tiny
+                                    =pub.data
+                                    // comentários aqui
+                                          
 
                     else
                         .w3-card.w3-round
