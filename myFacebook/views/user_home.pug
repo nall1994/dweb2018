@@ -4,7 +4,7 @@ block content
         .w3-bar.w3-blue-grey.w3card.w3-large
             //Mudar o a que vem para redirecionar para a homepage do utilizador    
             a.w3-bar-item.w3-button.w3-light-grey(href='http://localhost:3000/users/homepage/' + userData.email) Home
-            a.w3-bar-item.w3-button.w3-hover-light-grey(href='http://localhost:3000/users/profile' + userData.email) Perfil
+            a.w3-bar-item.w3-button.w3-hover-light-grey(href='http://localhost:3000/users/profile/' + userData.email) Perfil
             a.w3-text-white(style="margin-left: 450px;") MyFacebook
             a.w3-bar-item.w3-button.w3-hover-light-grey.w3-right(href='http://localhost:3000/users/logout') Logout
     .w3-container(style='padding:70px 16px')
@@ -31,38 +31,54 @@ block content
                     if userData.profissao
                         p
                             i.fa.fa-pencil.fa-fw.w3-margin-right.w3-text-theme
+                            b.w3-text-blue-grey
+                                | Profissão
                             p.w3-center= userData.profissao
                     else
                         p
                             i.fa.fa-pencil.fa-fw.w3-margin-right.w3-text-theme
+                            b.w3-text-blue-grey.w3-center
+                                | Profissão
                             p.w3-center.w3-text-grey Atualize o seu perfil
 
                     hr
                     if userData.instituicao
                         p
                             i.fa.fa-building.fa-fw.w3-margin-right.w3-text-theme
+                            b.w3-text-blue-grey
+                                | Instituição
                             p.w3-center=  userData.instituicao
                     else
                         p
                             i.fa.fa-building.fa-fw.w3-margin-right.w3-text-theme
+                            b.w3-text-blue-grey
+                                | Instituição
                             p.w3-center.w3-text-grey Atualize o seu perfil
                     hr
                     if userData.morada
                         p
                             i.fa.fa-home.fa-fw.w3-margin-right.w3-text-theme
+                            b.w3-text-blue-grey
+                                | Morada
                             p.w3-center= userData.morada
                     else
                         p
                             i.fa.fa-home.fa-fw.w3-margin-right.w3-text-theme
+                            b.w3-text-blue-grey
+                                | Morada
                             p.w3-center.w3-text-grey Atualize o seu perfil
                     hr
                     if userData.dataAniversario
                         p
                             i.fa.fa-birthday-cake.fa-fw.w3-margin-right.w3-text-theme
+                            b.w3-text-blue-grey
+                                | Data de Aniversário
                             p.w3-center= userData.dataAniversario
                     else
                         p
                             i.fa.fa-birthday-cake.fa-fw.w3-margin-right.w3-text-theme
+                            b.w3-text-blue-grey
+                                | Data de Aniversário
                             p.w3-center.w3-text-grey Atualize o seu perfil
                 br
                 .w3-card-4.w3-round
