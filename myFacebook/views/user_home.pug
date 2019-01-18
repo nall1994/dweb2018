@@ -329,11 +329,14 @@ block content
                 .w3-card-4.w3-round
                     p
                         i.fa.fa-star.fa-fw.w3-margin-right.w3-text-theme
-                        | Favoritos
+                        b.w3-text-blue-grey.w3-center
+                            | Favoritos
+                    hr
                     if userData.favoritos
                         each favorito in userData.favoritos
                             p
                                 a(href='http://localhost:3000/users/homepage/' + favorito.email) favorito.nome
+                            hr
                     else
                         p.w3-text-grey Não adicionou nenhum favorito
         //Outra row com os dados do perfil e por aí fora
