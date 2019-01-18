@@ -151,10 +151,10 @@ block content
                         br
                         br
                         label.w3-text-blue-grey Fotos da Atividade
-                        input.w3-input.w3-border(type='file' name='fotos' multiple)
+                        input.w3-input.w3-border(type='file' name='fotos' id='fotos' multiple)
                         br
                         label.w3-text-blue-grey Ficheiro GPX
-                        input.w3-input.w3-border(type='file' name='ficheiro_gpx')
+                        input.w3-input.w3-border(type='file' name='ficheiro_gpx' id='ficheiro_gpx')
                         br
                         input.w3-btn.w3-indigo(type='submit' id='publicarDesportivo' value='Publicar')
                     form(id='eventoForm' style='display:none')
@@ -212,7 +212,7 @@ block content
                         br
                         br
                         label.w3-text-blue-grey Upload de ficheiros
-                        input.w3-input.w3-border(type='file' name='ficheiros' multiple)
+                        input.w3-input.w3-border(type='file' id='ficheiros' name='ficheiros' multiple)
                         input.w3-btn.w3-indigo(type='submit' id='publicarEventoProfissional' value='Publicar')
                     form(id='albumForm' style='display:none')
                         input(type='hidden' name='origin_email' value= userData.email)

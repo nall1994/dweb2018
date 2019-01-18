@@ -1,6 +1,7 @@
 $(() => {
-    var album = new FormData()
-    var counter = 0
+    var albumfotos = new FormData()
+    
+    
     $('#postType').change(e => {
         e.preventDefault()
         if($('#receitaForm').is(':visible')) $('#receitaForm').css('display','none')
@@ -18,17 +19,11 @@ $(() => {
     $('#adicionar').click(e => {
         e.preventDefault()
         if(validateAdicionarFoto()) {
-            if(counter == 0) {
-                var form = document.getElementById('albumForm')
-                album = new FormData(form)
-                counter++
-            } 
-            else {
-                album.append('dataFoto', $('#dataFoto'))
-                album.append('local',$('#localFoto'))
-                album.append('foto',$('#foto'))
-                counter++
-            }
+
+            albumfotos.append('dataFoto',$('#dataFoto').val()) 
+            albumfotos.append('local',$('#localFoto').val())   
+            albumfotos.append('foto',$('#foto')[0].files[0])  
+
             $('#dataFoto').val('')
             $('#localFoto').val('')
             $('#foto').val('')
@@ -48,17 +43,25 @@ $(() => {
             var fotoAlbum = new FormData()
             fotoAlbum.set('data',parseDate(new Date()))
             fotoAlbum.set('tipo','album')
-            fotoAlbum.set('origin_email',album.get('origin_email'))
+            fotoAlbum.set('origin_email',endFormData.get('origin_email'))
             fotoAlbum.set('isPrivate',endFormData.get('privacidade'))
-            var fotos = new Array()
-            var number_fotos_arr = album.get('foto')
-            for(i=0; i< number_fotos_arr.length; i++){
-                var obj = {dataFoto: album.get('dataFoto')[i], local: album.get('local')[i], foto: number_fotos_arr[i]}
-                fotos.push(obj)
+
+          
+            var number_fotos_arr = albumfotos.getAll('dataFoto').length
+
+            for(i=0; i< number_fotos_arr; i++){
+
+                fotoAlbum.set( "foto"+i ,albumfotos.getAll('foto')[i] )
+                fotoAlbum.set( "local"+i ,albumfotos.getAll('local')[i] )
+                fotoAlbum.set( "data"+i ,albumfotos.getAll('dataFoto')[i] )
             }
-            var data = {titulo: endFormData.get('titulo'), descricao: endFormData.get('descricao'),fotos: fotos}
-            fotoAlbum.set('dados', data)
-            ajaxPost(album)
+            
+            fotoAlbum.set("nFotos",number_fotos_arr)
+            fotoAlbum.set('titulo', endFormData.get('titulo'))
+            fotoAlbum.set('descricao', endFormData.get('descricao'))
+            fotoAlbum.set("classificacoes",getClassificacoes())
+            albumfotos = new FormData() // limpar albumfotos
+            ajaxPostAlbum(fotoAlbum)
         }
         
     })
@@ -68,15 +71,25 @@ $(() => {
         var form = document.getElementById('eventoProfissionalForm')
         var eventoProf = new FormData(form)
         if(validateEvento(eventoProf)) {
+            
             var evento = new FormData()
             evento.set('tipo','eventoProfissional')
-            evento.set('origin_email',eventoForm.get('origin_email'))
+            evento.set('origin_email',eventoProf.get('origin_email'))
             evento.set('data',parseDate(new Date()))
             evento.set('isPrivate',eventoProf.get('privacidade'))
             var oradores = eventoProf.get('oradores').split('\n')
-            var data = {titulo: eventoProf.get('titulo'), local: eventoProf.get('local'), dataEvento: parseDate(eventoProf.get('dataEvento')), oradores: oradores, descricao: descricao, ficheiros: eventoForm.get('ficheiros') }
-            evento.set('dados', data)
-            ajaxPost(evento)
+            evento.set('titulo', eventoProf.get('titulo'))
+            evento.set('local', eventoProf.get('local'))
+            evento.set('dataEvento', eventoProf.get('dataEvento'))
+            evento.set('oradores', oradores)
+            evento.set('descricao', eventoProf.get('descricao'))
+            for (var i = 0; i < $('#ficheiros')[0].files.length; ++i) {
+
+                evento.set( "ficheiro"+i ,$('#ficheiros')[0].files[i] ) 
+            }
+            evento.set("nfiles",i)
+            evento.set("classificacoes",getClassificacoes())
+            ajaxPostEventoProf(evento)
         }
         
     })
@@ -170,9 +183,19 @@ $(() => {
             desportivo.set('tipo','desportivo')
             desportivo.set('data', parseDate(new Date()))
             desportivo.set('isPrivate',desportivoForm.get('privacidade'))
-            var data = {titulo: desportivoForm.get('titulo'), atividade: desportivoForm.get('atividade'), duracao: desportivoForm.get('duracao'),descricao: desportivoForm.get('descricao'), fotos: desportivoForm.get('fotos'), ficheiro_gpx: desportivoForm.get('ficheiro_gpx')}
-            desportivo.set('dados',data)
-            ajaxPost(desportivo)
+
+            desportivo.set('titulo', desportivoForm.get('titulo'))
+            desportivo.set('atividade', desportivoForm.get('atividade'))
+            desportivo.set('duracao', desportivoForm.get('duracao'))
+            desportivo.set('descricao', desportivoForm.get('descricao'))
+            desportivo.set('ficheiro_gpx', $('#ficheiro_gpx')[0].files[0])
+            for (var i = 0; i < $('#fotos')[0].files.length; ++i) {
+
+                desportivo.set( "foto"+i ,$('#fotos')[0].files[i] ) 
+            }
+            desportivo.set("nFotos",i)
+            desportivo.set("classificacoes",getClassificacoes())
+            ajaxPostDesp(desportivo)
         }
         
     })
@@ -393,3 +416,53 @@ function ajaxPost(pub){
 
     });
 }
+
+function ajaxPostEventoProf(pub){
+    $.ajax({
+        type:"POST",
+        enctype: "form/multipart",
+        processData: false,
+        contentType: false,
+        url : "http://localhost:3000/pubs/newEventoProf",
+        data : pub,    
+        success : f => alert("Publicação bem sucessedida!"),
+        error : e => {
+            alert('Erro no post: ' + e)
+            console.log("Erro no post: " +e)
+        }        
+    })
+}
+
+function ajaxPostDesp(pub){
+    $.ajax({
+        type:"POST",
+        enctype: "form/multipart",
+        processData: false,
+        contentType: false,
+        url : "http://localhost:3000/pubs/newDesp",
+        data : pub,    
+        success : f => alert("Publicação bem sucessedida!"),
+        error : e => {
+            alert('Erro no post: ' + e)
+            console.log("Erro no post: " +e)
+        }        
+    })
+}
+
+function ajaxPostAlbum(pub){
+    $.ajax({
+        type:"POST",
+        enctype: "form/multipart",
+        processData: false,
+        contentType: false,
+        url : "http://localhost:3000/pubs/newAlbum",
+        data : pub,    
+        success : f => alert("Publicação bem sucessedida!"),
+        error : e => {
+            alert('Erro no post: ' + e)
+            console.log("Erro no post: " +e)
+        }        
+    })
+}
+
+
