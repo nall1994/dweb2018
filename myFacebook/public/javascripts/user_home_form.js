@@ -120,7 +120,15 @@ $(() => {
                 classificacoes : getClassificacoes()
             }
             ajaxPost(evento)
+            $('#tituloEvento').val('')
+            $('#descricaoEvento').val('')
+            $('#convidados').val('')
+            $('#local').val('')
+            $('#dataEvento').val('')
+            $('#postType').val('none')
+            $('#eventoForm').css('display','none')
         }
+        
         
     })
 
@@ -143,6 +151,11 @@ $(() => {
                             classificacoes : getClassificacoes()
                         }
             ajaxPost(receita)
+            $('#tituloReceita').val('')
+            $('#ingredientes').val('')
+            $('#instrucoes').val('')
+            $('#postType').val('none')
+            $('#receitaForm').css('display','none')
         }
         
     })
@@ -169,6 +182,11 @@ $(() => {
                 classificacoes : getClassificacoes()
             }
             ajaxPost(ideia)
+            $('#tituloIdeia').val('')
+            $('#descricaoIdeia').val('')
+            $('#classificadores').val('')
+            $('#postType').val('none')
+            $('#ideiaForm').css('display','none')
         }
         
     })
@@ -221,8 +239,13 @@ $(() => {
                 classificacoes : getClassificacoes()
             }
             ajaxPost(creditacao)
+            $('#tituloFormacao').val('')
+            $('#descricaoFormacao').val('')
+            $('#creditacao').val('')
+            $('#instituicao').val('')
+            $('#postType').val('none')
+            $('#formacaoForm').css('display','none')
         }
-        
     })
 })
 
@@ -231,6 +254,9 @@ function getClassificacoes(){
     var $boxes = $('input[name=hashtag]:checked')
     $boxes.each(function(){
         classificacoes= classificacoes+( $(this).val() +",")
+    });
+    $boxes.each(function(){
+        $(this).prop('checked',false)
     });
     return classificacoes
 }
@@ -409,7 +435,11 @@ function ajaxPost(pub){
         data: JSON.stringify(pub), 
         contentType: "application/json; charset=utf-8",
       //  dataType: "json",
-        success:  msg => alert("Publicação bem sucessida!"),
+        success: msg => {
+            addToPage(pub)
+            alert("Publicação bem sucedida!")
+            
+        },
         error: function(msg) {
             alert('error:'+JSON.stringify(msg));
         }
@@ -466,3 +496,70 @@ function ajaxPostAlbum(pub){
 }
 
 
+function addToPage(pub) {
+    if(pub.tipo == 'ideia') {
+        var toPrepend = "<div class='w3-card-4 w3-round'>"
+        + "<h3> <b> " + pub.dados.ideia.titulo + "</b></h3>"
+        + "<p class='w3-tiny'> " + classifiersString(pub.dados.ideia.classificadores) + "</p>"
+        + "<p class='w3-small'> " + pub.dados.ideia.descricao + "</p>"
+        + "<p class='w3-tiny'> " +  renderHashTagsAndDate(pub.classificacoes,pub.data) + "</p>"
+        + "</div>"
+        $('#pubsView').prepend(toPrepend)
+    } else if(pub.tipo == 'evento') {
+        var toPrepend = "<div class='w3-card-4 w3-round'>"
+        + "<h3> <b> " + pub.dados.evento.titulo + "</b></h3>"
+        + "<p> <span> " + pub.dados.evento.dataEvento + "</scan> <scan> &nbsp </scan> <scan> " + pub.dados.evento.local + "</scan> </p>"
+        + "<p class='w3-small'> " + pub.dados.evento.descricao + "</p>"
+        + renderConvidados(pub.dados.evento.convidados)
+        + "<p class='w3-tiny'> " + renderHashTagsAndDate(pub.classificacoes,pub.data) + "</p>"
+        + "</div>"
+        $('#pubsView').prepend(toPrepend)
+
+    } else if(pub.tipo == 'receita') {
+        var toPrepend = "<div class='w3-card-4 w3-round'>"
+        + "<h3> <b> " + pub.dados.receita.titulo + "</b></h3>"
+        + "<p class='w3-small'> " + pub.dados.receita.textoEstruturado + "</p>"
+        + "<p class='w3-tiny'> " + renderHashTagsAndDate(pub.classificacoes,pub.data) + "</p>"
+        + "</div>"
+        $('#pubsView').prepend(toPrepend)
+
+    } else if(pub.tipo == 'creditacao') {
+        var toPrepend = "<div class='w3-card-4 w3-round'>"
+        + "<h3> <b> " + pub.dados.formacao.titulo + "</b></h3>"
+        + "<p> " + pub.dados.formacao.creditacao + "</p>"
+        + "<p> " + pub.dados.formacao.instituicao + "</p>"
+        + "<p class='w3-small'> " + pub.dados.formacao.descricao + "</p>"
+        + "<p class='w3-tiny'> " + renderHashTagsAndDate(pub.classificacoes,pub.data) + "</p>"
+        + "</div>"
+        $('#pubsView').prepend(toPrepend)
+
+    }
+
+    //Só falta para o dos ficheiros
+}
+
+function classifiersString(classificadores) {
+    var returnString = ""
+    for(var i = 0; i< classificadores.length; i++) {
+        returnString += "<span class='w3-tag'> " + classificadores[i] + "</span> <span> &nbsp; </span>"
+    } 
+    return returnString
+}
+
+function renderHashTagsAndDate(classificacoes, data) {
+    var returnString = ""
+    classificacoes = classificacoes.split(",")
+    for(var i = 0; i< classificacoes.length - 1; i++) {
+        returnString += "<span class='w3-tag w3-yellow'> " + classificacoes[i] + "</span> <span> &nbsp; </span>"
+    }
+    returnString += "<p class='w3-tiny'> " + data + "</p>"
+    return returnString
+}
+
+function renderConvidados(convidados) {
+    var returnString = ""
+    for(var i=0; i< convidados.length;i++) {
+        returnString += "<p class='w3-tiny'> " + convidados[i] + "</p>"
+    }
+    return returnString
+}
