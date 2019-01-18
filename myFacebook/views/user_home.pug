@@ -105,11 +105,11 @@ block content
                     form(id='receitaForm' style='display:none')
                         p Escreva um ingrediente por linha e uma instrução por linha nos campos respetivos.
                         input(type='hidden' name='origin_email' value= userData.email)
-                        input.w3-input.w3-border(type='text' name='titulo' placeholder="Nome do cozinhado")
+                        input.w3-input.w3-border(type='text' id='tituloReceita' name='titulo' placeholder="Nome do cozinhado")
                         br
-                        textarea.w3-input.w3-border(name='ingredientes' placeholder='Ingredientes')
+                        textarea.w3-input.w3-border(name='ingredientes' id='ingredientes' placeholder='Ingredientes')
                         br
-                        textarea.w3-input.w3-border(name='instrucoes' placeholder='Instruções')
+                        textarea.w3-input.w3-border(name='instrucoes' id='instrucoes' placeholder='Instruções')
                         br
                         input.w3-radio(type='radio' name='privacidade' value='true' checked)
                         label Publicação privada
@@ -121,11 +121,11 @@ block content
                     form(id='ideiaForm' style='display:none')
                         p Escreva os classificadores separados por vírgula.
                         input(type='hidden' name='origin_email' value= userData.email)
-                        input.w3-input.w3-border(type='text' name='titulo' placeholder='Título da ideia')
+                        input.w3-input.w3-border(type='text' name='titulo' id='tituloIdeia' placeholder='Título da ideia')
                         br
-                        textarea.w3-input.w3-border(name='descricao' placeholder='Explique a sua ideia...')
+                        textarea.w3-input.w3-border(name='descricao' id='descricaoIdeia' placeholder='Explique a sua ideia...')
                         br
-                        input.w3-input.w3-border(name='classificadores' placeholder='Indique classificadores para a publicação.')
+                        input.w3-input.w3-border(name='classificadores' id='classificadores' placeholder='Indique classificadores para a publicação.')
                         br
                         input.w3-radio(type='radio' name='privacidade' value='true' checked)
                         label Publicação privada
@@ -159,15 +159,15 @@ block content
                         input.w3-btn.w3-indigo(type='submit' id='publicarDesportivo' value='Publicar')
                     form(id='eventoForm' style='display:none')
                         input(type='hidden' name='origin_email' value= userData.email)
-                        input.w3-input.w3-border(type='text' name='titulo' placeholder='Insira o nome do evento')
+                        input.w3-input.w3-border(type='text' name='titulo' id='tituloEvento' placeholder='Insira o nome do evento')
                         br
-                        input.w3-input.w3-border(type='text' name='local' placeholder='Insira o local onde decorrerá o evento')
+                        input.w3-input.w3-border(type='text' name='local' id='local' placeholder='Insira o local onde decorrerá o evento')
                         br
-                        input.w3-input.w3-border(type='date' name='dataEvento')
+                        input.w3-input.w3-border(type='date' name='dataEvento' id='dataEvento')
                         br
-                        textarea.w3-input.w3-border(name='convidados' placeholder='Indique o email dos convidados, um por linha (poderá adicionar pessoas na mesma posteriormente).')
+                        textarea.w3-input.w3-border(name='convidados' id='convidados' placeholder='Indique o email dos convidados, um por linha (poderá adicionar pessoas na mesma posteriormente).')
                         br
-                        textarea.w3-input.w3-border(name='descricao' placeholder='descreva o evento')
+                        textarea.w3-input.w3-border(name='descricao' id='descricaoEvento' placeholder='descreva o evento')
                         br
                         input.w3-radio(type='radio' name='privacidade' value='true' checked)
                         label Publicação privada
@@ -178,13 +178,13 @@ block content
                         input.w3-btn.w3-indigo(type='submit' id='publicarEvento' value='Publicar')
                     form(id='formacaoForm' style='display:none')
                         input(type='hidden' name='origin_email' value= userData.email)
-                        input.w3-input.w3-border(type='text' name='titulo' placeholder='Insira um nome para a publicação')
+                        input.w3-input.w3-border(type='text' name='titulo' id='tituloFormacao' placeholder='Insira um nome para a publicação')
                         br
-                        input.w3-input.w3-border(type='text' name='creditacao' placeholder='Insira o nome da creditação que obteve')
+                        input.w3-input.w3-border(type='text' name='creditacao' id='creditacao' placeholder='Insira o nome da creditação que obteve')
                         br
-                        input.w3-input.w3-border(type='text' name='instituicao' placeholder='Insira o nome da instituição que o creditou')
+                        input.w3-input.w3-border(type='text' name='instituicao' id='instituicao' placeholder='Insira o nome da instituição que o creditou')
                         br
-                        textarea.w3-input.w3-border(name='descricao' placeholder='Insira uma descrição para a creditação que obteve')
+                        textarea.w3-input.w3-border(name='descricao' id='descricaoFormacao' placeholder='Insira uma descrição para a creditação que obteve')
                         br
                         input.w3-radio(type='radio' name='privacidade' value='true' checked)
                         label Publicação privada
@@ -238,71 +238,72 @@ block content
                 //Pôr aqui os filtros de cronologia!
                 br
                 br
-                .w3-card-4.w3-round
+                div.w3-card-4
                     p.w3-xlarge.w3-text-indigo.w3-center As suas publicações
                     hr
-                    if userPubs
-                        each pub in userPubs
-                            .w3-card-4.w3-round
-                                if pub.tipo=="ideia"
-                                    h3
-                                        b    
-                                            =pub.dados.ideia.titulo
+                    div(id='pubsView').w3-card-4.w3-round
+                        if userPubs
+                            each pub in userPubs
+                                .w3-card-4.w3-round
+                                    if pub.tipo=="ideia"
+                                        h3
+                                            b    
+                                                =pub.dados.ideia.titulo
+                                        p.w3-tiny
+                                            each c in pub.dados.ideia.classificadores
+                                                span.w3-tag
+                                                    =c
+                                                span &nbsp;
+                                        p.w3-small
+                                            =pub.dados.ideia.descricao
+                                    if pub.tipo=="receita"
+                                        h3
+                                            b    
+                                                =pub.dados.receita.titulo
+                                        p.w3-small
+                                            =pub.dados.receita.textoEstruturado
+                                    if pub.tipo=="evento"
+                                        h3
+                                            b    
+                                                =pub.dados.evento.titulo
+                                        p
+                                            span
+                                                =pub.dados.evento.dataEvento
+                                            span &nbsp;
+                                            span
+                                                =pub.dados.evento.local
+                                        p.w3-small
+                                            =pub.dados.evento.descricao
+                                        each convidado in pub.dados.evento.convidados
+                                            p.w3-tiny
+                                                =convidado
+                                    if pub.tipo=="creditacao"
+                                        h3
+                                            b    
+                                                =pub.dados.formacao.titulo
+                                        p
+                                            =pub.dados.formacao.creditacao
+                                        p
+                                            =pub.dados.formacao.instituicao
+                                        p.w3-small
+                                            =pub.dados.formacao.descricao  
+                                    if pub.tipo=="eventoProfissional"
+                                    if pub.tipo=="album"
+                                    if pub.tipo=="desportivo"
                                     p.w3-tiny
-                                        each c in pub.dados.ideia.classificadores
-                                            span.w3-tag
+                                        each c in pub.classificacoes
+                                            span.w3-tag.w3-yellow
                                                 =c
                                             span &nbsp;
-                                    p.w3-small
-                                        =pub.dados.ideia.descricao
-                                if pub.tipo=="receita"
-                                    h3
-                                        b    
-                                            =pub.dados.receita.titulo
-                                    p.w3-small
-                                        =pub.dados.receita.textoEstruturado
-                                if pub.tipo=="evento"
-                                    h3
-                                        b    
-                                            =pub.dados.evento.titulo
-                                    p
-                                        span
-                                            =pub.dados.evento.dataEvento
-                                        span &nbsp;
-                                        span
-                                            =pub.dados.evento.local
-                                    p.w3-small
-                                        =pub.dados.evento.descricao
-                                    each convidado in pub.dados.evento.convidados
-                                        p.w3-tiny
-                                            =convidado
-                                if pub.tipo=="creditacao"
-                                    h3
-                                        b    
-                                            =pub.dados.formacao.titulo
-                                    p
-                                        =pub.dados.formacao.creditacao
-                                    p
-                                        =pub.dados.formacao.instituicao
-                                    p.w3-small
-                                        =pub.dados.formacao.descricao  
-                                if pub.tipo=="eventoProfissional"
-                                if pub.tipo=="album"
-                                if pub.tipo=="desportivo"
-                                p.w3-tiny
-                                    each c in pub.classificacoes
-                                        span.w3-tag.w3-yellow
-                                            =c
-                                        span &nbsp;
-                                p.w3-tiny
-                                    =pub.data
-                                    // comentários aqui
-                                          
+                                    p.w3-tiny
+                                        =pub.data
+                                        // comentários aqui
+                                            
 
-                    else
-                        .w3-card.w3-round
-                            p.w3-text-grey Ainda não tem nenhuma publicação!
-                            p.w3-text-grey Começe agora!
+                        else
+                            .w3-card.w3-round
+                                p.w3-text-grey Ainda não tem nenhuma publicação!
+                                p.w3-text-grey Começe agora!
                     
 
                     
