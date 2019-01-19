@@ -26,7 +26,7 @@ router.post('/newEventoProf',(req,res)=>{
     for(var i=0; i<fields.nfiles;i++) {
         console.log(data["ficheiro"+i].name);
         var fenviado =  data["ficheiro"+i].path
-        var fnovo = __dirname + "/../public/uploaded/" + data["ficheiro"+i].name
+        var fnovo = __dirname + "/../public/uploaded/" + fields.origin_email  + '/'  + data["ficheiro"+i].name
         console.log("\nFNOVO"+fnovo)
         fs.rename(fenviado,fnovo,erro => {
           if(erro){ 
@@ -76,7 +76,7 @@ router.post('/newDesp',(req,res)=>{
     }
 
     var fenviadogpx =  data.ficheiro_gpx.path
-    var fnovogpx = __dirname + "/../public/uploaded/" + data.ficheiro_gpx.name
+    var fnovogpx = __dirname + "/../public/uploaded/" + fields.origin_email  + '/'  + data.ficheiro_gpx.name
     console.log("\nFNOVO"+fnovogpx)
     fs.rename(fenviadogpx,fnovogpx,erro => {
           if(erro){ 
@@ -91,7 +91,7 @@ router.post('/newDesp',(req,res)=>{
     for(var i=0; i<fields.nFotos;i++) {
         console.log(data["foto"+i].name);
         var fenviado =  data["foto"+i].path
-        var fnovo = __dirname + "/../public/uploaded/" + data["foto"+i].name
+        var fnovo = __dirname + "/../public/uploaded/" + fields.origin_email  + '/'  + data["foto"+i].name
         console.log("\nFNOVO"+fnovo)
         fs.rename(fenviado,fnovo,erro => {
           if(erro){ 
@@ -143,7 +143,7 @@ router.post('/newAlbum',(req,res)=>{
     for(var i=0; i<fields.nFotos;i++) {
         console.log(data["foto"+i].name);
         var fenviado =  data["foto"+i].path
-        var fnovo = __dirname + "/../public/uploaded/" + data["foto"+i].name
+        var fnovo = __dirname + "/../public/uploaded/" + fields.origin_email  + '/'  + data["foto"+i].name
         console.log("\nFNOVO"+fnovo)
         fs.rename(fenviado,fnovo,erro => {
           if(erro){ 
