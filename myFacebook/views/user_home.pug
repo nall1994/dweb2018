@@ -26,7 +26,7 @@ block content
                         p.w3-center
                             b.w3-text-indigo= userData.nome
                         p.w3-center
-                            img.w3-circle(src= '../public/uploaded/nuno.jpg' style='height:120px;width:120px')
+                            img.w3-circle(src= userData.foto style='height:120px;width:120px')
                         hr
                     if userData.profissao
                         p
@@ -304,14 +304,61 @@ block content
                                         p.w3-small
                                             =pub.dados.formacao.descricao  
                                     if pub.tipo=="eventoProfissional"
+                                        h3
+                                                    b    
+                                                        =pub.dados.eventoProfissional.titulo
+                                        p.w3-small
+                                            =pub.dados.eventoProfissional.dataEvento
+                                        p.w3-small
+                                            =pub.dados.eventoProfissional.local
+                                        p.w3-small
+                                            =pub.dados.eventoProfissional.descricao
+                                        p.w3-small Oradores: 
+                                            =pub.dados.eventoProfissional.oradores
+                                        each foto in pub.dados.eventoProfissional.ficheiros
+                                            label
+                                                a(href=foto)
+                                                    img(src=foto style='height:120;width:120px')
+                                        
+
                                     if pub.tipo=="album"
+                                        h3
+                                                b    
+                                                    =pub.dados.album.titulo
+                                        p.w3-small
+                                            =pub.dados.album.descricao
+                                        each foto in pub.dados.album.fotos
+                                            label
+                                                p.w3-tiny
+                                                    =foto.dataFoto
+                                                a(href=foto.foto)
+                                                    img(src=foto.foto style='height:120px;width:120px' )
+                                                p.w3-tiny
+                                                    =foto.local  
+                                            
                                     if pub.tipo=="desportivo"
+                                        h3
+                                            b    
+                                                =pub.dados.desportivo.titulo
+                                        p.w3-small
+                                            =pub.dados.desportivo.atividade
+                                        p.w3-small
+                                            =pub.dados.desportivo.duracao
+                                        p.w3-small
+                                            =pub.dados.desportivo.descricao
+                                        each foto in pub.dados.desportivo.fotos
+                                            label
+                                                a(href=foto)
+                                                    img(src=foto style='height:120px;width:120px')
+                                        hr
+                                        a(href=pub.dados.desportivo.ficheiro_gpx) GPX
+                                        
                                     p.w3-tiny
                                         each c in pub.classificacoes
                                             span.w3-tag.w3-yellow
                                                 =c
                                             span &nbsp;
-                                    p.w3-tiny
+                                    p.w3-tiny Publicado em 
                                         =pub.data
                                         // comentários aqui
                                             

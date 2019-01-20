@@ -35,7 +35,7 @@ router.post('/newEventoProf',(req,res)=>{
           else console.log("Ficheiro armazenado com sucesso");
           
         })
-        path.push("http://localhost:3000/uploaded/"+data["ficheiro"+i].name)
+        path.push("http://localhost:3000/uploaded/"+ fields.origin_email  + '/'  + data["ficheiro"+i].name)
       }
 
     
@@ -84,7 +84,7 @@ router.post('/newDesp',(req,res)=>{
           }
           else console.log("Ficheiro gpx armazenado com sucesso");
         })
-    var path_ficheiro_gpx = ("http://localhost:3000/uploaded/"+data.ficheiro_gpx.name)
+    var path_ficheiro_gpx = ("http://localhost:3000/uploaded/"+ fields.origin_email  + '/'  + data.ficheiro_gpx.name)
 
 
     var path_fotos = []
@@ -100,7 +100,7 @@ router.post('/newDesp',(req,res)=>{
           else console.log("Ficheiro armazenado com sucesso");
           
         })
-        path_fotos.push("http://localhost:3000/uploaded/"+data["foto"+i].name)
+        path_fotos.push("http://localhost:3000/uploaded/"+ fields.origin_email  + '/'  + data["foto"+i].name)
       }
 
     
@@ -154,7 +154,7 @@ router.post('/newAlbum',(req,res)=>{
         })
         var fotoinfo = {
               dataFoto: fields["data"+i],
-              foto: "http://localhost:3000/uploaded/"+data["foto"+i].name,
+              foto: "http://localhost:3000/uploaded/" + fields.origin_email + '/' + data["foto"+i].name,
               local: fields["local"+i]
         }
         fotos_info.push(fotoinfo)

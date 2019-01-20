@@ -552,7 +552,7 @@ function renderHashTagsAndDate(classificacoes, data) {
     for(var i = 0; i< classificacoes.length - 1; i++) {
         returnString += "<span class='w3-tag w3-yellow'> " + classificacoes[i] + "</span> <span> &nbsp; </span>"
     }
-    returnString += "<p class='w3-tiny'> " + data + "</p>"
+    returnString += "<p class='w3-tiny'> Publicado em " + data + "</p>"
     return returnString
 }
 
