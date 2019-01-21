@@ -214,6 +214,7 @@ $(() => {
             desportivo.set("nFotos",i)
             desportivo.set("classificacoes",getClassificacoes())
             ajaxPostDesp(desportivo)
+            
         }
         
     })
@@ -265,6 +266,8 @@ function parseDate(date) {
     var dd = date.getDate();
     var mm = date.getMonth()+1;
     var yyyy = date.getFullYear();
+    var hh = date.getHours();
+    var min = date.getMinutes();
 
     if(dd<10) {
         dd = '0'+dd
@@ -274,7 +277,15 @@ function parseDate(date) {
         mm = '0'+mm
     } 
 
-    date = mm + '/' + dd + '/' + yyyy;
+    if(hh < 10) {
+        hh = '0' + hh
+    }
+
+    if(min < 10) {
+        min = '0' + min
+    }
+
+    date = mm + '/' + dd + '/' + yyyy + ' ' + hh + 'h:' + min + "m";
     return date
 }
 
@@ -455,7 +466,10 @@ function ajaxPostEventoProf(pub){
         contentType: false,
         url : "http://localhost:3000/pubs/newEventoProf",
         data : pub,    
-        success : f => alert("Publicação bem sucessedida!"),
+        success : f => {
+            alert("Publicação bem sucedida!")
+            window.location.reload(true)
+        },
         error : e => {
             alert('Erro no post: ' + e)
             console.log("Erro no post: " +e)
@@ -471,12 +485,16 @@ function ajaxPostDesp(pub){
         contentType: false,
         url : "http://localhost:3000/pubs/newDesp",
         data : pub,    
-        success : f => alert("Publicação bem sucessedida!"),
+        success : f => {
+            alert("Publicação bem sucedida!")
+            window.location.reload(true)
+        },
         error : e => {
             alert('Erro no post: ' + e)
             console.log("Erro no post: " +e)
         }        
     })
+
 }
 
 function ajaxPostAlbum(pub){
@@ -487,7 +505,10 @@ function ajaxPostAlbum(pub){
         contentType: false,
         url : "http://localhost:3000/pubs/newAlbum",
         data : pub,    
-        success : f => alert("Publicação bem sucessedida!"),
+        success : f => {
+            alert("Publicação bem sucedida!")
+            window.location.reload(true)
+        },
         error : e => {
             alert('Erro no post: ' + e)
             console.log("Erro no post: " +e)
