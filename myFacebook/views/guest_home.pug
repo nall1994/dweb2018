@@ -28,7 +28,7 @@ block content
                             i.fa.fa-pencil.fa-fw.w3-margin-right.w3-text-theme
                             b.w3-text-blue-grey.w3-center
                                 | Profissão
-                            p.w3-center.w3-text-grey Atualize o seu perfil
+                            p.w3-center.w3-text-grey Perfil não atualizado
 
                     hr
                     if userData.instituicao
@@ -42,7 +42,7 @@ block content
                             i.fa.fa-building.fa-fw.w3-margin-right.w3-text-theme
                             b.w3-text-blue-grey
                                 | Instituição
-                            p.w3-center.w3-text-grey Atualize o seu perfil
+                            p.w3-center.w3-text-grey Perfil não atualizado
                     hr
                     if userData.morada
                         p
@@ -55,7 +55,7 @@ block content
                             i.fa.fa-home.fa-fw.w3-margin-right.w3-text-theme
                             b.w3-text-blue-grey
                                 | Morada
-                            p.w3-center.w3-text-grey Atualize o seu perfil
+                            p.w3-center.w3-text-grey Perfil não atualizado
                     hr
                     if userData.dataAniversario
                         p
@@ -68,10 +68,10 @@ block content
                             i.fa.fa-birthday-cake.fa-fw.w3-margin-right.w3-text-theme
                             b.w3-text-blue-grey
                                 | Data de Nascimento
-                            p.w3-center.w3-text-grey Atualize o seu perfil
+                            p.w3-center.w3-text-grey Perfil não atualizado
             .w3-col.m1.w3-center
                 .w3-container
-            .w3-col.m8.w3-center
+            .w3-col.m6.w3-center
                 div.w3-card-4
                     - var nome = userData.nome
                     p.w3-xlarge.w3-text-indigo.w3-center As publicações de #{nome}
@@ -186,6 +186,13 @@ block content
                             .w3-card.w3-round
                                 p.w3-text-grey Ainda não tem nenhuma publicação!
                                 p.w3-text-grey Começe agora!
+            .w3-col.m1.w3-center
+                .w3-container
+            .w3-col.m2.w3-center
+                .w3-card-4
+                    input(type='text' id='favoriteEmail' value=userData.email hidden)
+                    button.w3-btn.w3-teal(id='addToFavorites') Adicionar aos favoritos
+        //A partir do clique do botão o email do guest user tem que ser adicionado aos favoritos do user
         //Outra row com os dados do perfil e por aí fora
         //Uma row tem a foto do utilizador, o nome, 
         
