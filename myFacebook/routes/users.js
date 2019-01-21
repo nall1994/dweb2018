@@ -30,41 +30,69 @@ router.get('/homepage/:email',passport.authenticate('jwt',{session:false, failur
       }
       if(loggedToken.user.email == req.params.email) {
         //present user_home
+        var pubs = new Object()
+        var groupsInfo = new Object()
+        axios.get('http://localhost:3000/api/pubs/fromUser', axiosConfig)
+          .then(dadospubs => {
+            pubs = dadospubs.data
+            console.log("pubs:");
+            console.log(JSON.stringify(pubs));
+            axios.get('http://localhost:3000/api/groups/withUser', axiosConfig)
+              .then(dadosGroups => {
+                groupsInfo = dadosGroups.data
+                axios.get('http://localhost:3000/api/users/?email='+loggedToken.user.email,axiosConfig)
+                    .then((dadosUser) => {
+                      console.log("user:");
+                      console.log(JSON.stringify(dadosUser.data));
+                      res.render('user_home',{userData: dadosUser.data, userPubs: pubs})
+
+                    }).catch((err) => {
+                      
+                      res.render('error',{error : err})
+                });
+            //    res.jsonp(pubs)
+              })
+              .catch(error => res.render('error',{e: error+"In Groups API"}))
+            //  res.jsonp(pubs)
+          })
+          .catch(error => res.render('error',{e: error}))
 
       } else {
         //present guest_home
+        var pubs = new Object()
+        var groupsInfo = new Object()
+        axios.get('http://localhost:3000/api/pubs/fromUser', axiosConfig)
+          .then(dadospubs => {
+            pubs = dadospubs.data
+            console.log("pubs:");
+            console.log(JSON.stringify(pubs));
+            axios.get('http://localhost:3000/api/groups/withUser', axiosConfig)
+              .then(dadosGroups => {
+                groupsInfo = dadosGroups.data
+                axios.get('http://localhost:3000/api/users',axiosConfig)
+                    .then((dadosUser) => {
+                      console.log("user:");
+                      console.log(JSON.stringify(dadosUser.data));
+                      dadosUser.data.origin_email = loggedToken.user.email
+                      res.render('guest_home',{userData: dadosUser.data, userPubs: pubs})
+
+                    }).catch((err) => {
+                      
+                      res.render('error',{error : err})
+                });
+            //    res.jsonp(pubs)
+              })
+              .catch(error => res.render('error',{e: error+"In Groups API"}))
+            //  res.jsonp(pubs)
+          })
+          .catch(error => res.render('error',{e: error}))
       }
       //É preciso ir buscar os dados do utilizador, as suas publicações e os grupos aos quais pertence!
       //Se o email que email que vem no url é diferente do que está logado devemos apresentar a página guest_home
       //Caso contrário devemos apresentar a página user_home
       
       
-      var pubs = new Object()
-      var groupsInfo = new Object()
-      axios.get('http://localhost:3000/api/pubs/fromUser', axiosConfig)
-        .then(dadospubs => {
-          pubs = dadospubs.data
-          console.log("pubs:");
-          console.log(JSON.stringify(pubs));
-          axios.get('http://localhost:3000/api/groups/withUser', axiosConfig)
-            .then(dadosGroups => {
-              groupsInfo = dadosGroups.data
-              axios.get('http://localhost:3000/api/users/?email='+loggedToken.user.email,axiosConfig)
-                  .then((dadosUser) => {
-                    console.log("user:");
-                    console.log(JSON.stringify(dadosUser.data));
-                    res.render('user_home',{userData: dadosUser.data, userPubs: pubs})
-
-                  }).catch((err) => {
-                    
-                    res.render('error',{error : err})
-              });
-          //    res.jsonp(pubs)
-            })
-            .catch(error => res.render('error',{e: error+"In Groups API"}))
-          //  res.jsonp(pubs)
-        })
-        .catch(error => res.render('error',{e: error}))
+      
         
 
       //Aqui já podemos fazer o render da homepage e passar-lhe os dois objetos e também o req.user

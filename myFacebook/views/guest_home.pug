@@ -1,0 +1,191 @@
+extends layout
+block content
+    .w3-top
+        .w3-bar.w3-blue-grey.w3card.w3-large
+            //Mudar o a que vem para redirecionar para a homepage do utilizador    
+            a.w3-bar-item.w3-button.w3-hover-light-grey(href='http://localhost:3000/users/homepage/' + userData.origin_email) Home
+            a.w3-bar-item.w3-button.w3-hover-light-grey(href='http://localhost:3000/users/profile/' + userData.origin_email) Perfil
+            a.w3-text-white(style="margin-left: 450px;") MyFacebook
+            a.w3-bar-item.w3-button.w3-hover-light-grey.w3-right(href='http://localhost:3000/users/logout') Logout
+    .w3-container(style='padding:70px 16px')
+        .w3-row(style='padding:30px 16px')
+            .w3-col.m2
+                .w3-card-4.w3-round
+                    if userData.foto
+                        p.w3-center
+                            b.w3-text-indigo= userData.nome
+                        p.w3-center
+                            img.w3-circle(src= userData.foto style='height:120px;width:120px')
+                        hr
+                    if userData.profissao
+                        p
+                            i.fa.fa-pencil.fa-fw.w3-margin-right.w3-text-theme
+                            b.w3-text-blue-grey
+                                | Profissão
+                            p.w3-center= userData.profissao
+                    else
+                        p
+                            i.fa.fa-pencil.fa-fw.w3-margin-right.w3-text-theme
+                            b.w3-text-blue-grey.w3-center
+                                | Profissão
+                            p.w3-center.w3-text-grey Atualize o seu perfil
+
+                    hr
+                    if userData.instituicao
+                        p
+                            i.fa.fa-building.fa-fw.w3-margin-right.w3-text-theme
+                            b.w3-text-blue-grey
+                                | Instituição
+                            p.w3-center=  userData.instituicao
+                    else
+                        p
+                            i.fa.fa-building.fa-fw.w3-margin-right.w3-text-theme
+                            b.w3-text-blue-grey
+                                | Instituição
+                            p.w3-center.w3-text-grey Atualize o seu perfil
+                    hr
+                    if userData.morada
+                        p
+                            i.fa.fa-home.fa-fw.w3-margin-right.w3-text-theme
+                            b.w3-text-blue-grey
+                                | Morada
+                            p.w3-center= userData.morada
+                    else
+                        p
+                            i.fa.fa-home.fa-fw.w3-margin-right.w3-text-theme
+                            b.w3-text-blue-grey
+                                | Morada
+                            p.w3-center.w3-text-grey Atualize o seu perfil
+                    hr
+                    if userData.dataAniversario
+                        p
+                            i.fa.fa-birthday-cake.fa-fw.w3-margin-right.w3-text-theme
+                            b.w3-text-blue-grey
+                                | Data de Aniversário
+                            p.w3-center= userData.dataAniversario
+                    else
+                        p
+                            i.fa.fa-birthday-cake.fa-fw.w3-margin-right.w3-text-theme
+                            b.w3-text-blue-grey
+                                | Data de Aniversário
+                            p.w3-center.w3-text-grey Atualize o seu perfil
+            .w3-col.m1.w3-center
+                .w3-container
+            .w3-col.m8.w3-center
+                div.w3-card-4
+                    - var nome = userData.nome
+                    p.w3-xlarge.w3-text-indigo.w3-center As publicações de #{nome}
+                    hr
+                    div(id='pubsView').w3-card-4.w3-round
+                        if userPubs
+                            each pub in userPubs
+                                .w3-card-4.w3-round
+                                    if pub.tipo=="ideia"
+                                        h3
+                                            b    
+                                                =pub.dados.ideia.titulo
+                                        p.w3-tiny
+                                            each c in pub.dados.ideia.classificadores
+                                                span.w3-tag
+                                                    =c
+                                                span &nbsp;
+                                        p.w3-small
+                                            =pub.dados.ideia.descricao
+                                    if pub.tipo=="receita"
+                                        h3
+                                            b    
+                                                =pub.dados.receita.titulo
+                                        p.w3-small
+                                            =pub.dados.receita.textoEstruturado
+                                    if pub.tipo=="evento"
+                                        h3
+                                            b    
+                                                =pub.dados.evento.titulo
+                                        p
+                                            span
+                                                =pub.dados.evento.dataEvento
+                                            span &nbsp;
+                                            span
+                                                =pub.dados.evento.local
+                                        p.w3-small
+                                            =pub.dados.evento.descricao
+                                        each convidado in pub.dados.evento.convidados
+                                            p.w3-tiny
+                                                =convidado
+                                    if pub.tipo=="creditacao"
+                                        h3
+                                            b    
+                                                =pub.dados.formacao.titulo
+                                        p
+                                            =pub.dados.formacao.creditacao
+                                        p
+                                            =pub.dados.formacao.instituicao
+                                        p.w3-small
+                                            =pub.dados.formacao.descricao  
+                                    if pub.tipo=="eventoProfissional"
+                                        h3
+                                                    b    
+                                                        =pub.dados.eventoProfissional.titulo
+                                        p.w3-small
+                                            =pub.dados.eventoProfissional.dataEvento
+                                        p.w3-small
+                                            =pub.dados.eventoProfissional.local
+                                        p.w3-small
+                                            =pub.dados.eventoProfissional.descricao
+                                        p.w3-small Oradores: 
+                                            =pub.dados.eventoProfissional.oradores
+                                        each foto in pub.dados.eventoProfissional.ficheiros
+                                            label
+                                                a(href=foto)
+                                                    img(src=foto style='height:120;width:120px')
+                                        
+
+                                    if pub.tipo=="album"
+                                        h3
+                                                b    
+                                                    =pub.dados.album.titulo
+                                        p.w3-small
+                                            =pub.dados.album.descricao
+                                        each foto in pub.dados.album.fotos
+                                            label
+                                                p.w3-tiny
+                                                    =foto.dataFoto
+                                                a(href=foto.foto)
+                                                    img(src=foto.foto style='height:120px;width:120px' )
+                                                p.w3-tiny
+                                                    =foto.local  
+                                            
+                                    if pub.tipo=="desportivo"
+                                        h3
+                                            b    
+                                                =pub.dados.desportivo.titulo
+                                        p.w3-small
+                                            =pub.dados.desportivo.atividade
+                                        p.w3-small
+                                            =pub.dados.desportivo.duracao
+                                        p.w3-small
+                                            =pub.dados.desportivo.descricao
+                                        each foto in pub.dados.desportivo.fotos
+                                            label
+                                                a(href=foto)
+                                                    img(src=foto style='height:120px;width:120px')
+                                        hr
+                                        a(href=pub.dados.desportivo.ficheiro_gpx) GPX
+                                        
+                                    p.w3-tiny
+                                        each c in pub.classificacoes
+                                            span.w3-tag.w3-yellow
+                                                =c
+                                            span &nbsp;
+                                    p.w3-tiny Publicado em 
+                                        =pub.data
+                                        // comentários aqui
+                                            
+
+                        else
+                            .w3-card.w3-round
+                                p.w3-text-grey Ainda não tem nenhuma publicação!
+                                p.w3-text-grey Começe agora!
+        //Outra row com os dados do perfil e por aí fora
+        //Uma row tem a foto do utilizador, o nome, 
+        
