@@ -1,0 +1,78 @@
+extends layout
+block content
+    .w3-top
+        .w3-bar.w3-blue-grey.w3card.w3-large
+            //Mudar o a que vem para redirecionar para a homepage do utilizador    
+            a.w3-bar-item.w3-button.w3-hover-light-grey(href='http://localhost:3000/users/homepage/' + userData.email) Home
+            a.w3-bar-item.w3-button.w3-light-grey(href='http://localhost:3000/users/profile/' + userData.email) Perfil
+            a.w3-text-white(style="margin-left: 450px;") MyFacebook
+            a.w3-bar-item.w3-button.w3-hover-light-grey.w3-right(href='http://localhost:3000/users/logout') Logout
+    .w3-container(style='padding:70px 16px')
+        header.w3-container.w3-indigo
+            h1.w3-center Perfil de utilizador
+    br
+    .w3-container
+        h3.w3-text-indigo.w3-center Atualizar dados de perfil
+        hr
+        div.w3-card-4(id='profileUpdate')
+            if info
+                p.w3-center.w3-text-green= info.info
+            form(method='post' action='/users/updateProfile/' + userData.email enctype='multipart/form-data')
+                label
+                    p.w3-text-teal Foto de Perfil
+                input.w3-input.w3-border(type='file' id = 'foto' name='foto' accept='image/*')
+                label
+                    p.w3-text-teal Nome
+                input.w3-input.w3-border(type='text' id='nome' name='nome' value=userData.nome)
+                label
+                    p.w3-text-teal Email
+                input.w3-input.w3-border(type='text'  id='email' name='email' value=userData.email readonly)
+                if userData.profissao
+                    label
+                        p.w3-text-teal Profissão
+                    input.w3-input.w3-border(type='text' id='profissao' name='profissao' value=userData.profissao)
+                else
+                    label
+                        p.w3-text-teal Profissão
+                    input.w3-input.w3-border(type='text' id='profissao' name='profissao' placeholder='Insira a sua profissão')
+                if userData.instituicao
+                    label
+                        p.w3-text-teal Instituição
+                    input.w3-input.w3-border(type='text' id='instituicao' name='instituicao' value=userData.instituicao)
+                else
+                    label
+                        p.w3-text-teal Instituição
+                    input.w3-input.w3-border(type='text' id='instituicao' name='instituicao' placeholder='Insira a instituição onde trabalha/estuda')
+                if userData.morada
+                    label
+                        p.w3-text-teal Morada
+                    input.w3-input.w3-border(type='text' id='morada' name='morada' value=userData.morada)
+                else
+                    label
+                        p.w3-text-teal Morada
+                    input.w3-input.w3-border(type='text' id='morada' name='morada' placeholder='Insira a cidade onde vive')
+                if userData.dataAniversario
+                    label
+                        p.w3-text-teal Data de Nascimento
+                    input.w3-input.w3-border(type='text' id='dataAniversario' name='dataAniversario' value=userData.dataAniversario)
+                else
+                    label
+                        p.w3-text-teal Data de Nascimento
+                    input.w3-input.w3-border(type='date' id='dataAniversario' name='dataAniversario')
+                // Permitir adição de classificadores
+                br
+                input.w3-btn.w3-indigo.w3-center.w3-large(type='submit' id='atualizarDados' value='Atualizar Dados de Perfil')
+        div.w3-card-4(id='passwordUpdate')
+            form(id='passUpdateForm')
+                label
+                    p.w3-text-teal Password Antiga
+                input.w3-input.w3-border(type='password' id='oldPassword' name='oldPassword')
+                label
+                    p.w3-text-teal Nova Password
+                input.w3-input.w3-border(type='password' id='newPassword' name='newPassword')
+                label
+                    p.w3-text-teal Confirmar Nova Password
+                input.w3-input.w3-border(type='password' id='confirmNewPassword' name='confirmNewPassword')
+                br
+                input.w3-btn.w3-indigo.w3-center.w3-large(type='submit' id='atualizarPass' value='Atualizar Password') 
+

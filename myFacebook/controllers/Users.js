@@ -15,6 +15,18 @@ module.exports.inserir = user => {
     return User.create(user)
 }
 
+//Atualizar dados de utilizador
+module.exports.atualizarDados = (email,user) => {
+    return User.update({email: email},user)
+}
+
+module.exports.atualizarPassword = (email,newPass) => {
+    return User.findOne({email: email},(err,doc) => {
+        doc.password = newPass
+        doc.save()
+    })
+}
+
 
 //Iniciar classificadores default
 module.exports.iniciarDefault = user => {

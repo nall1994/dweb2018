@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var userController = require('../../controllers/Users')
 var jwt = require('jsonwebtoken')
+var jwt_options = require('../../auth/jwt_options')
 var bcrypt = require('bcrypt')
 var passport = require('passport')
 
@@ -50,6 +51,49 @@ router.post('/login',async (req,res,next) => {
       return next(error)
     }
   })(req,res,next)
+})
+
+router.post('/updateProfile',passport.authenticate('jwt',{session:false}), (req,res) => {
+  var user = req.body
+  var loggedToken = jwt.verify(user.access_token,'myFacebook',jwt_options.verifyOptions)
+  var loggedUser = loggedToken.user.email 
+  if(loggedUser != user.email) {
+    res.jsonp({info: "Não é possível atualizar algo que não seja do seu perfil!"})
+  }  else {
+      delete user.access_token
+      userController.atualizarDados(user.email,user)
+      .then(() => res.jsonp({info: 'Atualização bem sucedida!'}))
+      .catch(error => res.status(500).send(JSON.stringify(error)) )
+  }
+  
+})
+
+router.post('/updatePassword', passport.authenticate('jwt',{session:false}),(req,res) => {
+  var data = req.body
+  var loggedToken = jwt.verify(data.access_token,'myFacebook',jwt_options.verifyOptions)
+  var loggedUser = loggedToken.user.email 
+  if(loggedUser != data.email) {
+    res.jsonp({info: "Não é possível alterar a password para este utilizador!"})
+  } else {
+    userController.consultaEmail(data.email)
+      .then(userData => {
+        bcrypt.compare(data.oldPass,userData.password,async (error,result) => {
+          if(error) res.jsonp({info: error})
+          else if(result) {
+            var hash_newpass = await bcrypt.hash(data.newPass,10)
+            console.log("email -> " + data.email)
+            console.log("pass -> "  + data.newPass)
+            userController.atualizarPassword(data.email,hash_newpass)
+            res.jsonp({info: 'Alteração efetuada com sucesso!'})
+          } else {
+            res.jsonp({info: 'A password antiga que inseriu não coincide com os nossos registos!'})
+          }
+        }) 
+          
+          
+      })
+  }
+
 })
 
 module.exports = router;

@@ -31,7 +31,7 @@ router.get('/',passport.authenticate('jwt',{session:false}),(req,res) => {
 
 })
 
-router.post('/newPub', async (req,res) => {
+router.post('/newPub',passport.authenticate('jwt',{session:false}), async (req,res) => {
     var pub = new Object()
     pub.origin_email = req.body.origin_email
     pub.tipo = req.body.tipo

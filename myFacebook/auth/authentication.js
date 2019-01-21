@@ -54,9 +54,15 @@ var extractFromUrl = req => {
     return token
 }
 
+var extractFromBody = req => {
+    var token = null
+    if(req) token = req.body.access_token
+    return token
+}
+
 passport.use(new JWTStrategy({
     secretOrKey: 'myFacebook',  
-    jwtFromRequest: ExtractJWT.fromExtractors([extractFromSession,extractFromUrl])
+    jwtFromRequest: ExtractJWT.fromExtractors([extractFromSession,extractFromUrl,extractFromBody])
 }, async (token,done) => {
     try{
         return done(null,token.user)

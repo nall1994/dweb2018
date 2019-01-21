@@ -5,21 +5,8 @@ var jwt = require('jsonwebtoken')
 var jwt_options = require('../auth/jwt_options')
 var axios = require('axios')
 var fs = require('fs')
+var formidable = require('formidable')
 
-//Esta não deve ser necessária aqui, só na API
-//Vamos ter de ter uma variante quando for para a pesquisa de utilizadores
-//router.get('/',passport.authenticate('jwt',{session:false}),(req,res) => {
-//    req.query.access_token = req.session.token
-//    axiosConfig = {
-//      params: req.query
-//    }
-//    console.log(req.user)
-//    axios.get('http://localhost:3000/api/users',axiosConfig)
-//      .then(dados => res.jsonp(dados.data))
-//      .catch(erro => res.render('error',{e: erro}))
-//})
-    //Ir buscar o utilizador e os seus dados e fazer o render da sua página principal
-  
 router.get('/homepage/:email',passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}),(req,res) => {
         
   var loggedToken = jwt.verify(req.session.token,'myFacebook',jwt_options.verifyOptions)   
@@ -98,8 +85,83 @@ router.get('/homepage/:email',passport.authenticate('jwt',{session:false, failur
       //Aqui já podemos fazer o render da homepage e passar-lhe os dois objetos e também o req.user
     })
   
+  router.get('/profile/:email', passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}),(req,res) => {
+    var profileAsked = req.params.email
+    var loggedToken = jwt.verify(req.session.token,'myFacebook',jwt_options.verifyOptions)
+    var loggedUser = loggedToken.user.email
+    req.query.access_token = req.session.token
+    req.query.email = loggedUser
+    axiosConfig = {
+      params: req.query
+    }
+    if(loggedUser != profileAsked) {
+      res.redirect('/users/profile/' + loggedUser)
+    } else {
+      axios.get('http://localhost:3000/api/users', axiosConfig)
+        .then(dadosUser => {
+          res.render('profile',{userData: dadosUser.data})
+        })
+        .catch(error => res.render('error',{e: error}))
+    }
+
+  })
+
+  router.post('/updateProfile/:email', passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}), (req,res) => {
+    var profileToUpdate = req.params.email
+    var loggedToken = jwt.verify(req.session.token,'myFacebook',jwt_options.verifyOptions)
+    var loggedUser = loggedToken.user.email
+    req.query.access_token = req.session.token
+    req.query.email = loggedUser
+    axiosConfig = {
+      params: req.query
+    }
+    if(profileToUpdate != loggedUser) {
+      res.redirect('/users/profile/' + loggedUser)
+    } else {
+      var form = formidable.IncomingForm()
+      form.parse(req,(erro,fields,files) => {
+        if(files.foto.size > 0) {
+          var fenviado = files.foto.path
+          var fnovo = __dirname + "/../public/uploaded/" + fields.email + "/" + files.foto.name
+          fs.renameSync(fenviado,fnovo)
+          fields.foto = "http://localhost:3000/uploaded/" + fields.email + "/" + files.foto.name
+        }
+        axios.get('http://localhost:3000/api/users',axiosConfig)
+          .then(userData => {
+            var user = userData.data
+              user.morada = fields.morada
+              user.foto = fields.foto
+              user.dataAniversario = fields.dataAniversario
+              user.nome = fields.nome
+              user.profissao = fields.profissao
+              user.instituicao = fields.instituicao
+              user.access_token = req.session.token
+              axios.post('http://localhost:3000/api/users/updateProfile',user)
+                .then(message => res.render('profile',{userData: user,info: message.data}))
+                .catch(error => res.render('error',{e:error}))
+          })
+          .catch(error => res.render('error' ,{e: error}))
+        })
+      }
+    })
+
+  router.post('/updatePassword/:email',passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}),(req,res) => {
+    var profileToUpdate = req.params.email
+    var loggedToken = jwt.verify(req.session.token,'myFacebook',jwt_options.verifyOptions)
+    var loggedUser = loggedToken.user.email
+    if(profileToUpdate != loggedUser) {
+      res.redirect('profile/' + loggedUser)
+    } else {
+      req.body.email = loggedUser
+      req.body.access_token = req.session.token
+      axios.post('http://localhost:3000/api/users/updatePassword',req.body)
+        .then(msg => res.jsonp({info: msg.data.info}))
+        .catch(error => res.render('error',{e: error}))
+    }
+  })
+  
   //Retornar formulário de registo
-  router.get('/registo', (req,res) => {
+  router.get('/registo',  (req,res) => {
     res.render('registo')
   })
   

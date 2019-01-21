@@ -3,8 +3,11 @@ var router = express.Router();
 var axios = require('axios')
 var formidable = require("formidable")
 var fs = require("fs")
+var passport = require('passport')
 //Registar publicação sem ficheiros
-router.post('/newPub',(req,res)=>{
+router.post('/newPub',passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}),(req,res)=>{
+
+  req.body.access_token = req.session.token
   
   axios.post('http://localhost:3000/api/pubs/newPub',req.body)
                 .then(message => res.jsonp(message))
@@ -13,7 +16,7 @@ router.post('/newPub',(req,res)=>{
 })
 
 //Registar publicação evento profissional
-router.post('/newEventoProf',(req,res)=>{
+router.post('/newEventoProf',passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}),(req,res)=>{
   console.log("\nPOST\n");
 
   var form = new formidable.IncomingForm()
@@ -56,6 +59,7 @@ router.post('/newEventoProf',(req,res)=>{
                 origin_email: fields.origin_email,
                 classificacoes : fields.classificacoes
       }
+      evento.access_token = req.session.token
       axios.post('http://localhost:3000/api/pubs/newPub',evento)
                 .then(message => res.jsonp(message))
                 .catch(erro => res.render('error', {e: erro}))
@@ -65,7 +69,7 @@ router.post('/newEventoProf',(req,res)=>{
 
 
 //Registar publicação desportiva
-router.post('/newDesp',(req,res)=>{
+router.post('/newDesp',passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}),(req,res)=>{
   console.log("\nPOSTDESP\n");
 
   var form = new formidable.IncomingForm()
@@ -121,6 +125,7 @@ router.post('/newDesp',(req,res)=>{
                 origin_email: fields.origin_email,
                 classificacoes : fields.classificacoes
       }
+      desportivo.access_token = req.session.token
       axios.post('http://localhost:3000/api/pubs/newPub',desportivo)
                 .then(message => res.jsonp(message))
                 .catch(erro => res.render('error', {e: erro}))
@@ -130,7 +135,7 @@ router.post('/newDesp',(req,res)=>{
 
 
 //Registar publicação album
-router.post('/newAlbum',(req,res)=>{
+router.post('/newAlbum',passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}),(req,res)=>{
   console.log("\nPOSTALBUM\n");
 
   var form = new formidable.IncomingForm()
@@ -176,6 +181,7 @@ router.post('/newAlbum',(req,res)=>{
                 origin_email: fields.origin_email,
                 classificacoes : fields.classificacoes
       }
+      album.access_token = req.session.token
       axios.post('http://localhost:3000/api/pubs/newPub',album)
                 .then(message => res.jsonp(message))
                 .catch(erro => res.render('error', {e: erro}))
