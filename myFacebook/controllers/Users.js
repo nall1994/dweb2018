@@ -27,6 +27,13 @@ module.exports.atualizarPassword = (email,newPass) => {
     })
 }
 
+module.exports.adicionarFavorito = (email,favorito) => {
+    return User.findOne({email: email},(err,doc) => {
+        doc.favoritos.push(favorito)
+        doc.save()
+    })
+}
+
 
 //Iniciar classificadores default
 module.exports.iniciarDefault = user => {

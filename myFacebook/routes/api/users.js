@@ -53,6 +53,16 @@ router.post('/login',async (req,res,next) => {
   })(req,res,next)
 })
 
+router.post('/addToFavorites',passport.authenticate('jwt',{session:false}),(req,res) => {
+  var data = {
+    email: req.body.favoriteEmail,
+    nome: req.body.favoriteNome
+  }
+  console.log(data)
+  userController.adicionarFavorito(req.body.email,data)
+  res.jsonp({info: "Favorito adicionado com sucesso!"})
+})
+
 router.post('/updateProfile',passport.authenticate('jwt',{session:false}), (req,res) => {
   var user = req.body
   var loggedToken = jwt.verify(user.access_token,'myFacebook',jwt_options.verifyOptions)

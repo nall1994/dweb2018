@@ -190,6 +190,7 @@ block content
                 .w3-container
             .w3-col.m2.w3-center
                 .w3-card-4
+                    input(type='text' id='favoriteNome' value=userData.nome hidden)
                     input(type='text' id='favoriteEmail' value=userData.email hidden)
                     button.w3-btn.w3-teal(id='addToFavorites') Adicionar aos favoritos
         //A partir do clique do botão o email do guest user tem que ser adicionado aos favoritos do user

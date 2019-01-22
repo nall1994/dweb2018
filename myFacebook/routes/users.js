@@ -106,6 +106,15 @@ router.get('/homepage/:email',passport.authenticate('jwt',{session:false, failur
 
   })
 
+  router.post('/addToFavorites',passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}),(req,res) => {
+    var loggedToken = jwt.verify(req.session.token,'myFacebook',jwt_options.verifyOptions)
+    req.body.access_token = req.session.token
+    req.body.email = loggedToken.user.email
+    axios.post('http://localhost:3000/api/users/addToFavorites',req.body)
+      .then(msg => res.jsonp({info: msg.data.info}))
+      .catch(error => res.render('error',{e: error}))
+  })
+
   router.post('/updateProfile/:email', passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}), (req,res) => {
     var profileToUpdate = req.params.email
     var loggedToken = jwt.verify(req.session.token,'myFacebook',jwt_options.verifyOptions)
@@ -177,7 +186,7 @@ router.get('/homepage/:email',passport.authenticate('jwt',{session:false, failur
       .then(() => {
         if(!fs.existsSync('public/uploaded/' + req.body.email))
           fs.mkdirSync('public/uploaded/' + req.body.email)
-        res.render('login')
+        res.redirect('/users/login')
       })
       .catch(erro => res.render('error', {e: erro}))
   })

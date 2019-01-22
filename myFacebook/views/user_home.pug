@@ -382,7 +382,7 @@ block content
                     if userData.favoritos
                         each favorito in userData.favoritos
                             p
-                                a(href='http://localhost:3000/users/homepage/' + favorito.email) favorito.nome
+                                a(href='http://localhost:3000/users/homepage/' + favorito.email)= favorito.nome
                             hr
                     else
                         p.w3-text-grey Não adicionou nenhum favorito
