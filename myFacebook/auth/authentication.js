@@ -1,6 +1,9 @@
 var passport = require('passport')
 var localStrategy = require('passport-local').Strategy
 var userModel = require('../models/user')
+var userController = require('../controllers/Users')
+var facebookStrategy = require('passport-facebook').Strategy
+var fbconfig = require('./extraSignInOptions')
 
 //Se bem sucedida, a função que recebe o resultado deve criar o token jwt
 passport.use('login', new localStrategy({
@@ -19,6 +22,36 @@ passport.use('login', new localStrategy({
         return done(error)
     }
 }))
+
+//Autenticação via facebook
+/*passport.use('facebook', new facebookStrategy({
+    clientID : fbconfig.app_id,
+    clientSecret: fbconfig.app_secret,
+    callbackURL: fbconfig.callbackUrl,
+    profileFields: ["name","emails","photos"]
+},
+    (access_token,refresh_token,profile,done) => {
+        process.nextTick(() => {
+            userModel.findOne({email: profile.emails[0].value}, (err,user) => {
+                if(err) return done(err)
+                if(user) return done(null,user)
+                else {
+                    var newUser = new userModel()
+                    newUser.email = profile.emails[0].value
+                    newUser.password = access_token
+                    newUser.nome = profile.name.givenName + " " + profile.name.familyName
+                    newUser.foto = profile.photos ? profile.photos[0].value : '/images/unknown_user.jpg'
+                    newUser.role = 'user'
+                    newUser = userController.iniciarDefault(newUser)
+                    newUser.save(err => {
+                        if(err) throw err
+                        return done(null,newUser)
+                    })
+                }
+            })
+        })
+    }
+))*/
 
 //Serialização do utilizador
 passport.serializeUser((user,done) => {
