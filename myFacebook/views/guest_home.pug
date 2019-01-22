@@ -76,7 +76,9 @@ block content
                     - var nome = userData.nome
                     p.w3-xlarge.w3-text-indigo.w3-center As publicações de #{nome}
                     hr
+                    - var contador = 0;
                     div(id='pubsView').w3-card-4.w3-round
+                        input.w3-input(type='hidden' id='guest-numPubs' value=numPubs)
                         if userPubs
                             each pub in userPubs
                                 .w3-card-4.w3-round
@@ -179,13 +181,33 @@ block content
                                             span &nbsp;
                                     p.w3-tiny Publicado em 
                                         =pub.data
+                                    .w3-card-4.w3-round(id='guest-comentarios-card'+contador style='display:none')
+                                        div(id='guest-comentarios-card-comments' + contador)
+                                            each c in pub.comentarios
+                                                p.w3-small
+                                                    b
+                                                        =c.origin_email
+                                                        b  :
+                                                    =c.comentario
+                                                hr
+                                        hr(style="border-top: 1px solid black;")   
+                                        form(id='guest-comentariosForm'+contador)
+                                            input.w3-input(type='hidden' id='guest-idpub' name='idpub' value=pub._id)
+                                            input.w3-input(type='hidden' id='guest-emailUser' value= userData.origin_email)
+                                            .w3-container
+                                                .w3-row
+                                                    .w3-col.m11
+                                                        textarea.w3-input.w3-border(style='height:100px;' type='text' id='guest-comentario' name="comentario" placeholder="Comenta aqui")
+                                                    .w3-col.m1   
+                                                        button.w3-btn.w3-circle.w3-blue-grey.w3-tiny(id='guest-comentar'+contador value=contador) >
+                                    button.w3-btn.w3-block.w3-blue-grey.w3-tiny(id='guest-comentarios'+contador name=contador value=contador) Ver comentários
+                                        - contador = contador + 1
                                         // comentários aqui
                                             
 
                         else
                             .w3-card.w3-round
                                 p.w3-text-grey Ainda não tem nenhuma publicação!
-                                p.w3-text-grey Começe agora!
             .w3-col.m1.w3-center
                 .w3-container
             .w3-col.m2.w3-center

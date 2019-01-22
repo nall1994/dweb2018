@@ -67,11 +67,12 @@ $(() => {
             var formc = document.getElementById('comentariosForm'+nr)
             var comentForm = new FormData(formc)
             var comment =comentForm.get('comentario')
+            $('#comentario').val('')
             var c = {
                 comentario:comment,
                 idpub : comentForm.get('idpub')
             }
-            ajaxPostComentario(c)
+            ajaxPostComentario(c,nr)
         })
     }
 
@@ -498,13 +499,14 @@ function validateReceita(formData) {
     return true
 }
 
-function ajaxPostComentario(c){
+function ajaxPostComentario(c,nr){
     $.ajax({
         type: "POST",
         url: "http://localhost:3000/pubs/newComment",
         data: JSON.stringify(c), 
         contentType: "application/json; charset=utf-8",
         success: msg => {
+            renderComment(c.comentario,nr)
             alert("Comentário bem sucedido!")
             
         },
@@ -513,6 +515,12 @@ function ajaxPostComentario(c){
         }
 
     });
+}
+
+function renderComment(comentario,nr) {
+    $('#comentarios-card-comments'+nr).append(
+        "<p class='w3-small'> <b> " + $('#emailUser').val() + ": </b>" + comentario + "</p> <hr/>"
+    )
 }
 
 function ajaxPost(pub){

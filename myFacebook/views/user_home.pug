@@ -363,23 +363,26 @@ block content
                                             span &nbsp;
                                     p.w3-tiny Publicado em 
                                         =pub.data   
-                                    button.w3-btn.w3-block.w3-blue-grey.w3-tiny(id='comentarios'+contador name=contador value=contador) Ver comentários
                                     .w3-card-4.w3-round(id='comentarios-card'+contador style='display:none')
-                                        each c in pub.comentarios
-                                            p.w3-small
-                                                b
-                                                    =c.origin_email
-                                                    b  :
-                                                =c.comentario
-                                        hr    
+                                        div(id='comentarios-card-comments' + contador)
+                                            each c in pub.comentarios
+                                                p.w3-small
+                                                    b
+                                                        =c.origin_email
+                                                        b  :
+                                                    =c.comentario
+                                                hr
+                                        hr(style="border-top: 1px solid black;")   
                                         form(id='comentariosForm'+contador)
                                             input.w3-input(type='hidden' id='idpub' name='idpub' value=pub._id)
+                                            input.w3-input(type='hidden' id='emailUser' value= userData.email)
                                             .w3-container
                                                 .w3-row
                                                     .w3-col.m11
                                                         textarea.w3-input.w3-border(style='height:100px;' type='text' id='comentario' name="comentario" placeholder="Comenta aqui")
                                                     .w3-col.m1   
                                                         button.w3-btn.w3-circle.w3-blue-grey.w3-tiny(id='comentar'+contador value=contador) >
+                                    button.w3-btn.w3-block.w3-blue-grey.w3-tiny(id='comentarios'+contador name=contador value=contador) Ver comentários
                                         - contador = contador + 1
                                             
 
