@@ -15,8 +15,9 @@ block content
                 .w3-card-4.w3-round
                     .w3-input-container
                         i.fa.fa-search
-                        input.w3-input-field.w3-border-0.w3-round.w3-center( style="width: 85%;" type='text' name='searchField' placeholder='Procure pelos seus amigos...')
-                        input.w3-btn.w3-blue-grey.w3-small(type='submit' value='Procurar')
+                        input.w3-input-field.w3-border-0.w3-round.w3-center( style="width: 85%;" type='text' id='searchField' name='searchField' placeholder='Procure pelos seus amigos por nome ou email...')
+                        input.w3-btn.w3-blue-grey.w3-small(type='submit' id='userSearch' value='Procurar')
+                    div(id='searchResults').w3-container
             .w3-col.m3
                 .w3-container
         .w3-row(style='padding:30px 16px')

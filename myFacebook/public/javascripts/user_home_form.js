@@ -16,6 +16,41 @@ $(() => {
         if ($('#postType').val()=='none') $('#hashtagsForm').css('display','none')
     })
 
+    $('#userSearch').click(e => {
+        e.preventDefault()
+        $('#searchResults').empty()
+        var searchField = {campo_procura: $('#searchField').val()} 
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:3000/users/search",
+            data: JSON.stringify(searchField), 
+            contentType: "application/json; charset=utf-8",
+          //  dataType: "json",
+            success: data => {
+                renderSearchResults(data)     
+            },
+            error: function(msg) {
+                alert('error:'+JSON.stringify(msg));
+            }
+        })
+
+    })
+
+    function renderSearchResults(users) {
+        if(users.length == 0) {
+            $('#searchResults').append("<div class='w3-card-4'> <p class='w3-text-grey'> Nenhum utilizador encontrado </p> </div> ")
+        } else {
+            for(var i = 0; i < users.length;i++) {
+                var user = users[i]
+                $('#searchResults').append(
+                    "<div class='w3-card-4'> " + 
+                    "<p class='w3-text-grey'> <a href='http://localhost:3000/users/homepage/" + user.email + "'>" + "<b>" + user.nome + "</b>" + " (" + user.email + ")"   + " </a> </p>"
+                    + "</div> <br/> <hr>"
+                )
+            }
+        }    
+    }
+
     $('#adicionar').click(e => {
         e.preventDefault()
         if(validateAdicionarFoto()) {

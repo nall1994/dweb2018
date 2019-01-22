@@ -62,6 +62,31 @@ router.post('/addToFavorites',passport.authenticate('jwt',{session:false}),(req,
   res.jsonp({info: "Favorito adicionado com sucesso!"})
 })
 
+router.post('/search',passport.authenticate('jwt',{session:false}),(req,res) => {
+  var searchField = req.body.campo_procura
+  userController.consultaNome(searchField)
+    .then(dadosNome => {
+      if(dadosNome.length == 0) {
+        userController.consultaEmail(searchField)
+          .then(dadosEmail => {
+            var arrayToSend = new Array()
+            if(dadosEmail != null)
+              arrayToSend.push({nome: dadosEmail.nome, email:dadosEmail.email})
+            res.jsonp(arrayToSend)
+          })
+          .catch(error => res.status(500).send('Erro na consulta por email!'))
+      } else {
+            var arrayToSend = new Array()
+            for(var i = 0; i < dadosNome.length; i++) {
+              newUser = {nome: dadosNome[i].nome, email: dadosNome[i].email}
+              arrayToSend.push(newUser)
+            }
+            res.jsonp(arrayToSend)
+      }
+    })
+    .catch(error => res.status(500).send('Erro na consulta por nome!'))
+})
+
 router.post('/updateProfile',passport.authenticate('jwt',{session:false}), (req,res) => {
   var user = req.body
   var loggedToken = jwt.verify(user.access_token,'myFacebook',jwt_options.verifyOptions)

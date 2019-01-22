@@ -179,6 +179,13 @@ router.get('/homepage/:email',passport.authenticate('jwt',{session:false, failur
   router.get('/login', (req,res) => {
     res.render('login')
   })
+
+  router.post('/search',passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}),(req,res) => {
+    req.body.access_token = req.session.token
+    axios.post("http://localhost:3000/api/users/search",req.body)
+      .then(dados => res.jsonp(dados.data))
+      .catch(error => res.render('error',{e: error}))
+  })
   
   //Registar um utilizador
   router.post('/', (req,res) => {
