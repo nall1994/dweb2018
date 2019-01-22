@@ -190,6 +190,14 @@ router.get('/homepage/:email',passport.authenticate('jwt',{session:false, failur
       })
       .catch(erro => res.render('error', {e: erro}))
   })
+
+  router.get('/logout',(req,res) => {
+    req.logout()
+    req.session.destroy(() => {
+      res.clearCookie("connect.sid")
+      res.redirect('/')
+    })
+  })
   
   //Fazer o login de um utilizador
   router.post('/login',(req,res) => {
