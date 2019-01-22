@@ -4,6 +4,18 @@ var axios = require('axios')
 var formidable = require("formidable")
 var fs = require("fs")
 var passport = require('passport')
+
+
+//Registo de comentários
+router.post('/newComment',passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}),(req,res)=>{
+
+  req.body.access_token = req.session.token
+  axios.post('http://localhost:3000/api/pubs/newComment',req.body)
+                .then(message => res.jsonp(message))
+                .catch(erro => res.render('error', {e: erro}))
+
+})
+
 //Registar publicação sem ficheiros
 router.post('/newPub',passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}),(req,res)=>{
 

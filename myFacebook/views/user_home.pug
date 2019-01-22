@@ -257,7 +257,9 @@ block content
                 div.w3-card-4
                     p.w3-xlarge.w3-text-indigo.w3-center As suas publicações
                     hr
+                    - var contador = 0;
                     div(id='pubsView').w3-card-4.w3-round
+                        input.w3-input(type='hidden' id='numPubs' value=numPubs)
                         if userPubs
                             each pub in userPubs
                                 .w3-card-4.w3-round
@@ -359,8 +361,25 @@ block content
                                                 =c
                                             span &nbsp;
                                     p.w3-tiny Publicado em 
-                                        =pub.data
-                                        // comentários aqui
+                                        =pub.data   
+                                    button.w3-btn.w3-block.w3-blue-grey.w3-tiny(id='comentarios'+contador name=contador value=contador) Ver comentários
+                                    .w3-card-4.w3-round(id='comentarios-card'+contador style='display:none')
+                                        each c in pub.comentarios
+                                            p.w3-small
+                                                b
+                                                    =c.origin_email
+                                                    b  :
+                                                =c.comentario
+                                        hr    
+                                        form(id='comentariosForm'+contador)
+                                            input.w3-input(type='hidden' id='idpub' name='idpub' value=pub._id)
+                                            .w3-container
+                                                .w3-row
+                                                    .w3-col.m11
+                                                        textarea.w3-input.w3-border(style='height:100px;' type='text' id='comentario' name="comentario" placeholder="Comenta aqui")
+                                                    .w3-col.m1   
+                                                        button.w3-btn.w3-circle.w3-blue-grey.w3-tiny(id='comentar'+contador value=contador) >
+                                        - contador = contador + 1
                                             
 
                         else

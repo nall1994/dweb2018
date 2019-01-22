@@ -16,6 +16,30 @@ $(() => {
         if ($('#postType').val()=='none') $('#hashtagsForm').css('display','none')
     })
 
+    var numPubs = $('#numPubs').val()
+    for(var i=0;i<numPubs;i++){
+        $('#comentarios'+i).click(e => {
+            e.preventDefault()
+            // a variavel i já nao da o valor correto por alguma razao
+            var num=$(event.target).attr("value")
+            if( $('#comentarios-card'+num).is(':visible') ) $('#comentarios-card'+num).css('display','none')
+            else $('#comentarios-card'+num).css('display','block')
+        })
+        $('#comentar'+i).click(e => {
+            e.preventDefault()
+            // a variavel i já nao da o valor correto por alguma razao
+            var nr=$(event.target).attr("value")
+            var formc = document.getElementById('comentariosForm'+nr)
+            var comentForm = new FormData(formc)
+            var comment =comentForm.get('comentario')
+            var c = {
+                comentario:comment,
+                idpub : comentForm.get('idpub')
+            }
+            ajaxPostComentario(c)
+        })
+    }
+
     $('#adicionar').click(e => {
         e.preventDefault()
         if(validateAdicionarFoto()) {
@@ -437,6 +461,23 @@ function validateReceita(formData) {
         return false
     } 
     return true
+}
+
+function ajaxPostComentario(c){
+    $.ajax({
+        type: "POST",
+        url: "http://localhost:3000/pubs/newComment",
+        data: JSON.stringify(c), 
+        contentType: "application/json; charset=utf-8",
+        success: msg => {
+            alert("Comentário bem sucedido!")
+            
+        },
+        error: function(msg) {
+            alert('error:'+JSON.stringify(msg));
+        }
+
+    });
 }
 
 function ajaxPost(pub){

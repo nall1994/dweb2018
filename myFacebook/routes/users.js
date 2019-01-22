@@ -31,7 +31,7 @@ router.get('/homepage/:email',passport.authenticate('jwt',{session:false, failur
                     .then((dadosUser) => {
                       console.log("user:");
                       console.log(JSON.stringify(dadosUser.data));
-                      res.render('user_home',{userData: dadosUser.data, userPubs: pubs})
+                      res.render('user_home',{userData: dadosUser.data, userPubs: pubs, numPubs : pubs.length})
 
                     }).catch((err) => {
                       
@@ -53,6 +53,7 @@ router.get('/homepage/:email',passport.authenticate('jwt',{session:false, failur
             pubs = dadospubs.data
             console.log("pubs:");
             console.log(JSON.stringify(pubs));
+             
             axios.get('http://localhost:3000/api/groups/withUser', axiosConfig)
               .then(dadosGroups => {
                 groupsInfo = dadosGroups.data
@@ -61,7 +62,7 @@ router.get('/homepage/:email',passport.authenticate('jwt',{session:false, failur
                       console.log("user:");
                       console.log(JSON.stringify(dadosUser.data));
                       dadosUser.data.origin_email = loggedToken.user.email
-                      res.render('guest_home',{userData: dadosUser.data, userPubs: pubs})
+                      res.render('guest_home',{userData: dadosUser.data, userPubs: pubs , numPubs : pubs.length})
 
                     }).catch((err) => {
                       
