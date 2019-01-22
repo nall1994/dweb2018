@@ -24,6 +24,19 @@ router.get('/fromUser',passport.authenticate('jwt',{session:false}),(req,res) =>
 
 })
 
+
+
+router.post('/newComment',passport.authenticate('jwt',{session:false}),(req,res) => {
+    var comment = new Object()
+    comment.origin_email=  req.user.email
+    comment.comentario = req.body.comentario
+    
+    pubsController.inserirComentario(comment,req.body.idpub)
+        .then(dados => res.jsonp(dados))
+        .catch(erro => res.jsonp({message: 'Erro: ' + erro}))
+
+})
+
 router.get('/',passport.authenticate('jwt',{session:false}),(req,res) => {
     pubsController.consultaTodas()
         .then(dados => res.jsonp(dados))

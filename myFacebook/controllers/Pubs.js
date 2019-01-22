@@ -12,6 +12,25 @@ module.exports.consultaTodas = () => {
         .sort({data: -1})
         .exec()
 }
+
+//Insere comentario
+module.exports.inserirComentario = (comment,id) => {
+    console.log("Controler");
+    console.log(comment);
+    console.log(id);
+    
+    
+    return Pub
+        .findOne(
+            {
+                _id:id
+            },(err,pub) =>{
+                pub.comentarios.push(comment)
+                pub.save()
+            })
+        .exec()
+}
+
 //Registar publicação
 module.exports.inserir = pub => {
     return Pub.create(pub)
