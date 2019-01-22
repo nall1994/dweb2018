@@ -531,9 +531,9 @@ function ajaxPost(pub){
         contentType: "application/json; charset=utf-8",
       //  dataType: "json",
         success: msg => {
-            addToPage(pub)
+            //addToPage(pub)
             alert("Publicação bem sucedida!")
-            
+            window.location.reload(true)
         },
         error: function(msg) {
             alert('error:'+JSON.stringify(msg));
@@ -601,7 +601,7 @@ function ajaxPostAlbum(pub){
 }
 
 
-function addToPage(pub) {
+/*function addToPage(pub) {
     if(pub.tipo == 'ideia') {
         var toPrepend = "<div class='w3-card-4 w3-round'>"
         + "<h3> <b> " + pub.dados.ideia.titulo + "</b></h3>"
@@ -641,7 +641,7 @@ function addToPage(pub) {
     }
 
     //Só falta para o dos ficheiros
-}
+}*/
 
 function classifiersString(classificadores) {
     var returnString = ""
