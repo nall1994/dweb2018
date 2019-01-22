@@ -50,20 +50,20 @@ $(() => {
             }
         }
     }
-        
+
     var numPubs = $('#numPubs').val()
     for(var i=0;i<numPubs;i++){
         $('#comentarios'+i).click(e => {
             e.preventDefault()
             // a variavel i já nao da o valor correto por alguma razao
-            var num=$(event.target).attr("value")
+            var num=$(e.target).attr("value")
             if( $('#comentarios-card'+num).is(':visible') ) $('#comentarios-card'+num).css('display','none')
             else $('#comentarios-card'+num).css('display','block')
         })
         $('#comentar'+i).click(e => {
             e.preventDefault()
             // a variavel i já nao da o valor correto por alguma razao
-            var nr=$(event.target).attr("value")
+            var nr=$(e.target).attr("value")
             var formc = document.getElementById('comentariosForm'+nr)
             var comentForm = new FormData(formc)
             var comment =comentForm.get('comentario')
