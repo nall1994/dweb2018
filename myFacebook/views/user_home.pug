@@ -8,6 +8,7 @@ block content
             a.w3-bar-item.w3-button.w3-hover-light-grey(href='http://localhost:3000/groups') Grupos
             a.w3-text-white(style="margin-left: 360px;") MyFacebook
             a.w3-bar-item.w3-button.w3-hover-light-grey.w3-right(href='http://localhost:3000/users/logout') Logout
+    script(src='/javascripts/user_home_form.js')
     .w3-container(style='padding:70px 16px')
         .w3-row
             .w3-col.m3
@@ -99,6 +100,7 @@ block content
                 .w3-card-4.w3-round
                     p.w3-xlarge.w3-text-indigo.w3-center Publicar
                     hr
+                    input.w3-input(type='hidden' id='useremail' value= userData.email)
                     select.w3-select.w3-border(id='postType' name='postType')
                         option(value='none' selected) Escolha o tipo de publicação
                         option(value='receita') Receita Culinária

@@ -36,4 +36,6 @@ $(() => {
             });
         }
     })
+
+    window.history.pushState("","","/users/profile/" + $('#profile-useremail').val())
 })

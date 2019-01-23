@@ -77,4 +77,6 @@ $(() => {
             "<p class='w3-small'> <b> " + $('#guest-emailUser').val() + ": </b>" + comentario + "</p> <hr/>"
         )
     }
+
+    window.history.pushState("","","/users/homepage/" + $('#guest-useremail').val())
 })

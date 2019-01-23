@@ -8,6 +8,7 @@ block content
             a.w3-bar-item.w3-button.w3-hover-light-grey(href='http://localhost:3000/groups') Grupos
             a.w3-text-white(style="margin-left: 360px;") MyFacebook
             a.w3-bar-item.w3-button.w3-hover-light-grey.w3-right(href='http://localhost:3000/users/logout') Logout
+    script(src='/javascripts/profileValidator.js')
     .w3-container(style='padding:70px 16px')
         header.w3-container.w3-indigo
             h1.w3-center Perfil de utilizador
@@ -16,6 +17,7 @@ block content
         h3.w3-text-indigo.w3-center Atualizar dados de perfil
         hr
         div.w3-card-4(id='profileUpdate')
+            input.w3-input(type='hidden' id='profile-useremail' value= userData.email)
             if info
                 p.w3-center.w3-text-green= info.info
             form(method='post' action='/users/updateProfile/' + userData.email enctype='multipart/form-data')

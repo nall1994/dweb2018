@@ -319,6 +319,8 @@ $(() => {
             $('#formacaoForm').css('display','none')
         }
     })
+
+    window.history.pushState("","","/users/homepage/" + $('#useremail').val())
 })
 
 function getClassificacoes(){

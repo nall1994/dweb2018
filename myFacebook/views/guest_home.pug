@@ -8,6 +8,7 @@ block content
             a.w3-bar-item.w3-button.w3-hover-light-grey(href='http://localhost:3000/groups') Grupos
             a.w3-text-white(style="margin-left: 360px;") MyFacebook
             a.w3-bar-item.w3-button.w3-hover-light-grey.w3-right(href='http://localhost:3000/users/logout') Logout
+    script(src='/javascripts/guest_home_functions.js')
     .w3-container(style='padding:70px 16px')
         .w3-row(style='padding:30px 16px')
             .w3-col.m2
@@ -248,7 +249,8 @@ block content
                                                         b  :
                                                     =c.comentario
                                                 hr
-                                        hr(style="border-top: 1px solid black;")   
+                                        hr(style="border-top: 1px solid black;")
+                                        input.w3-input(type='hidden' id='guest-useremail' value= userData.email)   
                                         form(id='guest-comentariosForm'+contador)
                                             input.w3-input(type='hidden' id='guest-idpub' name='idpub' value=pub._id)
                                             input.w3-input(type='hidden' id='guest-emailUser' value= userData.origin_email)
