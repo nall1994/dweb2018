@@ -1,6 +1,8 @@
 var express = require('express')
 var router = express.Router()
 var passport = require('passport')
+var jwt_options = require('../../auth/jwt_options')
+var jwt = require('jsonwebtoken')
 var pubsController = require('../../controllers/Pubs')
 var formidable = require("formidable")
 
@@ -25,6 +27,78 @@ router.get('/fromUser',passport.authenticate('jwt',{session:false}),(req,res) =>
 })
 
 
+router.get('/:email/filter',passport.authenticate('jwt',{session:false}),(req,res) => {
+    var email = req.params.email
+    console.log('got here api')
+    var loggedToken = jwt.verify(req.query.access_token,'myFacebook',jwt_options.verifyOptions)
+    console.log('didnt get here')
+    var loggedUser = loggedToken.user.email
+    //verificar token e verificar se o logged é igual ao que temos ou nao
+    var seletores = new Object()
+    seletores.origin_email = email
+    var filtros = req.query
+    delete filtros.access_token
+
+    if(loggedUser != email) {
+        seletores.isPrivate = false
+        //so pubs publicas
+        if(filtros.hashtags) {
+            if (filtros.hashtags.length) {
+                var a = new Array()
+                a.push(filtros.hashtags)
+                filtros.hashtags = a
+            }
+            seletores.classificacoes = {$in: filtros.hashtags}
+        }
+        if(filtros.tipos) {
+            if(filtros.tipos.length) {
+                var a = new Array()
+                a.push(filtros.tipos)
+                filtros.tipos = a
+            }
+            seletores.tipo = {$in : filtros.tipos}
+        }
+
+        if(filtros.dataMinima) {
+            seletores.data = {$gte : filtros.dataMinima}
+        }
+
+        pubsController.consulta(seletores)
+            .then(pubs => res.jsonp(pubs))
+            .catch(erro => res.status(500).send('Erro ao filtrar publicações'))
+            
+    } else {
+        //pubs do user
+        if(filtros.hashtags) {
+            if (filtros.hashtags.length) {
+                var a = new Array()
+                a.push(filtros.hashtags)
+                filtros.hashtags = a
+            }
+            seletores.classificacoes = {$in: filtros.hashtags}
+        }
+        if(filtros.tipos) {
+            if(filtros.tipos.length) {
+                var a = new Array()
+                a.push(filtros.tipos)
+                filtros.tipos = a
+            }
+            seletores.tipo = {$in : filtros.tipos}
+        }
+
+        if(filtros.dataMinima) {
+            seletores.data = {$gte : filtros.dataMinima}
+        }
+        console.log(seletores)
+        pubsController.consulta(seletores)
+            .then(pubs => {
+                console.log('found pubs')
+                res.jsonp(pubs)
+            })
+            .catch(erro => res.status(500).send('Erro ao filtrar publicações'))
+    }
+
+})
 
 router.post('/newComment',passport.authenticate('jwt',{session:false}),(req,res) => {
     var comment = new Object()

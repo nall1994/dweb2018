@@ -18,6 +18,17 @@ $(() => {
         });
     })
 
+    $('#guest-mostrarFiltros').click(e => {
+        if($('#guest-filterDiv').is(':visible')) {
+            $('#guest-filterDiv').css('display','none')
+            $('#guest-mostrarFiltros').html('Mostrar área de filtragem')
+        } 
+        else {
+            $('#guest-filterDiv').css('display','block')
+            $('guest-#mostrarFiltros').html('Esconder área de filtragem')
+        }
+    })
+
     var numPubs = $('#guest-numPubs').val()
     for(var i=0;i<numPubs;i++){
         $('#guest-comentarios'+i).click(e => {

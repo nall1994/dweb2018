@@ -4,8 +4,9 @@ block content
         .w3-bar.w3-blue-grey.w3card.w3-large
             //Mudar o a que vem para redirecionar para a homepage do utilizador    
             a.w3-bar-item.w3-button.w3-hover-light-grey(href='http://localhost:3000/users/homepage/' + userData.email) Home
-            a.w3-bar-item.w3-button.w3-light-grey(href='http://localhost:3000/users/profile/' + userData.email) Perfil
-            a.w3-text-white(style="margin-left: 450px;") MyFacebook
+            a.w3-bar-item.w3-button.w3-white(href='http://localhost:3000/users/profile/' + userData.email) Perfil
+            a.w3-bar-item.w3-button.w3-hover-light-grey(href='http://localhost:3000/groups') Grupos
+            a.w3-text-white(style="margin-left: 360px;") MyFacebook
             a.w3-bar-item.w3-button.w3-hover-light-grey.w3-right(href='http://localhost:3000/users/logout') Logout
     .w3-container(style='padding:70px 16px')
         header.w3-container.w3-indigo

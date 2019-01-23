@@ -79,10 +79,435 @@ router.post('/newEventoProf',passport.authenticate('jwt',{session:false, failure
 
 })
 
+router.get('/:email/filter',passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}),(req,res) => {
+  var dataMinima = req.query.dataMinima
+  var hashtags = req.query.filtroHashtag
+  var tipos = req.query.filtroTipos
+  var loggedUser = req.user.email
+  var email = req.params.email
+
+  obj2 = {
+    email: email,
+    access_token: req.session.token
+  }
+  axiosConfig2 = {
+    params: obj2
+  }
+
+  if(dataMinima) {
+    var date = new Date(dataMinima)
+    var dd = date.getDate();
+    var mm = date.getMonth()+1;
+    var yyyy = date.getFullYear();
+
+    if(dd<10) {
+        dd = '0'+dd
+    } 
+
+    if(mm<10) {
+        mm = '0'+mm
+    } 
+
+    dataMinima = mm + '/' + dd + '/' + yyyy + ' 00h:00m';
+  }
+
+  if(loggedUser == email) {
+    if(dataMinima != '' && hashtags && tipos) {
+      dataMinima += ' 00h:00m'
+      obj = {
+        dataMinima: dataMinima,
+        hashtags: hashtags,
+        tipos: tipos,
+        access_token: req.session.token
+      }
+      axiosConfig = {
+        params: obj
+      }
+      axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
+        .then(pubs => {
+          pubs = pubs.data
+          axios.get('http://localhost:3000/api/users',axiosConfig2)
+            .then(userData => {
+              userData = userData.data
+              axios.get('http://localhost:3000/api/groups/withUser',axiosConfig2)
+                .then(userGroups => {
+                  userGroups = userGroups.data
+                  res.render('user_home',{userData: userData,userPubs: pubs,numPubs: pubs.length})
+                })
+            })
+          //ir buscar o userData e os groups que é preciso
+        })
+        .catch(erro => res.render('error',{e: error}))
+      //pedir a api pubs com os três critérios
+    } else if(dataMinima != '' && hashtags) {
+      dataMinima += ' 00h:00m'
+      //pedir a api pubs com estes dois critérios
+      obj = {
+        dataMinima: dataMinima,
+        hashtags: hashtags,
+        access_token: req.session.token
+      }
+      axiosConfig = {
+        params: obj
+      }
+  
+      axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
+        .then(pubs => {
+          pubs = pubs.data
+          axios.get('http://localhost:3000/api/users',axiosConfig2)
+            .then(userData => {
+              userData = userData.data
+              axios.get('http://localhost:3000/api/groups/withUser',axiosConfig2)
+                .then(userGroups => {
+                  userGroups = userGroups.data
+                  res.render('user_home',{userData: userData,userPubs: pubs,numPubs: pubs.length})
+                })
+            })
+          //ir buscar o userData e os groups que é preciso
+        })
+        .catch(erro => res.render('error',{e: error}))
+    } else if(dataMinima != '' && tipos) {
+      dataMinima += ' 00h:00m'
+      obj = {
+        dataMinima: dataMinima,
+        tipos: tipos,
+        access_token: req.session.token
+      }
+      axiosConfig = {
+        params: obj
+      }
+  
+      axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
+        .then(pubs => {
+          pubs = pubs.data
+          axios.get('http://localhost:3000/api/users',axiosConfig2)
+            .then(userData => {
+              userData = userData.data
+              axios.get('http://localhost:3000/api/groups/withUser',axiosConfig2)
+                .then(userGroups => {
+                  userGroups = userGroups.data
+                  res.render('user_home',{userData: userData,userPubs: pubs,numPubs: pubs.length})
+                })
+            })
+          //ir buscar o userData e os groups que é preciso
+        })
+        .catch(erro => res.render('error',{e: error}))
+  
+    } else if(hashtags && tipos) {
+      dataMinima += ' 00h:00m'
+      obj = {
+        hashtags: hashtags,
+        tipos: tipos,
+        access_token: req.session.token
+      }
+      axiosConfig = {
+        params: obj
+      }
+  
+      axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
+        .then(pubs => {
+          pubs = pubs.data
+          axios.get('http://localhost:3000/api/users',axiosConfig2)
+            .then(userData => {
+              userData = userData.data
+              axios.get('http://localhost:3000/api/groups/withUser',axiosConfig2)
+                .then(userGroups => {
+                  userGroups = userGroups.data
+                  res.render('user_home',{userData: userData,userPubs: pubs,numPubs: pubs.length})
+                })
+            })
+          //ir buscar o userData e os groups que é preciso
+        })
+        .catch(erro => res.render('error',{e: error}))
+  
+    } else if(dataMinima !='') {
+      dataMinima += ' 00h:00m'
+      obj = {
+        dataMinima: dataMinima,
+        access_token: req.session.token
+      }
+      axiosConfig = {
+        params: obj
+      }
+  
+      axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
+        .then(pubs => {
+          pubs = pubs.data
+          axios.get('http://localhost:3000/api/users',axiosConfig2)
+            .then(userData => {
+              userData = userData.data
+              axios.get('http://localhost:3000/api/groups/withUser',axiosConfig2)
+                .then(userGroups => {
+                  userGroups = userGroups.data
+                  res.render('user_home',{userData: userData,userPubs: pubs,numPubs: pubs.length})
+                })
+            })
+          //ir buscar o userData e os groups que é preciso
+        })
+        .catch(erro => res.render('error',{e: error}))
+  
+    } else if(hashtags) {
+      dataMinima += ' 00h:00m'
+      obj = {
+        hashtags: hashtags,
+        access_token: req.session.token
+      }
+      axiosConfig = {
+        params: obj
+      }
+  
+      axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
+        .then(pubs => {
+          pubs = pubs.data
+          axios.get('http://localhost:3000/api/users',axiosConfig2)
+            .then(userData => {
+              userData = userData.data
+              axios.get('http://localhost:3000/api/groups/withUser',axiosConfig2)
+                .then(userGroups => {
+                  userGroups = userGroups.data
+                  res.render('user_home',{userData: userData,userPubs: pubs,numPubs: pubs.length})
+                })
+            })
+          //ir buscar o userData e os groups que é preciso
+        })
+        .catch(erro => res.render('error',{e: error}))
+  
+    } else if(tipos) {
+      dataMinima += ' 00h:00m'
+      obj = {
+        tipos: tipos,
+        access_token: req.session.token
+      }
+      axiosConfig = {
+        params: obj
+      }
+  
+      axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
+        .then(pubs => {
+          pubs = pubs.data
+          axios.get('http://localhost:3000/api/users',axiosConfig2)
+            .then(userData => {
+              userData = userData.data
+              axios.get('http://localhost:3000/api/groups/withUser',axiosConfig2)
+                .then(userGroups => {
+                  userGroups = userGroups.data
+                  res.render('user_home',{userData: userData,userPubs: pubs,numPubs: pubs.length})
+                })
+            })
+          //ir buscar o userData e os groups que é preciso
+        })
+        .catch(erro => res.render('error',{e: error}))
+  
+    } else {
+      res.redirect('/users/homepage/' + email)
+    }
+
+  } else {
+    if(dataMinima != '' && hashtags && tipos) {
+      dataMinima += ' 00h:00m'
+      obj = {
+        dataMinima: dataMinima,
+        hashtags: hashtags,
+        tipos: tipos,
+        access_token: req.session.token
+      }
+      axiosConfig = {
+        params: obj
+      }
+  
+      axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
+        .then(pubs => {
+          pubs = pubs.data
+          axios.get('http://localhost:3000/api/users',axiosConfig2)
+            .then(userData => {
+              userData = userData.data
+              userData.origin_email = loggedUser
+              axios.get('http://localhost:3000/api/groups/withUser',axiosConfig2)
+                .then(userGroups => {
+                  userGroups = userGroups.data
+                  res.render('guest_home',{userData: userData,userPubs: pubs,numPubs: pubs.length})
+                })
+            })
+          //ir buscar o userData e os groups que é preciso
+        })
+        .catch(erro => res.render('error',{e: error}))
+      //pedir a api pubs com os três critérios
+    } else if(dataMinima != '' && hashtags) {
+      dataMinima += ' 00h:00m'
+      //pedir a api pubs com estes dois critérios
+      obj = {
+        dataMinima: dataMinima,
+        hashtags: hashtags,
+        access_token: req.session.token
+      }
+      axiosConfig = {
+        params: obj
+      }
+  
+      axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
+        .then(pubs => {
+          pubs = pubs.data
+          axios.get('http://localhost:3000/api/users',axiosConfig2)
+            .then(userData => {
+              userData = userData.data
+              userData.origin_email = loggedUser
+              axios.get('http://localhost:3000/api/groups/withUser',axiosConfig2)
+                .then(userGroups => {
+                  userGroups = userGroups.data
+                  res.render('guest_home',{userData: userData,userPubs: pubs,numPubs: pubs.length})
+                })
+            })
+          //ir buscar o userData e os groups que é preciso
+        })
+        .catch(erro => res.render('error',{e: error}))
+    } else if(dataMinima != '' && tipos) {
+      dataMinima += ' 00h:00m'
+      obj = {
+        dataMinima: dataMinima,
+        tipos: tipos,
+        access_token: req.session.token
+      }
+      axiosConfig = {
+        params: obj
+      }
+  
+      axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
+        .then(pubs => {
+          pubs = pubs.data
+          axios.get('http://localhost:3000/api/users',axiosConfig2)
+            .then(userData => {
+              userData = userData.data
+              userData.origin_email = loggedUser
+              axios.get('http://localhost:3000/api/groups/withUser',axiosConfig2)
+                .then(userGroups => {
+                  userGroups = userGroups.data
+                  res.render('guest_home',{userData: userData,userPubs: pubs,numPubs: pubs.length})
+                })
+            })
+          //ir buscar o userData e os groups que é preciso
+        })
+        .catch(erro => res.render('error',{e: error}))
+  
+    } else if(hashtags && tipos) {
+      dataMinima += ' 00h:00m'
+      obj = {
+        hashtags: hashtags,
+        tipos: tipos,
+        access_token: req.session.token
+      }
+      axiosConfig = {
+        params: obj
+      }
+  
+      axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
+        .then(pubs => {
+          pubs = pubs.data
+          axios.get('http://localhost:3000/api/users',axiosConfig2)
+            .then(userData => {
+              userData = userData.data
+              userData.origin_email = loggedUser
+              axios.get('http://localhost:3000/api/groups/withUser',axiosConfig2)
+                .then(userGroups => {
+                  userGroups = userGroups.data
+                  res.render('guest_home',{userData: userData,userPubs: pubs,numPubs: pubs.length})
+                })
+            })
+          //ir buscar o userData e os groups que é preciso
+        })
+        .catch(erro => res.render('error',{e: error}))
+  
+    } else if(dataMinima !='') {
+      dataMinima += ' 00h:00m'
+      obj = {
+        dataMinima: dataMinima,
+        access_token: req.session.token
+      }
+      axiosConfig = {
+        params: obj
+      }
+  
+      axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
+        .then(pubs => {
+          pubs = pubs.data
+          axios.get('http://localhost:3000/api/users',axiosConfig2)
+            .then(userData => {
+              userData = userData.data
+              userData.origin_email = loggedUser
+              axios.get('http://localhost:3000/api/groups/withUser',axiosConfig2)
+                .then(userGroups => {
+                  userGroups = userGroups.data
+                  res.render('guest_home',{userData: userData,userPubs: pubs,numPubs: pubs.length})
+                })
+            })
+          //ir buscar o userData e os groups que é preciso
+        })
+        .catch(erro => res.render('error',{e: error}))
+  
+    } else if(hashtags) {
+      dataMinima += ' 00h:00m'
+      obj = {
+        hashtags: hashtags,
+        access_token: req.session.token
+      }
+      axiosConfig = {
+        params: obj
+      }
+  
+      axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
+        .then(pubs => {
+          pubs = pubs.data
+          axios.get('http://localhost:3000/api/users',axiosConfig2)
+            .then(userData => {
+              userData = userData.data
+              userData.origin_email = loggedUser
+              axios.get('http://localhost:3000/api/groups/withUser',axiosConfig2)
+                .then(userGroups => {
+                  userGroups = userGroups.data
+                  res.render('guest_home',{userData: userData,userPubs: pubs,numPubs: pubs.length})
+                })
+            })
+          //ir buscar o userData e os groups que é preciso
+        })
+        .catch(erro => res.render('error',{e: error}))
+  
+    } else if(tipos) {
+      dataMinima += ' 00h:00m'
+      obj = {
+        tipos: tipos,
+        access_token: req.session.token
+      }
+      axiosConfig = {
+        params: obj
+      }
+  
+      axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
+        .then(pubs => {
+          pubs = pubs.data
+          axios.get('http://localhost:3000/api/users',axiosConfig2)
+            .then(userData => {
+              userData = userData.data
+              userData.origin_email = loggedUser
+              axios.get('http://localhost:3000/api/groups/withUser',axiosConfig2)
+                .then(userGroups => {
+                  userGroups = userGroups.data
+                  res.render('guest_home',{userData: userData,userPubs: pubs,numPubs: pubs.length})
+                })
+            })
+          //ir buscar o userData e os groups que é preciso
+        })
+        .catch(erro => res.render('error',{e: error}))
+  
+    } else {
+      res.redirect('/users/homepage/' + email)
+    }
+
+  }
+  
+})
+
 
 //Registar publicação desportiva
 router.post('/newDesp',passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}),(req,res)=>{
-  console.log("\nPOSTDESP\n");
 
   var form = new formidable.IncomingForm()
   form.parse(req,(erro,fields,data)=>{

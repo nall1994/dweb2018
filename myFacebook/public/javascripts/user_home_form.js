@@ -16,6 +16,17 @@ $(() => {
         if ($('#postType').val()=='none') $('#hashtagsForm').css('display','none')
     })
 
+    $('#mostrarFiltros').click(e => {
+        if($('#filterDiv').is(':visible')) {
+            $('#filterDiv').css('display','none')
+            $('#mostrarFiltros').html('Mostrar área de filtragem')
+        } 
+        else {
+            $('#filterDiv').css('display','block')
+            $('#mostrarFiltros').html('Esconder área de filtragem')
+        }
+    })
+
     $('#userSearch').click(e => {
         e.preventDefault()
         $('#searchResults').empty()
@@ -600,48 +611,6 @@ function ajaxPostAlbum(pub){
     })
 }
 
-
-/*function addToPage(pub) {
-    if(pub.tipo == 'ideia') {
-        var toPrepend = "<div class='w3-card-4 w3-round'>"
-        + "<h3> <b> " + pub.dados.ideia.titulo + "</b></h3>"
-        + "<p class='w3-tiny'> " + classifiersString(pub.dados.ideia.classificadores) + "</p>"
-        + "<p class='w3-small'> " + pub.dados.ideia.descricao + "</p>"
-        + "<p class='w3-tiny'> " +  renderHashTagsAndDate(pub.classificacoes,pub.data) + "</p>"
-        + "</div>"
-        $('#pubsView').prepend(toPrepend)
-    } else if(pub.tipo == 'evento') {
-        var toPrepend = "<div class='w3-card-4 w3-round'>"
-        + "<h3> <b> " + pub.dados.evento.titulo + "</b></h3>"
-        + "<p> <span> " + pub.dados.evento.dataEvento + "</scan> <scan> &nbsp </scan> <scan> " + pub.dados.evento.local + "</scan> </p>"
-        + "<p class='w3-small'> " + pub.dados.evento.descricao + "</p>"
-        + renderConvidados(pub.dados.evento.convidados)
-        + "<p class='w3-tiny'> " + renderHashTagsAndDate(pub.classificacoes,pub.data) + "</p>"
-        + "</div>"
-        $('#pubsView').prepend(toPrepend)
-
-    } else if(pub.tipo == 'receita') {
-        var toPrepend = "<div class='w3-card-4 w3-round'>"
-        + "<h3> <b> " + pub.dados.receita.titulo + "</b></h3>"
-        + "<p class='w3-small'> " + pub.dados.receita.textoEstruturado + "</p>"
-        + "<p class='w3-tiny'> " + renderHashTagsAndDate(pub.classificacoes,pub.data) + "</p>"
-        + "</div>"
-        $('#pubsView').prepend(toPrepend)
-
-    } else if(pub.tipo == 'creditacao') {
-        var toPrepend = "<div class='w3-card-4 w3-round'>"
-        + "<h3> <b> " + pub.dados.formacao.titulo + "</b></h3>"
-        + "<p> " + pub.dados.formacao.creditacao + "</p>"
-        + "<p> " + pub.dados.formacao.instituicao + "</p>"
-        + "<p class='w3-small'> " + pub.dados.formacao.descricao + "</p>"
-        + "<p class='w3-tiny'> " + renderHashTagsAndDate(pub.classificacoes,pub.data) + "</p>"
-        + "</div>"
-        $('#pubsView').prepend(toPrepend)
-
-    }
-
-    //Só falta para o dos ficheiros
-}*/
 
 function classifiersString(classificadores) {
     var returnString = ""
