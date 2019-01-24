@@ -36,6 +36,18 @@ router.get('/',passport.authenticate('jwt',{session:false}), (req,res) => {
   }
 })
 
+//Consulta dos favoritos de um user
+router.get('/isFav',passport.authenticate('jwt',{session:false}), (req,res) => {
+    var loggedemail = req.user.email
+    var emailFav = req.query.emailFav
+    userController.consultaFavoritos(loggedemail,emailFav)
+      .then(favoritos => {
+           res.jsonp(favoritos)
+      })
+      .catch(error => res.status(500).send('Erro na consulta dos favoritos de um utilizador!'))
+  
+})
+
 //login de utilizador
 router.post('/login',async (req,res,next) => {
   passport.authenticate('login', async (err,user,info) => {
@@ -60,6 +72,16 @@ router.post('/addToFavorites',passport.authenticate('jwt',{session:false}),(req,
   console.log(data)
   userController.adicionarFavorito(req.body.email,data)
   res.jsonp({info: "Favorito adicionado com sucesso!"})
+})
+
+router.post('/remFromFavorites',passport.authenticate('jwt',{session:false}),(req,res) => {
+  var data = {
+    email: req.body.favoriteEmail,
+    nome: req.body.favoriteNome
+  }
+  console.log(data)
+  userController.removerFavorito(req.body.email,data)
+  res.jsonp({info: "Favorito removido com sucesso!"})
 })
 
 router.post('/search',passport.authenticate('jwt',{session:false}),(req,res) => {

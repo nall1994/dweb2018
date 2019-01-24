@@ -274,7 +274,10 @@ block content
                 .w3-card-4
                     input(type='text' id='favoriteNome' value=userData.nome hidden)
                     input(type='text' id='favoriteEmail' value=userData.email hidden)
-                    button.w3-btn.w3-teal(id='addToFavorites') Adicionar aos favoritos
+                    if   isFavorito
+                        button.w3-btn.w3-teal(id='addToFavorites') Remover dos favoritos
+                    else 
+                        button.w3-btn.w3-teal(id='addToFavorites') Adicionar aos favoritos
         //A partir do clique do botão o email do guest user tem que ser adicionado aos favoritos do user
         //Outra row com os dados do perfil e por aí fora
         //Uma row tem a foto do utilizador, o nome, 

@@ -5,6 +5,16 @@ module.exports.consultaEmail = email => {
     return User.findOne({email: email}).exec()
 }
 
+//Consultar favoritos pelo seu email
+module.exports.consultaFavoritos = (emailUser,emailFav) => {
+    return User.findOne({
+                    email: emailUser,
+                    favoritos:{$elemMatch:{email:emailFav}}
+                },
+                {_id:false,favoritos:true})
+                .exec()
+}
+
 //Consultar utilizadores que tenham um dado nome
 module.exports.consultaNome = nome => {
     return User.find({nome:nome}).sort({nome: -1}).exec()
@@ -32,6 +42,14 @@ module.exports.adicionarFavorito = (email,favorito) => {
         doc.favoritos.push(favorito)
         doc.save()
     })
+}
+
+module.exports.removerFavorito = (email,favorito) => {
+    return User.update( 
+                { email: email },
+                { $pull: { favoritos : { email : favorito.email } } },
+                { safe: true })
+               .exec()
 }
 
 
