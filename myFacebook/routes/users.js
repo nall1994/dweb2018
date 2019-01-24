@@ -7,6 +7,8 @@ var axios = require('axios')
 var fs = require('fs')
 var formidable = require('formidable')
 
+
+
 router.get('/homepage/:email',passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}),(req,res) => {
         
   var loggedToken = jwt.verify(req.session.token,'myFacebook',jwt_options.verifyOptions)   
@@ -46,34 +48,45 @@ router.get('/homepage/:email',passport.authenticate('jwt',{session:false, failur
 
       } else {
         //present guest_home
-        var pubs = new Object()
-        var groupsInfo = new Object()
-        axios.get('http://localhost:3000/api/pubs/fromUser', axiosConfig)
-          .then(dadospubs => {
-            pubs = dadospubs.data
-            console.log("pubs:");
-            console.log(JSON.stringify(pubs));
-             
-            axios.get('http://localhost:3000/api/groups/withUser', axiosConfig)
-              .then(dadosGroups => {
-                groupsInfo = dadosGroups.data
-                axios.get('http://localhost:3000/api/users',axiosConfig)
-                    .then((dadosUser) => {
-                      console.log("user:");
-                      console.log(JSON.stringify(dadosUser.data));
-                      dadosUser.data.origin_email = loggedToken.user.email
-                      res.render('guest_home',{userData: dadosUser.data, userPubs: pubs , numPubs : pubs.length})
-
-                    }).catch((err) => {
-                      
-                      res.render('error',{error : err})
-                });
-            //    res.jsonp(pubs)
-              })
-              .catch(error => res.render('error',{e: error+"In Groups API"}))
-            //  res.jsonp(pubs)
+          axios.get('http://localhost:3000/api/users/isFav/?emailFav='+req.params.email,axiosConfig)
+          .then(dados=>{
+              var isFav = false
+              console.log("teste");
+              if (dados.data) isFav = true
+              else isFav = false
+              console.log("isfav:"+isFav);
+              
+              var pubs = new Object()
+              var groupsInfo = new Object()
+              axios.get('http://localhost:3000/api/pubs/fromUser', axiosConfig)
+                .then(dadospubs => {
+                  pubs = dadospubs.data
+                  console.log("pubs:");
+                  console.log(JSON.stringify(pubs));
+                   
+                  axios.get('http://localhost:3000/api/groups/withUser', axiosConfig)
+                    .then(dadosGroups => {
+                      groupsInfo = dadosGroups.data
+                      axios.get('http://localhost:3000/api/users',axiosConfig)
+                          .then((dadosUser) => {
+                            console.log("user:");
+                            console.log(JSON.stringify(dadosUser.data));
+                            dadosUser.data.origin_email = loggedToken.user.email
+                            res.render('guest_home',{userData: dadosUser.data, userPubs: pubs , numPubs : pubs.length , isFavorito : isFav})
+      
+                          }).catch((err) => {
+                            
+                            res.render('error',{error : err})
+                      });
+                  //    res.jsonp(pubs)
+                    })
+                    .catch(error => res.render('error',{e: error+"In Groups API"}))
+                  //  res.jsonp(pubs)
+                })
+                .catch(error => res.render('error',{e: error}))
+                
           })
-          .catch(error => res.render('error',{e: error}))
+          .catch(erro => {res.render('error',{e: erro}); return false  })
       }
       //É preciso ir buscar os dados do utilizador, as suas publicações e os grupos aos quais pertence!
       //Se o email que email que vem no url é diferente do que está logado devemos apresentar a página guest_home
@@ -112,9 +125,23 @@ router.get('/homepage/:email',passport.authenticate('jwt',{session:false, failur
     req.body.access_token = req.session.token
     req.body.email = loggedToken.user.email
     axios.post('http://localhost:3000/api/users/addToFavorites',req.body)
-      .then(msg => res.jsonp({info: msg.data.info}))
+      .then(msg =>{
+         res.jsonp({info: msg.data.info})
+      })
       .catch(error => res.render('error',{e: error}))
   })
+  
+  router.post('/remFromFavorites',passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}),(req,res) => {
+    var loggedToken = jwt.verify(req.session.token,'myFacebook',jwt_options.verifyOptions)
+    req.body.access_token = req.session.token
+    req.body.email = loggedToken.user.email
+    axios.post('http://localhost:3000/api/users/remFromFavorites',req.body)
+      .then(msg =>{
+         res.jsonp({info: msg.data.info})
+      })
+      .catch(error => res.render('error',{e: error}))
+  })
+
 
   router.post('/updateProfile/:email', passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}), (req,res) => {
     var profileToUpdate = req.params.email
@@ -227,5 +254,6 @@ router.get('/homepage/:email',passport.authenticate('jwt',{session:false, failur
         res.render('error', {e: erro})
       } )
 })
+
 
 module.exports = router

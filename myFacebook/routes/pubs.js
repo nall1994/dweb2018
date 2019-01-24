@@ -627,23 +627,30 @@ router.get('/:email/filter',passport.authenticate('jwt',{session:false, failureR
       axiosConfig = {
         params: obj
       }
-  
-      axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
-        .then(pubs => {
-          pubs = pubs.data
-          axios.get('http://localhost:3000/api/users',axiosConfig2)
-            .then(userData => {
-              userData = userData.data
-              userData.origin_email = loggedUser
-              axios.get('http://localhost:3000/api/groups/withUser',axiosConfig2)
-                .then(userGroups => {
-                  userGroups = userGroups.data
-                  res.render('guest_home',{userData: userData,userPubs: pubs,numPubs: pubs.length})
+      axios.get('http://localhost:3000/api/users/isFav/?emailFav='+req.params.email,axiosConfig)
+          .then(dados=>{
+              var isFav = false
+              console.log("teste");
+              if (dados.data) isFav = true
+              else isFav = false
+              console.log("isfav:"+isFav);
+              axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
+                .then(pubs => {
+                  pubs = pubs.data
+                  axios.get('http://localhost:3000/api/users',axiosConfig2)
+                    .then(userData => {
+                      userData = userData.data
+                      userData.origin_email = loggedUser
+                      axios.get('http://localhost:3000/api/groups/withUser',axiosConfig2)
+                        .then(userGroups => {
+                          userGroups = userGroups.data
+                          res.render('guest_home',{userData: userData,userPubs: pubs,numPubs: pubs.length, isFavorito : isFav})
+                        })
+                    })
+                  //ir buscar o userData e os groups que é preciso
                 })
-            })
-          //ir buscar o userData e os groups que é preciso
-        })
-        .catch(erro => res.render('error',{e: error}))
+                .catch(erro => res.render('error',{e: error}))})
+     .catch(erro => res.render('error',{e: error}))
       //pedir a api pubs com os três critérios
     } else if(dataMinima != '' && hashtags) {
       dataMinima += ' 00h:00m'
@@ -656,22 +663,29 @@ router.get('/:email/filter',passport.authenticate('jwt',{session:false, failureR
       axiosConfig = {
         params: obj
       }
-  
-      axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
-        .then(pubs => {
-          pubs = pubs.data
-          axios.get('http://localhost:3000/api/users',axiosConfig2)
-            .then(userData => {
-              userData = userData.data
-              userData.origin_email = loggedUser
-              axios.get('http://localhost:3000/api/groups/withUser',axiosConfig2)
-                .then(userGroups => {
-                  userGroups = userGroups.data
-                  res.render('guest_home',{userData: userData,userPubs: pubs,numPubs: pubs.length})
+      axios.get('http://localhost:3000/api/users/isFav/?emailFav='+req.params.email,axiosConfig)
+          .then(dados=>{
+              var isFav = false
+              console.log("teste");
+              if (dados.data) isFav = true
+              else isFav = false
+              console.log("isfav:"+isFav);
+              axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
+                .then(pubs => {
+                  pubs = pubs.data
+                  axios.get('http://localhost:3000/api/users',axiosConfig2)
+                    .then(userData => {
+                      userData = userData.data
+                      userData.origin_email = loggedUser
+                      axios.get('http://localhost:3000/api/groups/withUser',axiosConfig2)
+                        .then(userGroups => {
+                          userGroups = userGroups.data
+                          res.render('guest_home',{userData: userData,userPubs: pubs,numPubs: pubs.length, isFavorito : isFav})
+                        })
+                    })
+                  //ir buscar o userData e os groups que é preciso
                 })
-            })
-          //ir buscar o userData e os groups que é preciso
-        })
+                .catch(erro => res.render('error',{e: error}))})
         .catch(erro => res.render('error',{e: error}))
     } else if(dataMinima != '' && tipos) {
       dataMinima += ' 00h:00m'
@@ -683,22 +697,29 @@ router.get('/:email/filter',passport.authenticate('jwt',{session:false, failureR
       axiosConfig = {
         params: obj
       }
-  
-      axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
-        .then(pubs => {
-          pubs = pubs.data
-          axios.get('http://localhost:3000/api/users',axiosConfig2)
-            .then(userData => {
-              userData = userData.data
-              userData.origin_email = loggedUser
-              axios.get('http://localhost:3000/api/groups/withUser',axiosConfig2)
-                .then(userGroups => {
-                  userGroups = userGroups.data
-                  res.render('guest_home',{userData: userData,userPubs: pubs,numPubs: pubs.length})
+      axios.get('http://localhost:3000/api/users/isFav/?emailFav='+req.params.email,axiosConfig)
+          .then(dados=>{
+              var isFav = false
+              console.log("teste");
+              if (dados.data) isFav = true
+              else isFav = false
+              console.log("isfav:"+isFav);
+              axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
+                .then(pubs => {
+                  pubs = pubs.data
+                  axios.get('http://localhost:3000/api/users',axiosConfig2)
+                    .then(userData => {
+                      userData = userData.data
+                      userData.origin_email = loggedUser
+                      axios.get('http://localhost:3000/api/groups/withUser',axiosConfig2)
+                        .then(userGroups => {
+                          userGroups = userGroups.data
+                          res.render('guest_home',{userData: userData,userPubs: pubs,numPubs: pubs.length, isFavorito : isFav})
+                        })
+                    })
+                  //ir buscar o userData e os groups que é preciso
                 })
-            })
-          //ir buscar o userData e os groups que é preciso
-        })
+                .catch(erro => res.render('error',{e: error}))})
         .catch(erro => res.render('error',{e: error}))
   
     } else if(hashtags && tipos) {
@@ -711,22 +732,29 @@ router.get('/:email/filter',passport.authenticate('jwt',{session:false, failureR
       axiosConfig = {
         params: obj
       }
-  
-      axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
-        .then(pubs => {
-          pubs = pubs.data
-          axios.get('http://localhost:3000/api/users',axiosConfig2)
-            .then(userData => {
-              userData = userData.data
-              userData.origin_email = loggedUser
-              axios.get('http://localhost:3000/api/groups/withUser',axiosConfig2)
-                .then(userGroups => {
-                  userGroups = userGroups.data
-                  res.render('guest_home',{userData: userData,userPubs: pubs,numPubs: pubs.length})
+      axios.get('http://localhost:3000/api/users/isFav/?emailFav='+req.params.email,axiosConfig)
+          .then(dados=>{
+              var isFav = false
+              console.log("teste");
+              if (dados.data) isFav = true
+              else isFav = false
+              console.log("isfav:"+isFav);
+              axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
+                .then(pubs => {
+                  pubs = pubs.data
+                  axios.get('http://localhost:3000/api/users',axiosConfig2)
+                    .then(userData => {
+                      userData = userData.data
+                      userData.origin_email = loggedUser
+                      axios.get('http://localhost:3000/api/groups/withUser',axiosConfig2)
+                        .then(userGroups => {
+                          userGroups = userGroups.data
+                          res.render('guest_home',{userData: userData,userPubs: pubs,numPubs: pubs.length, isFavorito : isFav})
+                        })
+                    })
+                  //ir buscar o userData e os groups que é preciso
                 })
-            })
-          //ir buscar o userData e os groups que é preciso
-        })
+                .catch(erro => res.render('error',{e: error}))})
         .catch(erro => res.render('error',{e: error}))
   
     } else if(dataMinima !='') {
@@ -738,22 +766,29 @@ router.get('/:email/filter',passport.authenticate('jwt',{session:false, failureR
       axiosConfig = {
         params: obj
       }
-  
-      axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
-        .then(pubs => {
-          pubs = pubs.data
-          axios.get('http://localhost:3000/api/users',axiosConfig2)
-            .then(userData => {
-              userData = userData.data
-              userData.origin_email = loggedUser
-              axios.get('http://localhost:3000/api/groups/withUser',axiosConfig2)
-                .then(userGroups => {
-                  userGroups = userGroups.data
-                  res.render('guest_home',{userData: userData,userPubs: pubs,numPubs: pubs.length})
+      axios.get('http://localhost:3000/api/users/isFav/?emailFav='+req.params.email,axiosConfig)
+          .then(dados=>{
+              var isFav = false
+              console.log("teste");
+              if (dados.data) isFav = true
+              else isFav = false
+              console.log("isfav:"+isFav);
+              axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
+                .then(pubs => {
+                  pubs = pubs.data
+                  axios.get('http://localhost:3000/api/users',axiosConfig2)
+                    .then(userData => {
+                      userData = userData.data
+                      userData.origin_email = loggedUser
+                      axios.get('http://localhost:3000/api/groups/withUser',axiosConfig2)
+                        .then(userGroups => {
+                          userGroups = userGroups.data
+                          res.render('guest_home',{userData: userData,userPubs: pubs,numPubs: pubs.length, isFavorito : isFav})
+                        })
+                    })
+                  //ir buscar o userData e os groups que é preciso
                 })
-            })
-          //ir buscar o userData e os groups que é preciso
-        })
+                .catch(erro => res.render('error',{e: error}))})
         .catch(erro => res.render('error',{e: error}))
   
     } else if(hashtags) {
@@ -765,22 +800,29 @@ router.get('/:email/filter',passport.authenticate('jwt',{session:false, failureR
       axiosConfig = {
         params: obj
       }
-  
-      axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
-        .then(pubs => {
-          pubs = pubs.data
-          axios.get('http://localhost:3000/api/users',axiosConfig2)
-            .then(userData => {
-              userData = userData.data
-              userData.origin_email = loggedUser
-              axios.get('http://localhost:3000/api/groups/withUser',axiosConfig2)
-                .then(userGroups => {
-                  userGroups = userGroups.data
-                  res.render('guest_home',{userData: userData,userPubs: pubs,numPubs: pubs.length})
+      axios.get('http://localhost:3000/api/users/isFav/?emailFav='+req.params.email,axiosConfig)
+          .then(dados=>{
+              var isFav = false
+              console.log("teste");
+              if (dados.data) isFav = true
+              else isFav = false
+              console.log("isfav:"+isFav);
+              axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
+                .then(pubs => {
+                  pubs = pubs.data
+                  axios.get('http://localhost:3000/api/users',axiosConfig2)
+                    .then(userData => {
+                      userData = userData.data
+                      userData.origin_email = loggedUser
+                      axios.get('http://localhost:3000/api/groups/withUser',axiosConfig2)
+                        .then(userGroups => {
+                          userGroups = userGroups.data
+                          res.render('guest_home',{userData: userData,userPubs: pubs,numPubs: pubs.length, isFavorito : isFav})
+                        })
+                    })
+                  //ir buscar o userData e os groups que é preciso
                 })
-            })
-          //ir buscar o userData e os groups que é preciso
-        })
+                .catch(erro => res.render('error',{e: error}))})
         .catch(erro => res.render('error',{e: error}))
   
     } else if(tipos) {
@@ -792,22 +834,29 @@ router.get('/:email/filter',passport.authenticate('jwt',{session:false, failureR
       axiosConfig = {
         params: obj
       }
-  
-      axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
-        .then(pubs => {
-          pubs = pubs.data
-          axios.get('http://localhost:3000/api/users',axiosConfig2)
-            .then(userData => {
-              userData = userData.data
-              userData.origin_email = loggedUser
-              axios.get('http://localhost:3000/api/groups/withUser',axiosConfig2)
-                .then(userGroups => {
-                  userGroups = userGroups.data
-                  res.render('guest_home',{userData: userData,userPubs: pubs,numPubs: pubs.length})
+      axios.get('http://localhost:3000/api/users/isFav/?emailFav='+req.params.email,axiosConfig)
+          .then(dados=>{
+              var isFav = false
+              console.log("teste");
+              if (dados.data) isFav = true
+              else isFav = false
+              console.log("isfav:"+isFav);
+              axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
+                .then(pubs => {
+                  pubs = pubs.data
+                  axios.get('http://localhost:3000/api/users',axiosConfig2)
+                    .then(userData => {
+                      userData = userData.data
+                      userData.origin_email = loggedUser
+                      axios.get('http://localhost:3000/api/groups/withUser',axiosConfig2)
+                        .then(userGroups => {
+                          userGroups = userGroups.data
+                          res.render('guest_home',{userData: userData,userPubs: pubs,numPubs: pubs.length, isFavorito : isFav})
+                        })
+                    })
+                  //ir buscar o userData e os groups que é preciso
                 })
-            })
-          //ir buscar o userData e os groups que é preciso
-        })
+                .catch(erro => res.render('error',{e: error}))})
         .catch(erro => res.render('error',{e: error}))
   
     } else {
