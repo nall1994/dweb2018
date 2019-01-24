@@ -45,3 +45,7 @@ module.exports.inserir = pub => {
 module.exports.atualizar = (id,pub) => {
     return Pub.updateOne({_id:id},pub)
 }
+
+module.exports.apagar = id => {
+    return Pub.deleteOne({_id: id})
+}

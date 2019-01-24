@@ -143,6 +143,13 @@ router.post('/:id_pub/edit',passport.authenticate('jwt',{session:false}),(req,re
 
 })
 
+router.post('/:pubid/delete',passport.authenticate('jwt',{session:false}),(req,res) => {
+    var pubid = req.params.pubid
+    pubsController.apagar(pubid)
+        .then(m => res.jsonp(m))
+        .catch(error => res.jsonp(JSON.stringify(error)))
+})
+
 router.post('/newPub',passport.authenticate('jwt',{session:false}), async (req,res) => {
     var pub = new Object()
     pub.origin_email = req.body.origin_email

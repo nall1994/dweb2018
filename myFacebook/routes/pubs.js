@@ -22,11 +22,9 @@ router.post('/newPub',passport.authenticate('jwt',{session:false, failureRedirec
   req.body.access_token = req.session.token
   console.log('got here!')
   if(req.body.tipo == 'evento') {
-    console.log('entered')
     var newDate = ""
     console.log(req.body.dados.evento.dataEvento)
     var d = req.body.dados.evento.dataEvento.split("-")
-    console.log('splitted')
     for(var i = 2; i>=0; i--) {
       if(i == 0) newDate += d[i]
       else newDate += d[i] + "-"
@@ -92,10 +90,64 @@ router.post('/newEventoProf',passport.authenticate('jwt',{session:false, failure
       }
       evento.access_token = req.session.token
       axios.post('http://localhost:3000/api/pubs/newPub',evento)
-                .then(message => res.jsonp(message))
+                .then(message => {
+                  console.log(JSON.stringify(message))
+                  res.jsonp(message)
+                })
                 .catch(erro => res.render('error', {e: erro}))
   })
 
+})
+
+router.post('/:pubid/delete',passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}),(req,res) => {
+  var pubid = req.params.pubid
+  //fazer o get da publicação e apagar todos os ficheiros relacionados
+  //axios post para a pi apagar a publicação da base de dados
+  obj = {
+    access_token: req.session.token
+  }
+
+  axios.get('http://localhost:3000/api/pubs/' + pubid,axiosConfig)
+    .then(pub => {
+      pub = pub.data
+      if(pub.tipo == 'album') {
+        var fotos = pub.dados.album.fotos
+        for(var i = 0; i< fotos.length;i++) {
+          var fotoInfoObj = fotos[i]
+          fs.unlink(fotoInfoObj.foto,err => {
+            if(err) throw err
+          })
+        }
+
+      } else if(pub.tipo == 'eventoProfissional') {
+        var files_array = pub.dados.eventoProfissional.ficheiros
+        for(var i = 0; i< files_array.length; i++) {
+          var element = files_array[i].split('/')
+          var file_name = element[element.length-1]
+          var path = __dirname + '/../public/uploaded/' + req.user.email + '/' + file_name
+          fs.unlink(path,err => {
+            if(err) throw err
+          })
+        }
+
+      } else if(pub.tipo == 'desportivo') {
+        var fotos_array = pub.dados.desportivo.fotos
+        var gpx_file = pub.dados.desportivo.ficheiro_gpx
+        for(var i = 0; i< files_array.length; i++) {
+          var path = fotos_array[i]
+          fs.unlink(path,err => {
+            if(err) throw err
+          })
+        }
+        fs.unlink(gpx_file,err => {
+          if(err) throw err
+        })
+      }
+    }).catch(error => res.render('error',{e: error}))
+
+  axios.post('http://localhost:3000/api/pubs/' + pubid + '/delete',obj)
+    .then(m => res.redirect('/users/homepage/' + req.user.email))
+    .catch(error => res.render('error',{e: error}))
 })
 
 router.get('/edit/:pubid',passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}), (req,res) => {
