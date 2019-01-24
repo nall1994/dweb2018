@@ -13,6 +13,12 @@ module.exports.consultaTodas = () => {
         .exec()
 }
 
+module.exports.consultaID = idpub => {
+    return Pub
+        .findOne({_id: idpub})
+        .exec()
+}
+
 //Insere comentario
 module.exports.inserirComentario = (comment,id) => {
     console.log("Controler");
@@ -34,4 +40,8 @@ module.exports.inserirComentario = (comment,id) => {
 //Registar publicação
 module.exports.inserir = pub => {
     return Pub.create(pub)
+}
+
+module.exports.atualizar = (id,pub) => {
+    return Pub.update({_id: id},pub)
 }

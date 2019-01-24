@@ -1,0 +1,172 @@
+extends layout
+block content
+    .w3-top
+        .w3-bar.w3-blue-grey.w3card.w3-large    
+            a.w3-bar-item.w3-button.w3-hover-light-grey(href='http://localhost:3000/users/homepage/' + publicacao.origin_email) Home
+            a.w3-bar-item.w3-button.w3-hover-light-grey(href='http://localhost:3000/users/profile/' + publicacao.origin_email) Perfil
+            a.w3-bar-item.w3-button.w3-hover-light-grey(href='http://localhost:3000/groups') Grupos
+            a.w3-text-white(style="margin-left: 360px;") MyFacebook
+            a.w3-bar-item.w3-button.w3-hover-light-grey.w3-right(href='http://localhost:3000/users/logout') Logout
+    .w3-container(style='padding:70px 16px')
+        header.w3-container.w3-indigo
+            h1.w3-center Edição de publicação
+    br
+    .w3-container
+        h3.w3-text-indigo.w3-center Atualizar dados de publicação
+        hr
+        div.w3-card-4(id='pubUpdate')
+            form(action='/pubs/edit/' + publicacao._id method='post' enctype='multipart/form-data')
+                input(type='hidden' name='tipo' value=publicacao.tipo)
+                input(type='hidden' name='origin_email' value=publicacao.origin_email)
+                if publicacao.tipo == 'receita'
+                    label
+                        b.w3-text-teal Nome do cozinhado
+                    input.w3-input.w3-border(type='text' name='titulo' value=publicacao.dados.receita.titulo)
+                    label
+                        b.w3-text-teal Ingredientes
+                    textarea.w3-input.w3-border(name='ingredientes')= publicacao.dados.receita.ingredientes
+                    label
+                        b.w3-text-teal Instruções
+                    textarea.w3-input.w3-border(name='instrucoes')= publicacao.dados.receita.instrucoes
+                if publicacao.tipo == 'evento'
+                    label
+                        b.w3-text-teal Nome do evento
+                    input.w3-input.w3-border(type='text' name='titulo' value=publicacao.dados.evento.titulo)
+                    label
+                        b.w3-text-teal Local do evento
+                    input.w3-input.w3-border(type='text' name='local' value=publicacao.dados.evento.local)
+                    label
+                        b.w3-text-teal Data do evento
+                    input.w3-input.w3-border(type='date' name='dataEvento' value=publicacao.dados.evento.dataEvento)
+                    label
+                        b.w3-text-teal Convidados
+                    textarea.w3-input.w3-border(name='convidados')= publicacao.dados.evento.convidados
+                    label
+                        b.w3-text-teal Descrição
+                    textarea.w3-input.w3-border(name='descricao')= publicacao.dados.evento.descricao
+
+                if publicacao.tipo == 'eventoProfissional'
+                    label
+                        b.w3-text-teal Nome do evento
+                    input.w3-input.w3-border(type='text' name='titulo' value=publicacao.dados.eventoProfissional.titulo)
+                    label
+                        b.w3-text-teal Local do evento
+                    input.w3-input.w3-border(type='text' name='local' value=publicacao.dados.eventoProfissional.local)
+                    label
+                        b.w3-text-teal Data do evento
+                    input.w3-input.w3-border(type='date' name='dataEvento' value=publicacao.dados.eventoProfissional.dataEvento)
+                    label
+                        b.w3-text-teal Oradores
+                    textarea.w3-input.w3-border(name='oradores')= publicacao.dados.eventoProfissional.oradores
+                    label
+                        b.w3-text-teal Descrição
+                    textarea.w3-input.w3-border(name='descricao')= publicacao.dados.eventoProfissional.descricao
+                    label
+                        b.w3-text-teal Adicionar ficheiro
+                    input.w3-input.w3-border(type='file' name='ficheiros')
+
+                if publicacao.tipo == 'ideia'
+                    label
+                        b.w3-text-teal Título da ideia
+                    input.w3-input.w3-border(type='text' name='titulo' value=publicacao.dados.ideia.titulo)
+                    label
+                        b.w3-text-teal Explicação da ideia
+                    textarea.w3-input.w3-border(name='descricao')= publicacao.dados.ideia.descricao
+                    label
+                        b.w3-text-teal Classificadores de ideia
+                    input.w3-input.w3-border(type='text' name='classificadores' value=publicacao.dados.ideia.classificadores)
+
+                if publicacao.tipo == 'album'
+                    label
+                        b.w3-text-teal Nome do álbum
+                    input.w3-input.w3-border(type='text' name='titulo' value=publicacao.dados.album.titulo)
+                    label
+                        b.w3-text-teal Descrição do álbum
+                    textarea.w3-input.w3-border(name='descricao')= publicacao.dados.album.descricao
+                    label
+                        b.w3-text-teal Data de nova foto
+                    input.w3-input.w3-border(type='date' name='dataFoto' value=publicacao.dados.album.dataHoje)
+                    label
+                        b.w3-text-teal Local da nova foto
+                    input.w3-input.w3-border(type='text' name='local' placeholder='Insira o local')
+                    label
+                        b.w3-text-teal Adiciona nova foto
+                    input.w3-input.w3-border(type='file' name='foto' accept='image/*')
+
+                if publicacao.tipo == 'desportivo'
+                    label
+                        b.w3-text-teal Título da publicação
+                    input.w3-input.w3-border(type='text' name='titulo' value=publicacao.dados.desportivo.titulo)
+                    label
+                        b.w3-text-teal Atividade Desportiva
+                    input.w3-input.w3-border(type='text' name='atividade' value=publicacao.dados.desportivo.atividade)
+                    label
+                        b.w3-text-teal Duração da atividade
+                    input.w3-input.w3-border(type='text' name='duracao' value=publicacao.dados.desportivo.duracao)
+                    label
+                        b.w3-text-teal Descrição da atividade
+                    textarea.w3-input.w3-border(name='descricao')= publicacao.dados.desportivo.descricao
+                    label
+                        b.w3-text-teal Adicionar foto
+                    input.w3-input.w3-border(type='file' name='fotos' accept='image/*')
+                    label
+                        b.w3-text-teal Adicionar ficheiro GPX
+                    input.w3-input.w3-border(type='file' name='ficheiro_gpx' accept='.gpx')
+
+                if publicacao.tipo == 'formacao'
+                    label
+                        b.w3-text-teal Título da formação
+                    input.w3-input.w3-border(type='text' name='titulo' value=publicacao.dados.formacao.titulo)
+                    label
+                        b.w3-text-teal Creditação que obteve
+                    input.w3-input.w3-border(type='text' name='creditacao' value=publicacao.dados.formacao.creditacao)
+                    label
+                        b.w3-text-teal Instituição de formação
+                    input.w3-input.w3-border(type='text' name='instituicao' value=publicacao.dados.formacao.instituicao)
+                    label
+                        b.w3-text-teal Descrição da formação
+                    textarea.w3-input.w3-border(type='text' name='descricao')= publicacao.dados.formacao.descricao
+                
+                label
+                    b.w3-text-teal Hashtags
+                br
+                each hashtag in classificadores
+                    -var checked = false
+                    each c in publicacao.classificacoes
+                        if c == hashtag
+                            - checked = true
+                    if checked == true
+                        input(class="w3-check" type='checkbox' name="hashtag" value=hashtag checked)
+                        label(for=hashtag)=hashtag
+                        t
+                        t
+                    else
+                        input(class="w3-check" type='checkbox' name="hashtag" value=hashtag)
+                        label(for=hashtag)=hashtag
+                        t
+                        t
+                br
+                br
+                label
+                    b.w3-text-teal Privacidade
+                br
+                if publicacao.isPrivate == true
+                    input.w3-radio(type='radio' name='isPrivate' value='true' checked)
+                    label Publicação privada
+                    input.w3-radio(type='radio' name='isPrivate' value='false')
+                    label Publicação pública
+                else
+                    input.w3-radio(type='radio' name='isPrivate' value='true')
+                    label Publicação privada
+                    input.w3-radio(type='radio' name='isPrivate' value='false' checked)
+                    label Publicação pública
+                br
+                br
+                hr
+                div(style='text-align: center;')
+                    input.w3-btn.w3-center.w3-large.w3-teal(type='submit' value='Atualizar Publicação')
+                br
+        br
+        br
+
+                    

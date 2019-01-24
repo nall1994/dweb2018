@@ -174,7 +174,7 @@ block content
                         input.w3-input.w3-border(type='file' name='fotos' id='fotos' multiple)
                         br
                         label.w3-text-blue-grey Ficheiro GPX
-                        input.w3-input.w3-border(type='file' name='ficheiro_gpx' id='ficheiro_gpx')
+                        input.w3-input.w3-border(type='file' name='ficheiro_gpx' id='ficheiro_gpx' accept='.gpx')
                         br
                         input.w3-btn.w3-indigo(type='submit' id='publicarDesportivo' value='Publicar')
                     form(id='eventoForm' style='display:none')
@@ -324,6 +324,11 @@ block content
                         if userPubs
                             each pub in userPubs
                                 .w3-card-4.w3-round
+                                    p
+                                        a.w3-indigo.w3-left(style='text-decoration:none;' href='http://localhost:3000/pubs/share/' + pub._id) Partilhar no Facebook
+                                        a.w3-blue.w3-center(style='text-decoration:none;' href='http://localhost:3000/pubs/share/' + pub._id) Partilhar no Twitter
+                                        a.w3-teal.w3-right(style='text-decoration:none;' href='http://localhost:3000/pubs/edit/' + pub._id) Editar publicação
+                                    hr
                                     if pub.tipo=="ideia"
                                         h3
                                             b    

@@ -29,9 +29,7 @@ router.get('/fromUser',passport.authenticate('jwt',{session:false}),(req,res) =>
 
 router.get('/:email/filter',passport.authenticate('jwt',{session:false}),(req,res) => {
     var email = req.params.email
-    console.log('got here api')
     var loggedToken = jwt.verify(req.query.access_token,'myFacebook',jwt_options.verifyOptions)
-    console.log('didnt get here')
     var loggedUser = loggedToken.user.email
     //verificar token e verificar se o logged é igual ao que temos ou nao
     var seletores = new Object()
@@ -115,6 +113,31 @@ router.get('/',passport.authenticate('jwt',{session:false}),(req,res) => {
     pubsController.consultaTodas()
         .then(dados => res.jsonp(dados))
         .catch(erro => res.jsonp({message: 'Erro: ' + erro}))
+
+})
+
+router.get('/:id_pub',passport.authenticate('jwt',{session:false}),(req,res) => {
+    var idpub = req.params.id_pub
+    pubsController.consultaID(idpub)
+        .then(pub => {
+            console.log('entered consult')
+            res.jsonp(pub)
+        })
+        .catch(error => res.status(500).send('Erro na consulta de publicação'))
+})
+
+router.post('/:id_pub/edit',passport.authenticate('jwt',{session:false}),(req,res) => {
+    var idpub = req.params.id_pub
+    var access_token = req.body.access_token
+    var pub = req.body.pub
+    var loggedToken = jwt.verify(access_token,'myFacebook',jwt_options.verifyOptions)
+    var loggedUser = loggedToken.user.email
+    if(loggedUser == pub.origin_email) {
+        pubsController.atualizar(idpub,pub)
+        res.jsonp({m: "sucesso!"})
+    } else {
+        res.jsonp({m: "insucesso!"})
+    }
 
 })
 

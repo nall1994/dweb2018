@@ -79,6 +79,229 @@ router.post('/newEventoProf',passport.authenticate('jwt',{session:false, failure
 
 })
 
+router.get('/edit/:pubid',passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}), (req,res) => {
+  var id_pub = req.params.pubid
+  obj = {
+    access_token: req.session.token
+  }
+  axiosConfig = {
+    params: obj
+  }
+  var loggedUser = req.user.email
+  axios.get('http://localhost:3000/api/pubs/' + id_pub, axiosConfig)
+    .then(pub => {
+      pub = pub.data
+      if(pub.origin_email == loggedUser) {
+        obj.email = loggedUser
+        axiosConfig = {params: obj}
+        axios.get('http://localhost:3000/api/users', axiosConfig)
+          .then(userdata => {
+            if(pub.tipo == 'receita') {
+              pub.dados.receita.ingredientes = pub.dados.receita.textoEstruturado.split(';')[0]
+              pub.dados.receita.instrucoes = pub.dados.receita.textoEstruturado.split(';')[1]
+            } else if(pub.tipo == 'evento') {
+              pub.dados.evento.dataEvento = pub.dados.evento.dataEvento.split(" ")[0].split("-")
+              console.log(pub.dados.evento.dataEvento)
+              var newDate = ""
+              for(var i = 2; i >= 0; i--) {
+                if(i == 0) newDate += pub.dados.evento.dataEvento[i]
+                else newDate += pub.dados.evento.dataEvento[i] + "-"
+                console.log(newDate)
+              }
+              pub.dados.evento.dataEvento = newDate
+            } else if(pub.tipo == 'eventoProfissional') {
+              pub.dados.eventoProfissional.dataEvento = pub.dados.eventoProfissional.dataEvento.split(" ")[0].split("-")
+              var newDate = ""
+              for(var i = 2; i >= 0; i--) {
+                if(i == 0) newDate += pub.dados.eventoProfissional.dataEvento[i]
+                else newDate += pub.dados.eventoProfissional.dataEvento[i] + "-"
+              }
+              pub.dados.eventoProfissional.dataEvento = newDate
+            } else if(pub.tipo='album') {
+              var dataHoje = new Date().toISOString().split('T')[0]
+              pub.dados.album.dataHoje = dataHoje
+            }           
+            res.render('editpub',{publicacao: pub, classificadores: userdata.data.classificadores})
+          } )
+          .catch(error => res.render('error',{e: error}))    
+      }    
+      else res.redirect('/users/homepage/' + loggedUser)
+    })
+    .catch(error => res.render('error',{e: error}))
+})
+
+router.post('/edit/:pubid',passport.authenticate('jwt',{session:false, failureRedirect:'/users/login'}),(req,res) => {
+  var pubid = req.params.pubid
+  var form = formidable.IncomingForm()
+  obj = {
+    access_token: req.session.token
+  }
+  axiosConfig = {
+    params: obj
+  }
+
+  form.parse(req,(erro,fields,files) => {
+    var tipo = fields.tipo
+    var email = fields.origin_email
+    var loggedUser = req.user.email
+    if(loggedUser != email) {
+      res.redirect('/users/homepage/' + loggedUser)
+    } else {
+      if(tipo == 'receita') {
+        axios.get('http://localhost:3000/api/pubs/' + pubid,axiosConfig)
+          .then(pub => {
+            pub = pub.data
+            var te = fields.ingredientes + ";" + fields.instrucoes
+            pub.dados.receita.textoEstruturado = te
+            if(fields.titulo != pub.dados.receita.titulo && fields.titulo != '') pub.dados.receita.titulo = fields.titulo
+            pub.dados.receita.classificacoes.length = 0
+            if(fields.hashtags) {
+              if(fields.hashtags.length) {
+                for(var i = 0; i < fields.hashtags.length; i++) pub.dados.receita.classificacoes.push(fields.hashtags[i])
+              } else pub.dados.receita.classificacoes.push(fields.hashtags)
+            }
+            if(fields.isPrivate == 'true') pub.dados.receita.isPrivate = true
+            else pub.dados.receita.isPrivate = false
+            var config = {
+              access_token: req.session.token,
+              pub: pub
+            }
+            axios.post('http://localhost:3000/api/pubs/' + pubid + '/edit',config)
+              .then(m => res.redirect('/users/homepage/' + loggedUser))
+              .catch(error => res.render('error',{e:error}))
+          }).catch(error => res.render('error',{e: error}))
+
+      } else if(tipo == 'ideia') {
+        axios.get('http://localhost:3000/api/pubs/' + pubid,axiosConfig)
+          .then(pub => {
+            pub = pub.data
+            if(fields.titulo != '') pub.dados.ideia.titulo = fields.titulo
+            if(fields.descricao != '') pub.dados.ideia.descricao = fields.descricao
+            if(fields.classificadores != '') pub.dados.ideia.classificadores = fields.classificadores.split(',')
+            if(fields.hashtags) {
+              if(fields.hashtags.length) {
+                for(var i = 0; i < fields.hashtags.length; i++) pub.dados.ideia.classificacoes.push(fields.hashtags[i])
+              } else pub.dados.ideia.classificacoes.push(fields.hashtags)
+            }
+            if(fields.isPrivate == 'true') pub.dados.ideia.isPrivate = true
+            else pub.dados.ideia.isPrivate = false
+            var config = {
+              access_token: req.session.token,
+              pub: pub
+            }
+            axios.post('http://localhost:3000/api/pubs/' + pubid + "/edit",config)
+              .then(m => res.redirect('/users/homepage/' + loggedUser))
+              .catch(error => res.render('error',{e: error}))
+          }).catch(error => res.render('error', {e: error}))
+
+      } else if(tipo == 'evento') {
+        axios.get('http://localhost:3000/api/pubs/' + pubid, axiosConfig)
+          .then(pub => {
+            pub = pub.data
+            if(fields.titulo != '') pub.dados.evento.titulo = fields.titulo
+            if(fields.local != '') pub.dados.evento.local = fields.local
+            if(fields.convidados != '') pub.dados.evento.convidados = fields.convidados.split('\n')
+            if(fields.descricao != '') pub.dados.evento.descricao = fields.descricao
+            var dataParams = fields.dataEvento.split('-')
+            var data = ""
+            for(var i = 2; i>= 0; i--) {
+              if(i == 0) data += dataParams[i]
+              else data += dataParams[i] + "-"
+            }
+            pub.dados.evento.dataEvento = data
+            if(fields.hashtags) {
+              if(fields.hashtags.length) {
+                for(var i = 0; i < fields.hashtags.length; i++) pub.dados.evento.classificacoes.push(fields.hashtags[i])
+              } else pub.dados.evento.classificacoes.push(fields.hashtags)
+            }
+            if(fields.isPrivate == 'true') pub.dados.evento.isPrivate = true
+            else pub.dados.evento.isPrivate = false
+            var config = {
+              access_token: req.session.token,
+              pub: pub
+            }
+            axios.post('http://localhost:3000/api/pubs/' + pubid + "/edit",config)
+              .then(m => res.redirect('/users/homepage/' + loggedUser))
+              .catch(error => res.render('error',{e: error}))
+          }).catch(error => res.render('error', {e: error}))
+
+      } else if(tipo == 'eventoProfissional') {
+          axios.get('http://localhost:3000/api/pubs/' + pubid,axiosConfig)
+            .then(pub => {
+              pub = pub.data
+              if(fields.titulo != '') pub.dados.eventoProfissional.titulo = fields.titulo
+              if(fields.local != '') pub.dados.eventoProfissional.local = fields.local
+              if(fields.oradores != '') pub.dados.eventoProfissional.oradores = fields.oradores.split('\n')
+              if(fields.descricao != '') pub.dados.eventoProfissional.descricao = fields.descricao
+              var dataParams = fields.dataEvento.split('-')
+              var data = ""
+              for(var i = 2; i>= 0; i--) {
+                if(i == 0) data += dataParams[i]
+                else data += dataParams[i] + "-"
+              }
+              pub.dados.eventoProfissional.dataEvento = data
+              if(fields.hashtags) {
+                if(fields.hashtags.length) {
+                  for(var i = 0; i < fields.hashtags.length; i++) pub.dados.eventoProfissional.classificacoes.push(fields.hashtags[i])
+                } else pub.dados.eventoProfissional.classificacoes.push(fields.hashtags)
+              }
+              if(fields.isPrivate == 'true') pub.dados.eventoProfissional.isPrivate = true
+              else pub.dados.eventoProfissional.isPrivate = false
+              if(files.ficheiros.size > 0) {
+                var fs_enviado = files.ficheiros.path
+                var fs_novo = __dirname + '../public/uploaded/' + pub.origin_email + '/' + files.ficheiros.name
+                fs.rename(fs_enviado,fs_novo, (err) => {
+                  if(!err) {
+                    pub.dados.eventoProfissional.ficheiros.push('http://localhost:3000/uploaded/' + pub.origin_email + '/' + files.ficheiros.name)
+                    var config = {
+                      access_token: req.session.token,
+                      pub: pub
+                    }
+                    axios.post('http://localhost:3000/api/pubs/' + pubid + '/edit',config)
+                      .then(m => res.redirect('/users/homepage/' + pub.origin_email))
+                      .catch(error => res.render('error',{e: error}))
+                  }
+                })
+              }
+            }).catch(error => res.render('error',{e: error}))
+
+      } else if(tipo == 'formacao') {
+          axios.get('http://localhost:3000/api/pubs/' + pubid,axiosConfig)
+            .then(pub => {
+              pub = pub.data
+              if(fields.titulo != '') pub.dados.formacao.titulo = fields.titulo
+              if(fields.creditacao != '') pub.dados.formacao.creditacao = fields.creditacao
+              if(fields.instituicao != '') pub.dados.formacao.instituicao = fields.instituicao
+              if(fields.descricao != '') pub.dados.formacao.descricao = fields.descricao
+              
+              if(fields.hashtags) {
+                if(fields.hashtags.length) {
+                  for(var i = 0; i < fields.hashtags.length; i++) pub.dados.formacao.classificacoes.push(fields.hashtags[i])
+                } else pub.dados.formacao.classificacoes.push(fields.hashtags)
+              }
+              if(fields.isPrivate == 'true') pub.dados.formacao.isPrivate = true
+              else pub.dados.formacao.isPrivate = false
+
+              var config = {
+                access_token: req.session.token,
+                pub: pub
+              }
+
+              axios.post('http://localhost:3000/api/pubs/' + pubid + '/edit',config)
+                .then(m => res.redirect('/users/homepage/' + pub.origin_email))
+                .catch(error => res.render('error',{e: error}))
+              
+            }).catch(error => res.render('error',{e: error}))
+
+      } else if(tipo == 'desportivo') {
+
+      } else if(tipo == 'album') {
+
+      }
+    }
+  })
+})
+
 router.get('/:email/filter',passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}),(req,res) => {
   var dataMinima = req.query.dataMinima
   var hashtags = req.query.filtroHashtag
