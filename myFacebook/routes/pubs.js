@@ -101,8 +101,6 @@ router.post('/newEventoProf',passport.authenticate('jwt',{session:false, failure
 
 router.post('/:pubid/delete',passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}),(req,res) => {
   var pubid = req.params.pubid
-  //fazer o get da publicação e apagar todos os ficheiros relacionados
-  //axios post para a pi apagar a publicação da base de dados
   obj = {
     access_token: req.session.token
   }
@@ -113,8 +111,10 @@ router.post('/:pubid/delete',passport.authenticate('jwt',{session:false, failure
       if(pub.tipo == 'album') {
         var fotos = pub.dados.album.fotos
         for(var i = 0; i< fotos.length;i++) {
-          var fotoInfoObj = fotos[i]
-          fs.unlink(fotoInfoObj.foto,err => {
+          var element = fotos[i].foto.split('/')
+          var file_name = element[element.length - 1]
+          var path = __dirname + '/../public/uploaded/' + req.user.email + '/' + file_name
+          fs.unlink(path,err => {
             if(err) throw err
           })
         }
@@ -133,21 +133,30 @@ router.post('/:pubid/delete',passport.authenticate('jwt',{session:false, failure
       } else if(pub.tipo == 'desportivo') {
         var fotos_array = pub.dados.desportivo.fotos
         var gpx_file = pub.dados.desportivo.ficheiro_gpx
-        for(var i = 0; i< files_array.length; i++) {
-          var path = fotos_array[i]
+        for(var i = 0; i< fotos_array.length; i++) {
+          var element = fotos_array[i].split('/')
+          var file_name = element[element.length-1]
+          var path = __dirname + '/../public/uploaded/' + req.user.email + '/' + file_name
+          console.log(path)
           fs.unlink(path,err => {
             if(err) throw err
           })
         }
-        fs.unlink(gpx_file,err => {
+        var element = gpx_file.split('/')
+        var file_name = element[element.length -1]
+        var path = __dirname + '/../public/uploaded/' + req.user.email + '/' + file_name
+        console.log(path)
+        fs.unlink(path,err => {
           if(err) throw err
         })
       }
+
+      axios.post('http://localhost:3000/api/pubs/' + pubid + '/delete',obj)
+        .then(m => res.redirect('/users/homepage/' + req.user.email))
+        .catch(error => res.render('error',{e: error}))
     }).catch(error => res.render('error',{e: error}))
 
-  axios.post('http://localhost:3000/api/pubs/' + pubid + '/delete',obj)
-    .then(m => res.redirect('/users/homepage/' + req.user.email))
-    .catch(error => res.render('error',{e: error}))
+  
 })
 
 router.get('/edit/:pubid',passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}), (req,res) => {
