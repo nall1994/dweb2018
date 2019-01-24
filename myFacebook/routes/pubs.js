@@ -20,6 +20,20 @@ router.post('/newComment',passport.authenticate('jwt',{session:false, failureRed
 router.post('/newPub',passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}),(req,res)=>{
 
   req.body.access_token = req.session.token
+  console.log('got here!')
+  if(req.body.tipo == 'evento') {
+    console.log('entered')
+    var newDate = ""
+    console.log(req.body.dados.evento.dataEvento)
+    var d = req.body.dados.evento.dataEvento.split("-")
+    console.log('splitted')
+    for(var i = 2; i>=0; i--) {
+      if(i == 0) newDate += d[i]
+      else newDate += d[i] + "-"
+    }
+    req.body.dados.evento.dataEvento = newDate
+  }
+  
   
   axios.post('http://localhost:3000/api/pubs/newPub',req.body)
                 .then(message => res.jsonp(message))
@@ -53,11 +67,16 @@ router.post('/newEventoProf',passport.authenticate('jwt',{session:false, failure
         path.push("http://localhost:3000/uploaded/"+ fields.origin_email  + '/'  + data["ficheiro"+i].name)
       }
 
-    
+      var newDate = ""
+      var d = fields.dataEvento.split("-")
+      for(var i = 2; i>=0; i--) {
+        if(i == 0) newDate += d[i]
+        else newDate += d[i] + "-"
+      }
       var data = {
                     titulo : fields.titulo,
                     descricao:fields.descricao,
-                    dataEvento : fields.dataEvento,
+                    dataEvento : newDate,
                     local:fields.local,
                     oradores : fields.oradores,
                     ficheiros : path
@@ -117,10 +136,11 @@ router.get('/edit/:pubid',passport.authenticate('jwt',{session:false, failureRed
                 else newDate += pub.dados.eventoProfissional.dataEvento[i] + "-"
               }
               pub.dados.eventoProfissional.dataEvento = newDate
-            } else if(pub.tipo='album') {
+            } else if(pub.tipo=='album') {
               var dataHoje = new Date().toISOString().split('T')[0]
               pub.dados.album.dataHoje = dataHoje
-            }           
+            }
+            console.log(pub)          
             res.render('editpub',{publicacao: pub, classificadores: userdata.data.classificadores})
           } )
           .catch(error => res.render('error',{e: error}))    
@@ -154,14 +174,8 @@ router.post('/edit/:pubid',passport.authenticate('jwt',{session:false, failureRe
             var te = fields.ingredientes + ";" + fields.instrucoes
             pub.dados.receita.textoEstruturado = te
             if(fields.titulo != pub.dados.receita.titulo && fields.titulo != '') pub.dados.receita.titulo = fields.titulo
-            pub.dados.receita.classificacoes.length = 0
-            if(fields.hashtags) {
-              if(fields.hashtags.length) {
-                for(var i = 0; i < fields.hashtags.length; i++) pub.dados.receita.classificacoes.push(fields.hashtags[i])
-              } else pub.dados.receita.classificacoes.push(fields.hashtags)
-            }
-            if(fields.isPrivate == 'true') pub.dados.receita.isPrivate = true
-            else pub.dados.receita.isPrivate = false
+            if(fields.isPrivate == 'true') pub.isPrivate = true
+            else pub.isPrivate = false
             var config = {
               access_token: req.session.token,
               pub: pub
@@ -178,13 +192,8 @@ router.post('/edit/:pubid',passport.authenticate('jwt',{session:false, failureRe
             if(fields.titulo != '') pub.dados.ideia.titulo = fields.titulo
             if(fields.descricao != '') pub.dados.ideia.descricao = fields.descricao
             if(fields.classificadores != '') pub.dados.ideia.classificadores = fields.classificadores.split(',')
-            if(fields.hashtags) {
-              if(fields.hashtags.length) {
-                for(var i = 0; i < fields.hashtags.length; i++) pub.dados.ideia.classificacoes.push(fields.hashtags[i])
-              } else pub.dados.ideia.classificacoes.push(fields.hashtags)
-            }
-            if(fields.isPrivate == 'true') pub.dados.ideia.isPrivate = true
-            else pub.dados.ideia.isPrivate = false
+            if(fields.isPrivate == 'true') pub.isPrivate = true
+            else pub.isPrivate = false
             var config = {
               access_token: req.session.token,
               pub: pub
@@ -209,13 +218,8 @@ router.post('/edit/:pubid',passport.authenticate('jwt',{session:false, failureRe
               else data += dataParams[i] + "-"
             }
             pub.dados.evento.dataEvento = data
-            if(fields.hashtags) {
-              if(fields.hashtags.length) {
-                for(var i = 0; i < fields.hashtags.length; i++) pub.dados.evento.classificacoes.push(fields.hashtags[i])
-              } else pub.dados.evento.classificacoes.push(fields.hashtags)
-            }
-            if(fields.isPrivate == 'true') pub.dados.evento.isPrivate = true
-            else pub.dados.evento.isPrivate = false
+            if(fields.isPrivate == 'true') pub.isPrivate = true
+            else pub.isPrivate = false
             var config = {
               access_token: req.session.token,
               pub: pub
@@ -240,18 +244,12 @@ router.post('/edit/:pubid',passport.authenticate('jwt',{session:false, failureRe
                 else data += dataParams[i] + "-"
               }
               pub.dados.eventoProfissional.dataEvento = data
-              if(fields.hashtags) {
-                if(fields.hashtags.length) {
-                  for(var i = 0; i < fields.hashtags.length; i++) pub.dados.eventoProfissional.classificacoes.push(fields.hashtags[i])
-                } else pub.dados.eventoProfissional.classificacoes.push(fields.hashtags)
-              }
-              if(fields.isPrivate == 'true') pub.dados.eventoProfissional.isPrivate = true
-              else pub.dados.eventoProfissional.isPrivate = false
+              if(fields.isPrivate == 'true') pub.isPrivate = true
+              else pub.isPrivate = false
               if(files.ficheiros.size > 0) {
                 var fs_enviado = files.ficheiros.path
-                var fs_novo = __dirname + '../public/uploaded/' + pub.origin_email + '/' + files.ficheiros.name
+                var fs_novo = __dirname + '/../public/uploaded/' + pub.origin_email + '/' + files.ficheiros.name
                 fs.rename(fs_enviado,fs_novo, (err) => {
-                  if(!err) {
                     pub.dados.eventoProfissional.ficheiros.push('http://localhost:3000/uploaded/' + pub.origin_email + '/' + files.ficheiros.name)
                     var config = {
                       access_token: req.session.token,
@@ -260,12 +258,20 @@ router.post('/edit/:pubid',passport.authenticate('jwt',{session:false, failureRe
                     axios.post('http://localhost:3000/api/pubs/' + pubid + '/edit',config)
                       .then(m => res.redirect('/users/homepage/' + pub.origin_email))
                       .catch(error => res.render('error',{e: error}))
-                  }
                 })
+              } else {
+                var config = {
+                  access_token: req.session.token,
+                  pub: pub
+                }
+                axios.post('http://localhost:3000/api/pubs/' + pubid + '/edit',config)
+                  .then(m => res.redirect('/users/homepage/' + pub.origin_email))
+                  .catch(error => res.render('error',{e: error}))
+
               }
             }).catch(error => res.render('error',{e: error}))
 
-      } else if(tipo == 'formacao') {
+      } else if(tipo == 'creditacao') {
           axios.get('http://localhost:3000/api/pubs/' + pubid,axiosConfig)
             .then(pub => {
               pub = pub.data
@@ -273,14 +279,8 @@ router.post('/edit/:pubid',passport.authenticate('jwt',{session:false, failureRe
               if(fields.creditacao != '') pub.dados.formacao.creditacao = fields.creditacao
               if(fields.instituicao != '') pub.dados.formacao.instituicao = fields.instituicao
               if(fields.descricao != '') pub.dados.formacao.descricao = fields.descricao
-              
-              if(fields.hashtags) {
-                if(fields.hashtags.length) {
-                  for(var i = 0; i < fields.hashtags.length; i++) pub.dados.formacao.classificacoes.push(fields.hashtags[i])
-                } else pub.dados.formacao.classificacoes.push(fields.hashtags)
-              }
-              if(fields.isPrivate == 'true') pub.dados.formacao.isPrivate = true
-              else pub.dados.formacao.isPrivate = false
+              if(fields.isPrivate == 'true') pub.isPrivate = true
+              else pub.isPrivate = false
 
               var config = {
                 access_token: req.session.token,
@@ -294,9 +294,99 @@ router.post('/edit/:pubid',passport.authenticate('jwt',{session:false, failureRe
             }).catch(error => res.render('error',{e: error}))
 
       } else if(tipo == 'desportivo') {
+        axios.get('http://localhost:3000/api/pubs/' + pubid,axiosConfig)
+          .then(pub => {
+            pub = pub.data
+              if(fields.titulo != '') pub.dados.desportivo.titulo = fields.titulo
+              if(fields.atividade != '') pub.dados.desportivo.atividade = fields.atividade
+              if(fields.duracao != '') pub.dados.desportivo.duracao = fields.duracao
+              if(fields.descricao != '') pub.dados.desportivo.descricao = fields.descricao
+              if(fields.isPrivate == 'true') pub.isPrivate = true
+              else pub.isPrivate = false
+              if(files.fotos.size > 0) {
+                var fs_enviado = files.fotos.path
+                var fs_novo = __dirname + '/../public/uploaded/' + loggedUser + '/' + files.fotos.name
+                fs.renameSync(fs_enviado,fs_novo)
+                pub.dados.desportivo.fotos.push('http://localhost:3000/uploaded/' + pub.origin_email + "/" + files.fotos.name)
+              } else {
+                var config = {
+                  access_token: req.session.token,
+                  pub: pub
+                }
+                axios.post('http://localhost:3000/api/pubs/' + pubid + '/edit',config)
+                  .then(m => res.redirect('/users/homepage/' + pub.origin_email))
+                  .catch(error => res.render('error',{e: error}))
+              }
+              if(files.ficheiro_gpx.size > 0) {
+                fs_enviado = files.ficheiro_gpx.path
+                fs_novo = __dirname + '/../public/uploaded/' + loggedUser + '/' + files.ficheiro_gpx.name
+                fs.renameSync(fs_enviado,fs_novo)
+                pub.dados.desportivo.fotos.push('http://localhost:3000/uploaded/' + pub.origin_email + '/' + files.fotos.name)
+                pub.dados.desportivo.ficheiro_gpx = 'http://localhost:3000/uploaded/' + pub.origin_email + '/' + files.ficheiro_gpx.name
+                var config = {
+                  access_token: req.session.token,
+                  pub: pub
+                }
+                axios.post('http://localhost:3000/api/pubs/' + pubid + '/edit',config)
+                  .then(m => res.redirect('/users/homepage/' + pub.origin_email))
+                  .catch(error => res.render('error',{e: error}))
+              } else {
+                var config = {
+                  access_token: req.session.token,
+                  pub: pub
+                }
+                axios.post('http://localhost:3000/api/pubs/' + pubid + '/edit',config)
+                  .then(m => res.redirect('/users/homepage/' + pub.origin_email))
+                  .catch(error => res.render('error',{e: error}))
+                }
+          }).catch(error => res.render('error',{e: error}))
 
       } else if(tipo == 'album') {
-
+          axios.get('http://localhost:3000/api/pubs/' + pubid,axiosConfig)
+            .then(pub => {
+              pub = pub.data
+              if(fields.titulo != '') pub.dados.album.titulo = fields.titulo
+              if(fields.descricao != '') pub.dados.album.descricao = fields.descricao
+              var fotoInfoObj = {
+                dataFoto: "",
+                foto: "",
+                local: ""
+              }
+              fotoInfoObj.local = fields.local
+              var dataParams = fields.dataFoto.split('-')
+              var data = ""
+              for(var i = 2; i>= 0; i--) {
+                if(i == 0) data += dataParams[i]
+                else data += dataParams[i] + "-"
+              }
+              fotoInfoObj.dataFoto = data
+              if(fields.isPrivate == 'true') pub.isPrivate = true
+              else pub.isPrivate = false
+              if(files.foto.size > 0) {
+                var fs_enviado = files.foto.path
+                var fs_novo = __dirname + '/../public/uploaded/' + pub.origin_email + '/' + files.foto.name
+                fs.rename(fs_enviado,fs_novo,err => {
+                    console.log('first rename')
+                    fotoInfoObj.foto = 'http://localhost:3000/uploaded/' + pub.origin_email + '/' + files.foto.name
+                    pub.dados.album.fotos.push(fotoInfoObj)
+                    var config = {
+                      access_token: req.session.token,
+                      pub: pub
+                    }
+                    axios.post('http://localhost:3000/api/pubs/' + pubid + '/edit',config)
+                      .then(m => res.redirect('/users/homepage/' + pub.origin_email))
+                      .catch(error => res.render('error',{e: error}))
+                })
+              } else {
+                var config = {
+                  access_token: req.session.token,
+                  pub: pub
+                }
+                axios.post('http://localhost:3000/api/pubs/' + pubid + '/edit',config)
+                  .then(m => res.redirect('/users/homepage/' + pub.origin_email))
+                  .catch(error => res.render('error',{e: error}))
+              }
+            }).catch(error => res.render('error',{e:error}))
       }
     }
   })

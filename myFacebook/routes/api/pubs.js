@@ -4,7 +4,6 @@ var passport = require('passport')
 var jwt_options = require('../../auth/jwt_options')
 var jwt = require('jsonwebtoken')
 var pubsController = require('../../controllers/Pubs')
-var formidable = require("formidable")
 
 router.get('/fromUser',passport.authenticate('jwt',{session:false}),(req,res) => {
     var fromUser = req.query.email
@@ -120,7 +119,6 @@ router.get('/:id_pub',passport.authenticate('jwt',{session:false}),(req,res) => 
     var idpub = req.params.id_pub
     pubsController.consultaID(idpub)
         .then(pub => {
-            console.log('entered consult')
             res.jsonp(pub)
         })
         .catch(error => res.status(500).send('Erro na consulta de publicação'))
@@ -134,7 +132,11 @@ router.post('/:id_pub/edit',passport.authenticate('jwt',{session:false}),(req,re
     var loggedUser = loggedToken.user.email
     if(loggedUser == pub.origin_email) {
         pubsController.atualizar(idpub,pub)
-        res.jsonp({m: "sucesso!"})
+            .then(pub => {
+                res.jsonp({m: "sucesso!"})
+            })
+            .catch(error => res.jsonp({m: 'Insucesso!'}))
+        
     } else {
         res.jsonp({m: "insucesso!"})
     }

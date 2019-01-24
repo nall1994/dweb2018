@@ -72,9 +72,6 @@ block content
                     label
                         b.w3-text-teal Explicação da ideia
                     textarea.w3-input.w3-border(name='descricao')= publicacao.dados.ideia.descricao
-                    label
-                        b.w3-text-teal Classificadores de ideia
-                    input.w3-input.w3-border(type='text' name='classificadores' value=publicacao.dados.ideia.classificadores)
 
                 if publicacao.tipo == 'album'
                     label
@@ -112,8 +109,7 @@ block content
                     label
                         b.w3-text-teal Adicionar ficheiro GPX
                     input.w3-input.w3-border(type='file' name='ficheiro_gpx' accept='.gpx')
-
-                if publicacao.tipo == 'formacao'
+                if publicacao.tipo == 'creditacao'
                     label
                         b.w3-text-teal Título da formação
                     input.w3-input.w3-border(type='text' name='titulo' value=publicacao.dados.formacao.titulo)
@@ -126,25 +122,6 @@ block content
                     label
                         b.w3-text-teal Descrição da formação
                     textarea.w3-input.w3-border(type='text' name='descricao')= publicacao.dados.formacao.descricao
-                
-                label
-                    b.w3-text-teal Hashtags
-                br
-                each hashtag in classificadores
-                    -var checked = false
-                    each c in publicacao.classificacoes
-                        if c == hashtag
-                            - checked = true
-                    if checked == true
-                        input(class="w3-check" type='checkbox' name="hashtag" value=hashtag checked)
-                        label(for=hashtag)=hashtag
-                        t
-                        t
-                    else
-                        input(class="w3-check" type='checkbox' name="hashtag" value=hashtag)
-                        label(for=hashtag)=hashtag
-                        t
-                        t
                 br
                 br
                 label
