@@ -226,6 +226,10 @@ router.get('/homepage/:email',passport.authenticate('jwt',{session:false, failur
       .catch(erro => res.render('error', {e: erro}))
   })
 
+  router.get('/admin',(req,res) => {
+    res.render('admin_login')
+  })
+
   router.get('/logout',(req,res) => {
     req.logout()
     req.session.destroy(() => {

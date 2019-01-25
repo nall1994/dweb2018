@@ -130,7 +130,7 @@ router.post('/:pubid/delete',passport.authenticate('jwt',{session:false, failure
           for(var i = 0; i< fotos.length;i++) {
             var element = fotos[i].foto.split('/')
             var file_name = element[element.length - 1]
-            var path = __dirname + '/../public/uploaded/' + req.user.email + '/' + file_name
+            var path = __dirname + '/../public/uploaded/' + req.user.email + '/' + pub._id + '/'+ file_name
             fs.unlink(path,err => {
               if(err) throw err
             })
@@ -141,7 +141,7 @@ router.post('/:pubid/delete',passport.authenticate('jwt',{session:false, failure
           for(var i = 0; i< files_array.length; i++) {
             var element = files_array[i].split('/')
             var file_name = element[element.length-1]
-            var path = __dirname + '/../public/uploaded/' + req.user.email + '/' + file_name
+            var path = __dirname + '/../public/uploaded/' + req.user.email + '/' + pub._id + '/' + file_name
             fs.unlink(path,err => {
               if(err) throw err
             })
@@ -153,7 +153,7 @@ router.post('/:pubid/delete',passport.authenticate('jwt',{session:false, failure
           for(var i = 0; i< fotos_array.length; i++) {
             var element = fotos_array[i].split('/')
             var file_name = element[element.length-1]
-            var path = __dirname + '/../public/uploaded/' + req.user.email + '/' + file_name
+            var path = __dirname + '/../public/uploaded/' + req.user.email + '/' + pub._id + '/' + file_name
             console.log(path)
             fs.unlink(path,err => {
               if(err) throw err
@@ -161,7 +161,7 @@ router.post('/:pubid/delete',passport.authenticate('jwt',{session:false, failure
           }
           var element = gpx_file.split('/')
           var file_name = element[element.length -1]
-          var path = __dirname + '/../public/uploaded/' + req.user.email + '/' + file_name
+          var path = __dirname + '/../public/uploaded/' + req.user.email + '/' + pub._id + '/' + file_name
           console.log(path)
           fs.unlink(path,err => {
             if(err) throw err
