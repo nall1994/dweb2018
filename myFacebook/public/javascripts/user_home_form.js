@@ -568,7 +568,7 @@ function ajaxPostEventoProf(pub){
             window.location.reload(true)
         },
         error : e => {
-            alert('Erro no post: ' + e)
+            alert('Erro no post: ' + JSON.stringify(e))
             console.log("Erro no post: " +e)
         }        
     })

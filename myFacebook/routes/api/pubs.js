@@ -167,7 +167,9 @@ router.post('/newPub',passport.authenticate('jwt',{session:false}), async (req,r
     pub.dados =dados
     if (req.body.classificadores!="") pub.classificacoes= req.body.classificacoes.split(",").slice(0,-1)
     pubsController.inserir(pub)
-    .then( msg => res.jsonp(msg))
+    .then( msg => {
+        res.jsonp(msg)
+    } )
     .catch(error => res.status(500).send(JSON.stringify(error)))
 
 })

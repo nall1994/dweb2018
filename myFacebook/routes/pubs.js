@@ -88,7 +88,27 @@ router.post('/newEventoProf',passport.authenticate('jwt',{session:false, failure
       evento.access_token = req.session.token
       axios.post('http://localhost:3000/api/pubs/newPub',evento)
                 .then(message => {
-                  res.jsonp(message)
+                  pub = message.data
+                    var files = pub.dados.eventoProfissional.ficheiros
+                    fs.mkdirSync('public/uploaded/' + pub.origin_email + '/' + pub._id)
+                    var old_path = __dirname + '/../public/uploaded/' + pub.origin_email + '/'
+                    var new_path = __dirname + '/../public/uploaded/' + pub.origin_email + '/' + pub._id + '/'
+                    for(var i = 0; i < files.length; i++) {
+                      var element = files[i].split('/')
+                      var file_name = element[element.length - 1]
+                      var fs_old = old_path + file_name
+                      var fs_new = new_path + file_name
+                      files[i] = 'http://localhost:3000/uploaded/' + pub.origin_email + '/' + pub._id + '/' + file_name
+                      fs.renameSync(fs_old,fs_new)   
+                    }
+                    pub.dados.eventoProfissional.ficheiros = files
+                    var obj = {
+                      access_token : req.session.token,
+                      pub: pub
+                    }
+                    axios.post('http://localhost:3000/api/pubs/' + pub._id + '/edit',obj)
+                      .then(m => res.jsonp(pub))
+                      .catch(error => res.render('error',{e:error}))                   
                 })
                 .catch(erro => res.render('error', {e: erro}))
   })
@@ -310,9 +330,9 @@ router.post('/edit/:pubid',passport.authenticate('jwt',{session:false, failureRe
               else pub.isPrivate = false
               if(files.ficheiros.size > 0) {
                 var fs_enviado = files.ficheiros.path
-                var fs_novo = __dirname + '/../public/uploaded/' + pub.origin_email + '/' + files.ficheiros.name
+                var fs_novo = __dirname + '/../public/uploaded/' + pub.origin_email + '/' + pub._id + '/' + files.ficheiros.name
                 fs.rename(fs_enviado,fs_novo, (err) => {
-                    pub.dados.eventoProfissional.ficheiros.push('http://localhost:3000/uploaded/' + pub.origin_email + '/' + files.ficheiros.name)
+                    pub.dados.eventoProfissional.ficheiros.push('http://localhost:3000/uploaded/' + pub.origin_email + '/' + pub._id + '/' + files.ficheiros.name)
                     var config = {
                       access_token: req.session.token,
                       pub: pub
@@ -367,24 +387,15 @@ router.post('/edit/:pubid',passport.authenticate('jwt',{session:false, failureRe
               else pub.isPrivate = false
               if(files.fotos.size > 0) {
                 var fs_enviado = files.fotos.path
-                var fs_novo = __dirname + '/../public/uploaded/' + loggedUser + '/' + files.fotos.name
+                var fs_novo = __dirname + '/../public/uploaded/' + loggedUser + '/' + pub._id + '/' + files.fotos.name
                 fs.renameSync(fs_enviado,fs_novo)
-                pub.dados.desportivo.fotos.push('http://localhost:3000/uploaded/' + pub.origin_email + "/" + files.fotos.name)
-              } else {
-                var config = {
-                  access_token: req.session.token,
-                  pub: pub
-                }
-                axios.post('http://localhost:3000/api/pubs/' + pubid + '/edit',config)
-                  .then(m => res.redirect('/users/homepage/' + pub.origin_email))
-                  .catch(error => res.render('error',{e: error}))
-              }
+                pub.dados.desportivo.fotos.push('http://localhost:3000/uploaded/' + pub.origin_email + "/" + pub._id +'/' + files.fotos.name)
+              } 
               if(files.ficheiro_gpx.size > 0) {
                 fs_enviado = files.ficheiro_gpx.path
-                fs_novo = __dirname + '/../public/uploaded/' + loggedUser + '/' + files.ficheiro_gpx.name
+                fs_novo = __dirname + '/../public/uploaded/' + loggedUser + '/' + pub._id + '/' + files.ficheiro_gpx.name
                 fs.renameSync(fs_enviado,fs_novo)
-                pub.dados.desportivo.fotos.push('http://localhost:3000/uploaded/' + pub.origin_email + '/' + files.fotos.name)
-                pub.dados.desportivo.ficheiro_gpx = 'http://localhost:3000/uploaded/' + pub.origin_email + '/' + files.ficheiro_gpx.name
+                pub.dados.desportivo.ficheiro_gpx = 'http://localhost:3000/uploaded/' + pub.origin_email + '/' + pub._id + '/' + files.ficheiro_gpx.name
                 var config = {
                   access_token: req.session.token,
                   pub: pub
@@ -426,10 +437,10 @@ router.post('/edit/:pubid',passport.authenticate('jwt',{session:false, failureRe
               else pub.isPrivate = false
               if(files.foto.size > 0) {
                 var fs_enviado = files.foto.path
-                var fs_novo = __dirname + '/../public/uploaded/' + pub.origin_email + '/' + files.foto.name
+                var fs_novo = __dirname + '/../public/uploaded/' + pub.origin_email + '/' + pub._id + '/' + files.foto.name
                 fs.rename(fs_enviado,fs_novo,err => {
                     console.log('first rename')
-                    fotoInfoObj.foto = 'http://localhost:3000/uploaded/' + pub.origin_email + '/' + files.foto.name
+                    fotoInfoObj.foto = 'http://localhost:3000/uploaded/' + pub.origin_email + '/' + pub._id + '/' + files.foto.name
                     pub.dados.album.fotos.push(fotoInfoObj)
                     var config = {
                       access_token: req.session.token,
@@ -728,10 +739,8 @@ router.get('/:email/filter',passport.authenticate('jwt',{session:false, failureR
       axios.get('http://localhost:3000/api/users/isFav/?emailFav='+req.params.email,axiosConfig)
           .then(dados=>{
               var isFav = false
-              console.log("teste");
               if (dados.data) isFav = true
               else isFav = false
-              console.log("isfav:"+isFav);
               axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
                 .then(pubs => {
                   pubs = pubs.data
@@ -988,7 +997,37 @@ router.post('/newDesp',passport.authenticate('jwt',{session:false, failureRedire
       }
       desportivo.access_token = req.session.token
       axios.post('http://localhost:3000/api/pubs/newPub',desportivo)
-                .then(message => res.jsonp(message))
+                .then(message => {
+                      pub = message.data
+                      var fotos = pub.dados.desportivo.fotos
+                      var ficheiro_gpx = pub.dados.desportivo.ficheiro_gpx
+                      fs.mkdirSync('public/uploaded/' + pub.origin_email + '/' + pub._id)
+                      var old_path = __dirname + '/../public/uploaded/' + pub.origin_email + '/'
+                      var new_path = __dirname + '/../public/uploaded/' + pub.origin_email + '/' + pub._id + '/'
+                      for(var i = 0; i < fotos.length; i++) {
+                        var element = fotos[i].split('/')
+                        var file_name = element[element.length - 1]
+                        var fs_old = old_path + file_name
+                        var fs_new = new_path + file_name
+                        fotos[i] = 'http://localhost:3000/uploaded/' + pub.origin_email + '/' + pub._id + '/' + file_name
+                        fs.renameSync(fs_old,fs_new)   
+                      }
+                      var element = ficheiro_gpx.split('/')
+                      var file_name = element[element.length - 1]
+                      var fs_old = old_path + file_name
+                      var fs_new = new_path + file_name
+                      ficheiro_gpx = 'http://localhost:3000/uploaded/' + pub.origin_email + '/' + pub._id + '/' + file_name
+                      fs.renameSync(fs_old,fs_new)
+                      pub.dados.desportivo.fotos = fotos
+                      pub.dados.desportivo.ficheiro_gpx = ficheiro_gpx
+                      var obj = {
+                        access_token : req.session.token,
+                        pub: pub
+                      }
+                      axios.post('http://localhost:3000/api/pubs/' + pub._id + '/edit',obj)
+                        .then(m => res.jsonp(pub))
+                        .catch(error => res.render('error',{e:error})) 
+                })
                 .catch(erro => res.render('error', {e: erro}))
   })
 
@@ -1044,7 +1083,30 @@ router.post('/newAlbum',passport.authenticate('jwt',{session:false, failureRedir
       }
       album.access_token = req.session.token
       axios.post('http://localhost:3000/api/pubs/newPub',album)
-                .then(message => res.jsonp(message))
+                .then(message => {
+                      pub = message.data
+                      var fotos = pub.dados.album.fotos
+                      fs.mkdirSync('public/uploaded/' + pub.origin_email + '/' + pub._id)
+                      var old_path = __dirname + '/../public/uploaded/' + pub.origin_email + '/'
+                      var new_path = __dirname + '/../public/uploaded/' + pub.origin_email + '/' + pub._id + '/'
+                      for(var i = 0; i < fotos.length; i++) {
+                        var foto = fotos[i].foto
+                        var element = foto.split('/')
+                        var file_name = element[element.length - 1]
+                        var fs_old = old_path + file_name
+                        var fs_new = new_path + file_name
+                        fotos[i].foto = 'http://localhost:3000/uploaded/' + pub.origin_email + '/' + pub._id + '/' + file_name
+                        fs.renameSync(fs_old,fs_new)   
+                      }
+                      pub.dados.album.fotos = fotos
+                      var obj = {
+                        access_token : req.session.token,
+                        pub: pub
+                      }
+                      axios.post('http://localhost:3000/api/pubs/' + pub._id + '/edit',obj)
+                        .then(m => res.jsonp(pub))
+                        .catch(error => res.render('error',{e:error})) 
+                })
                 .catch(erro => res.render('error', {e: erro}))
   })
 
