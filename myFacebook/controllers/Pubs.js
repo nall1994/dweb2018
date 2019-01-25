@@ -1,5 +1,13 @@
 var Pub = require('../models/publicacao')
 
+module.exports.contarTipo = tipo => {
+    return Pub.find({tipo: tipo}).count().exec()
+}
+
+module.exports.contar = () => {
+    return Pub.countDocuments().exec()
+}
+
 module.exports.consulta = seletores => {
     return Pub
         .find(seletores)

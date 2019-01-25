@@ -1,0 +1,132 @@
+extends layout
+block content
+    .w3-top
+      .w3-bar.w3-red.w3-card.w3-left-align.w3-large
+        a.w3-bar-item.w3-button.w3-hide-medium.w3-hide-large.w3-right.w3-padding-large.w3-hover-white.w3-large.w3-red(href='javascript:void(0);', onclick='myFunction()', title='Toggle Navigation Menu')
+          i.fa.fa-bars
+        a.w3-bar-item.w3-button.w3-padding-large.w3-white(href='http://localhost:3000/users/admin/homepage') Home
+        a.w3-bar-item.w3-button.w3-hide-small.w3-padding-large.w3-hover-white(href='http://localhost:3000/users/admin') Registar Administradores
+        a.w3-bar-item.w3-button.w3-hide-small.w3-padding-large.w3-hover-white(href='http://localhost:3000/users/admin/profile') Atualizar password
+    .w3-container(style='padding:60px 16px')
+        h1.w3-red.w3-text-white.w3-center Página de Administrador
+    script(src='/javascripts/admin_page.js')
+    .w3-container
+        .w3-container
+            .w3-card-4
+                h3.w3-blue.w3-text-white.w3-center Importação/Exportação de dados
+                br
+                p  Esta secção permite-lhe importar e exportar dados existentes na aplicação. Pode escolher importar para ficheiros separados, selecionando a opção respetiva, ou importar todos os dados para apenas um ficheiro.
+                br
+                hr
+                .w3-container
+                    .w3-card-4
+                        h4.w3-indigo.w3-text-white.w3-center Importar dados
+                        hr
+                        form(style='text-align:center;' id='importForm')
+                            p Escolha o tipo de dados que quer importar consoante o ficheiro que possui.
+                            input.w3-radio(type='radio' name='escolhaImport' value='users')
+                            label(for='users') Utilizadores
+                            t
+                            t
+                            input.w3-radio(type='radio' name='escolhaImport' value='pubs')
+                            label(for='pubs') Publicações
+                            t
+                            t
+                            input.w3-radio(type='radio' name='escolhaImport' value='groups')
+                            label(for='groups') Grupos
+                            t
+                            t
+                            input.w3-radio(type='radio' name='escolhaImport' value='all')
+                            label(for='all') Todos
+                            t
+                            t
+                            br
+                            hr
+                            br
+                            input.w3-input.w3-border(type='file' name='ficheiroDados' accept='.json')
+                            hr
+                            br
+                            button.w3-btn.w3-indigo(id='importar') Importar
+                        br
+                    br
+                br
+                hr
+                .w3-container
+                    .w3-card-4
+                        h4.w3-indigo.w3-text-white.w3-center Exportar Dados
+                        hr
+                        form(style='text-align:center;' id='exportForm')
+                            p Escolha o tipo de dados que quer exportar para ficheiro.
+                            input.w3-radio(type='radio' name='escolhaExport' value='users')
+                            label(for='users') Utilizadores
+                            t
+                            t
+                            input.w3-radio(type='radio' name='escolhaExport' value='pubs')
+                            label(for='pubs') Publicações
+                            t
+                            t
+                            input.w3-radio(type='radio' name='escolhaExport' value='groups')
+                            label(for='groups') Grupos
+                            t
+                            t
+                            input.w3-radio(type='radio' name='escolhaExport' value='all')
+                            label(for='all') Todos
+                            t
+                            t
+                            br
+                            br
+                            button.w3-btn.w3-indigo(id='exportar') Exportar
+                            br
+                            br
+                    br
+                br
+            br
+        br
+        .w3-container
+            .w3-card-4
+                h3.w3-blue.w3-text-white.w3-center Estatísticas
+                hr
+                p.w3-center
+                    u Número de utilizadores do sistema:
+                    b.w3-text-indigo=dados.users
+                hr(style='border-top: 1px dotted blue;')
+                p.w3-center
+                    u Número de publicações totais realizadas:
+                    b.w3-text-indigo=dados.pubs
+                hr(style='border-top: 1px dotted blue;')
+                p.w3-center 
+                    u Número de receitas publicadas:
+                    b.w3-text-indigo=dados.pubsReceita
+                hr(style='border-top: 1px dotted blue;')
+                p.w3-center 
+                    u Número de ideias publicadas:
+                    b.w3-text-indigo=dados.pubsIdeia
+                hr(style='border-top: 1px dotted blue;')
+                p.w3-center 
+                    u Número de presenças em eventos publicadas:
+                    b.w3-text-indigo=dados.pubsEvento
+                hr(style='border-top: 1px dotted blue;')
+                p.w3-center 
+                    u Número de presenças eventos profissionais publicadas:
+                    b.w3-text-indigo=dados.pubsEventoProfissional
+                hr(style='border-top: 1px dotted blue;')
+                p.w3-center 
+                    u Número de formações publicadas:
+                    b.w3-text-indigo=dados.pubsFormacao
+                hr(style='border-top: 1px dotted blue;')
+                p.w3-center 
+                    u Número de atividades desportivas publicadas:
+                    b.w3-text-indigo=dados.pubsFormacao
+                hr(style='border-top: 1px dotted blue;')
+                p.w3-center 
+                    u Número de álbuns publicados:
+                    b.w3-text-indigo=dados.pubsAlbum
+                hr(style='border-top: 1px dotted blue;')
+                p.w3-center 
+                    u Número de grupos criados:
+                    b.w3-text-indigo=dados.groups
+                br
+            br
+        br
+    footer.w3-container
+        p.w3-red.w3-text-white.w3-center Administração myFacebook

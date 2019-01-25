@@ -1,0 +1,26 @@
+extends layout
+block content
+    .w3-top
+      .w3-bar.w3-red.w3-card.w3-left-align.w3-large
+        a.w3-bar-item.w3-button.w3-hide-medium.w3-hide-large.w3-right.w3-padding-large.w3-hover-white.w3-large.w3-red(href='javascript:void(0);', onclick='myFunction()', title='Toggle Navigation Menu')
+          i.fa.fa-bars
+        a.w3-bar-item.w3-button.w3-padding-large.w3-hover-white(href='http://localhost:3000/users/admin/homepage') Home
+        a.w3-bar-item.w3-button.w3-hide-small.w3-padding-large.w3-white(href='http://localhost:3000/users/admin') Registar Administradores
+        a.w3-bar-item.w3-button.w3-hide-small.w3-padding-large.w3-hover-white(href='http://localhost:3000/users/admin/profile') Atualizar password
+    .w3-container(style='padding:60px 16px')
+        .w3-container.w3-red
+          h2(align='center') Registo de administrador
+        br
+        .w3-container
+            .w3-card-4
+                form.w3-center(action='/users/admin' method='POST')
+                    input.w3-input.w3-border.w3-light-grey.w3-center(type='text' name='email' placeholder='Insira o email do novo administrador')
+                    input.w3-input.w3-border.w3-light-grey.w3-center(type='text' name='nome' placeholder='Primeiro e último nome do administrador')
+                    input.w3-input.w3-border.w3-light-grey.w3-center(type='password' name='password' placeholder='password (O administrador que está a inserir alterará posteriormente)')
+                    input.w3-input.w3-border.w3-light-grey.w3-center(type='password' name='confirmPassword' placeholder='Confirme a password')
+                    br
+                    input.w3-btn.w3-large.w3-indigo(type='submit' value='Registar' align='center')
+                    br
+                    br
+    footer.w3-red
+        p.w3-text-white.w3-center Administração myFacebook

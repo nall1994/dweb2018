@@ -5,3 +5,7 @@ module.exports.consultar = email => {
             .find({'membros.username': email},{nome:true})
             .exec()    
 }
+
+module.exports.contar = () => {
+    return Group.countDocuments().exec()
+}
