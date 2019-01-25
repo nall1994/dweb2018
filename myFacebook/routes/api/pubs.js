@@ -121,6 +121,53 @@ router.get('/',passport.authenticate('jwt',{session:false}),(req,res) => {
 
 })
 
+router.get('/count',passport.authenticate('jwt',{session:false}),(req,res) => {
+    //verificar se o user é admin
+    var loggedToken = jwt.verify(req.query.access_token,'myFacebook',jwt_options.verifyOptions)
+    var userRole = loggedToken.user.role
+    tipo = req.query.tipo
+    console.log(tipo)
+    console.log(userRole)
+    if(userRole == 'admin') {
+        if(tipo == 'receita') {
+            pubsController.contarTipo('receita')
+                .then(result => res.jsonp({resultado: result}))
+                .catch(error => res.jsonp(error))
+        } else if(tipo == 'evento') {
+            pubsController.contarTipo('evento')
+                .then(result => res.jsonp({resultado: result}))
+                .catch(error => res.jsonp(error))
+        } else if(tipo == 'eventoProfissional') {
+            pubsController.contarTipo('eventoProfissional')
+                .then(result => res.jsonp({resultado: result}))
+                .catch(error => res.jsonp(error))
+        } else if(tipo == 'ideia') {
+            pubsController.contarTipo('ideia')
+                .then(result => res.jsonp({resultado: result}))
+                .catch(error => res.jsonp(error))
+        } else if(tipo == 'formacao') {
+            pubsController.contarTipo('formacao')
+                .then(result => res.jsonp({resultado: result}))
+                .catch(error => res.jsonp(error))
+        } else if(tipo == 'album') {
+            pubsController.contarTipo('album')
+                .then(result => res.jsonp({resultado: result}))
+                .catch(error => res.jsonp(error))
+        } else if(tipo == 'desportivo') {
+            pubsController.contarTipo('desportivo')
+                .then(result => res.jsonp({resultado: result}))
+                .catch(error => res.jsonp(error))
+        } else {
+            pubsController.contar()
+                .then(result => res.jsonp({resultado: result}))
+                .catch(error => res.jsonp(error))
+        }
+    } else {
+        res.jsonp({error: 'Not authorized'})
+    }
+    
+})
+
 router.get('/:id_pub',passport.authenticate('jwt',{session:false}),(req,res) => {
     var idpub = req.params.id_pub
     pubsController.consultaID(idpub)

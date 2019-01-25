@@ -1,0 +1,17 @@
+extends layout
+block content
+    header.w3-container
+        h1.w3-red.w3-text-white.w3-center Login Administrador
+    br
+    .w3-container
+        .w3-card-4(style='text-align: center;')
+            if errorMessage
+                p.w3-text-red.w3-center= errorMessage 
+            form.w3-center(action='/users/admin/login' method='POST')
+                input.w3-input.w3-border(style='text-align: center;' type='text' name='email' placeholder='Insira o email ligado à sua conta de administrador')
+                input.w3-input.w3-border(style='text-align: center;' type='password' name='password' placeholder='Insira a sua password')
+                br
+                input.w3-btn.w3-large.w3-indigo(type='submit' value='Entrar')
+    br
+    footer.w3-container
+        p.w3-red.w3-text-white.w3-center Administração myFacebook

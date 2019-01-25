@@ -226,8 +226,175 @@ router.get('/homepage/:email',passport.authenticate('jwt',{session:false, failur
       .catch(erro => res.render('error', {e: erro}))
   })
 
-  router.get('/admin',(req,res) => {
+  router.get('/admin/login',(req,res) => {
     res.render('admin_login')
+  })
+
+  router.get('/admin/homepage',passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}),(req,res) => {
+    var loggedToken = jwt.verify(req.session.token,'myFacebook',jwt_options.verifyOptions)
+    var user = loggedToken.user
+    if(user.role == 'admin') {
+      obj = {
+        access_token : req.session.token
+      }
+      axiosConfig = {
+        params: obj
+      }
+      axios.get('http://localhost:3000/api/users/count',axiosConfig)
+        .then(userCount => {
+          userCount = userCount.data.resultado
+          axios.get('http://localhost:3000/api/pubs/count',axiosConfig)
+            .then(pubsTotal => {
+              pubsTotal = pubsTotal.data.resultado
+              obj.tipo = 'receita'
+              axiosConfig.params = obj
+              axios.get('http://localhost:3000/api/pubs/count',axiosConfig)
+                .then(pubsReceita => {
+                  pubsReceita = pubsReceita.data.resultado
+                  obj.tipo = 'ideia'
+                  axiosConfig.params = obj
+                  axios.get('http://localhost:3000/api/pubs/count',axiosConfig)
+                    .then(pubsIdeia => {
+                      pubsIdeia = pubsIdeia.data.resultado
+                      obj.tipo = 'formacao'
+                      axiosConfig.params = obj
+                      axios.get('http://localhost:3000/api/pubs/count',axiosConfig)
+                        .then(pubsFormacao => {
+                          pubsFormacao = pubsFormacao.data.resultado
+                          obj.tipo = 'evento'
+                          axiosConfig.params = obj
+                          axios.get('http://localhost:3000/api/pubs/count',axiosConfig)
+                            .then(pubsEvento => {
+                              pubsEvento = pubsEvento.data.resultado
+                              obj.tipo = 'eventoProfissional'
+                              axiosConfig.params = obj
+                              axios.get('http://localhost:3000/api/pubs/count',axiosConfig)
+                                .then(pubsEventoProfissional => {
+                                  pubsEventoProfissional = pubsEventoProfissional.data.resultado
+                                  obj.tipo = 'desportivo'
+                                  axiosConfig.params = obj
+                                  axios.get('http://localhost:3000/api/pubs/count',axiosConfig)
+                                    .then(pubsDesportivo => {
+                                      pubsDesportivo = pubsDesportivo.data.resultado
+                                      obj.tipo = 'album'
+                                      axiosConfig.params = obj
+                                      axios.get('http://localhost:3000/api/pubs/count',axiosConfig)
+                                        .then(pubsAlbum => {
+                                          pubsAlbum = pubsAlbum.data.resultado
+                                          obj = {
+                                            access_token: req.session.token
+                                          }
+                                          axiosConfig = {
+                                            params: obj
+                                          }
+                                          axios.get('http://localhost:3000/api/groups/count',axiosConfig)
+                                            .then(gruposCount => {
+                                              gruposCount = gruposCount.data.resultado
+                                              data = {
+                                                users: userCount,
+                                                groups: gruposCount,
+                                                pubs: pubsTotal,
+                                                pubsReceita: pubsReceita,
+                                                pubsIdeia: pubsIdeia,
+                                                pubsEvento: pubsEvento,
+                                                pubsEventoProfissional: pubsEventoProfissional,
+                                                pubsDesportivo: pubsDesportivo,
+                                                pubsFormacao: pubsFormacao,
+                                                pubsAlbum: pubsAlbum
+                                              }
+                                              res.render('admin_homepage', {dados: data})
+                                            }).catch(error => res.render('error',{e: error}))
+                                        }).catch(error => res.render('error',{e: error}))
+                                    }).catch(error => res.render('error',{e: error}))
+                                }).catch(error => res.render('error',{e: error}))
+                            }).catch(error => res.render('error',{e: error}))
+                        }).catch(error => res.render('error',{e: error}))
+                    }).catch(error => res.render('error',{e: error}))
+                }).catch(error => res.render('error',{e: error}))
+            }).catch(error => res.render('error',{e: error}))
+        }).catch(error => res.render('error',{e: error}))
+    } else {
+      res.redirect('/users/homepage/' + user.email)
+    }
+    
+  })
+
+  router.post('/admin/import',passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}),(req,res) => {
+
+  })
+
+  router.post('/admin/export',passport.authenticate('jwt',{session:false, failureRedirect:'/users/login'}),(req,res) => {
+
+  })
+
+  router.get('/admin/profile',passport.authenticate('jwt',{session:false, failureRedirect:'/users/login'}),(req,res) => {
+    var loggedToken = jwt.verify(req.session.token,'myFacebook',jwt_options.verifyOptions)
+    if(loggedToken.user.role == 'admin') {
+      obj = {
+        access_token: req.session.token,
+        email: loggedToken.user.email
+      }
+      axiosConfig = {
+        params: obj
+      }
+      axios.get('http://localhost:3000/api/users',axiosConfig)
+        .then(userData => {
+          userData = userData.data
+          res.render('admin_profile',{userData: userData})
+        }).catch(erro => res.render('error',{e: error}))
+    } else {
+      res.redirect('/users/homepage/' + loggedToken.user.email)
+    }
+  })
+
+  router.post('/admin/profile/updatePassword',passport.authenticate('jwt',{session:false,failureRedirect:'/users/login'}),(req,res) => {
+    //verificar se tem credenciais de administrador
+  })
+
+  router.get('/admin',passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}),(req,res) => {
+    var loggedToken = jwt.verify(req.session.token,'myFacebook',jwt_options.verifyOptions)
+    if(loggedToken.user.role == 'admin') {
+      res.render('registo_admin')
+    } else {
+      res.redirect('/users/homepage/' + loggedToken.user.email)
+    }
+  })
+
+  router.post('/admin',passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}),(req,res) => {
+    var loggedToken = jwt.verify(req.session.token,'myFacebook',jwt_options.verifyOptions)
+    if(loggedToken.user.role == 'admin') {
+      req.body.access_token = req.session.token
+      axios.post('http://localhost:3000/api/users/admin', req.body)
+      .then(() => {
+        if(!fs.existsSync('public/uploaded/' + req.body.email)) {
+          fs.mkdirSync('public/uploaded/' + req.body.email)
+          fs.mkdirSync('public/uploaded/' + req.body.email + '/imports')
+          fs.mkdirSync('public/uploaded/' + req.body.email + '/exports')
+        }
+        res.redirect('/users/admin/login')
+      })
+      .catch(erro => res.render('error', {e: erro}))
+    } else {
+      res.redirect('/users/homepage/' + loggedToken.user.email)
+    }
+  })
+
+
+  router.post('/admin/login',(req,res) => {
+    axios.post('http://localhost:3000/api/users/admin/login',req.body)
+      .then(data => {
+        if(data.data.authError) res.render('admin_login',{errorMessage: data.data.authError})
+        else {
+          var user = data.data
+          req.login(user,{session:false},async error => {
+            if(error) res.render('error',{e: error})
+            var loggedUser = {email:user.email,role: user.role,nome:user.nome}
+            var token = jwt.sign({user:loggedUser},'myFacebook',jwt_options.signOptions)
+            req.session.token = token
+            res.redirect('/users/admin/homepage')
+          })
+        }
+      })
   })
 
   router.get('/logout',(req,res) => {

@@ -20,6 +20,21 @@ router.post('/', async (req,res) => {
     .catch(error => res.status(500).send(JSON.stringify(error)))
 })
 
+router.post('/admin',async (req,res) => {
+  loggedToken = jwt.verify(req.body.access_token,'myFacebook',jwt_options.verifyOptions)
+  if(loggedToken.user.role == 'admin') {
+    var user = new Object()
+    user.role = 'admin'
+    var hash = await bcrypt.hash(req.body.password,10)
+    user.password = hash
+    user.email = req.body.email
+    user.nome = req.body.nome
+    userController.inserir(user)
+      .then(message => res.jsonp(message))
+      .catch(error => res.status(500).send(JSON.stringify(error)))
+  }
+})
+
 //Consulta de utilizador por nome/email
 router.get('/',passport.authenticate('jwt',{session:false}), (req,res) => {
   if(req.query.nome) {
@@ -61,6 +76,38 @@ router.post('/login',async (req,res,next) => {
     catch(error) {
       return next(error)
     }
+  })(req,res,next)
+})
+
+router.get('/count',passport.authenticate('jwt',{session:false}),(req,res) => {
+  //Verificar se o user é admin
+  var loggedToken = jwt.verify(req.query.access_token,'myFacebook',jwt_options.verifyOptions)
+  var userRole = loggedToken.user.role
+  if(userRole == 'admin') {
+    userController.contar()
+    .then(result => res.jsonp({resultado: result}))
+    .catch(error => res.jsonp(error))
+  } else {
+    res.jsonp({error: 'Not authorized'})
+  }
+  
+})
+
+router.post('/admin/login', async (req,res,next) => {
+  passport.authenticate('login',async(err,user,info) => {
+    try {
+      if(err || !user) {
+        if(err) return next(err)
+        else res.jsonp({authError: info.message})
+      }
+      if(user.role == 'user') {
+        res.jsonp({authError: 'O utilizador associado ao email que introduziu não tem permissões de administrador!'})
+      }
+      res.jsonp(user)
+    }
+    catch(error) {
+      return next(error)
+    }    
   })(req,res,next)
 })
 

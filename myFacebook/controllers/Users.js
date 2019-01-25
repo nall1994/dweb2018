@@ -1,5 +1,9 @@
 var User = require('../models/user')
 
+module.exports.contar = () => {
+    return User.countDocuments().exec()
+}
+
 //Consultar um utilizador pelo seu email
 module.exports.consultaEmail = email => {
     return User.findOne({email: email}).exec()
