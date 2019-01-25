@@ -46,15 +46,12 @@ router.post('/newEventoProf',passport.authenticate('jwt',{session:false, failure
   var form = new formidable.IncomingForm()
   form.parse(req,(erro,fields,data)=>{
     if (erro) {
-      console.log(erro);
       res.write(res.render('error',{e:'Ocorreram erros no armazenamento do ficheiro'+erro}))
     }
     var path = []
     for(var i=0; i<fields.nfiles;i++) {
-        console.log(data["ficheiro"+i].name);
         var fenviado =  data["ficheiro"+i].path
         var fnovo = __dirname + "/../public/uploaded/" + fields.origin_email  + '/'  + data["ficheiro"+i].name
-        console.log("\nFNOVO"+fnovo)
         fs.rename(fenviado,fnovo,erro => {
           if(erro){ 
               res.write(res.render('error',{e:'Ocorreram erros no armazenamento do ficheiro'}))
@@ -91,7 +88,6 @@ router.post('/newEventoProf',passport.authenticate('jwt',{session:false, failure
       evento.access_token = req.session.token
       axios.post('http://localhost:3000/api/pubs/newPub',evento)
                 .then(message => {
-                  console.log(JSON.stringify(message))
                   res.jsonp(message)
                 })
                 .catch(erro => res.render('error', {e: erro}))
@@ -108,52 +104,57 @@ router.post('/:pubid/delete',passport.authenticate('jwt',{session:false, failure
   axios.get('http://localhost:3000/api/pubs/' + pubid,axiosConfig)
     .then(pub => {
       pub = pub.data
-      if(pub.tipo == 'album') {
-        var fotos = pub.dados.album.fotos
-        for(var i = 0; i< fotos.length;i++) {
-          var element = fotos[i].foto.split('/')
-          var file_name = element[element.length - 1]
-          var path = __dirname + '/../public/uploaded/' + req.user.email + '/' + file_name
-          fs.unlink(path,err => {
-            if(err) throw err
-          })
-        }
-
-      } else if(pub.tipo == 'eventoProfissional') {
-        var files_array = pub.dados.eventoProfissional.ficheiros
-        for(var i = 0; i< files_array.length; i++) {
-          var element = files_array[i].split('/')
-          var file_name = element[element.length-1]
-          var path = __dirname + '/../public/uploaded/' + req.user.email + '/' + file_name
-          fs.unlink(path,err => {
-            if(err) throw err
-          })
-        }
-
-      } else if(pub.tipo == 'desportivo') {
-        var fotos_array = pub.dados.desportivo.fotos
-        var gpx_file = pub.dados.desportivo.ficheiro_gpx
-        for(var i = 0; i< fotos_array.length; i++) {
-          var element = fotos_array[i].split('/')
-          var file_name = element[element.length-1]
+      if(req.user.email == pub.origin_email) {
+        if(pub.tipo == 'album') {
+          var fotos = pub.dados.album.fotos
+          for(var i = 0; i< fotos.length;i++) {
+            var element = fotos[i].foto.split('/')
+            var file_name = element[element.length - 1]
+            var path = __dirname + '/../public/uploaded/' + req.user.email + '/' + file_name
+            fs.unlink(path,err => {
+              if(err) throw err
+            })
+          }
+  
+        } else if(pub.tipo == 'eventoProfissional') {
+          var files_array = pub.dados.eventoProfissional.ficheiros
+          for(var i = 0; i< files_array.length; i++) {
+            var element = files_array[i].split('/')
+            var file_name = element[element.length-1]
+            var path = __dirname + '/../public/uploaded/' + req.user.email + '/' + file_name
+            fs.unlink(path,err => {
+              if(err) throw err
+            })
+          }
+  
+        } else if(pub.tipo == 'desportivo') {
+          var fotos_array = pub.dados.desportivo.fotos
+          var gpx_file = pub.dados.desportivo.ficheiro_gpx
+          for(var i = 0; i< fotos_array.length; i++) {
+            var element = fotos_array[i].split('/')
+            var file_name = element[element.length-1]
+            var path = __dirname + '/../public/uploaded/' + req.user.email + '/' + file_name
+            console.log(path)
+            fs.unlink(path,err => {
+              if(err) throw err
+            })
+          }
+          var element = gpx_file.split('/')
+          var file_name = element[element.length -1]
           var path = __dirname + '/../public/uploaded/' + req.user.email + '/' + file_name
           console.log(path)
           fs.unlink(path,err => {
             if(err) throw err
           })
         }
-        var element = gpx_file.split('/')
-        var file_name = element[element.length -1]
-        var path = __dirname + '/../public/uploaded/' + req.user.email + '/' + file_name
-        console.log(path)
-        fs.unlink(path,err => {
-          if(err) throw err
-        })
+  
+        axios.post('http://localhost:3000/api/pubs/' + pubid + '/delete',obj)
+          .then(m => res.redirect('/users/homepage/' + req.user.email))
+          .catch(error => res.render('error',{e: error}))
+      } else {
+        res.redirect('/users/homepage/' + req.user.email)
       }
-
-      axios.post('http://localhost:3000/api/pubs/' + pubid + '/delete',obj)
-        .then(m => res.redirect('/users/homepage/' + req.user.email))
-        .catch(error => res.render('error',{e: error}))
+      
     }).catch(error => res.render('error',{e: error}))
 
   
