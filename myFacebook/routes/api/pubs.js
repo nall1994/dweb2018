@@ -30,7 +30,6 @@ router.get('/:email/filter',passport.authenticate('jwt',{session:false}),(req,re
     var email = req.params.email
     var loggedToken = jwt.verify(req.query.access_token,'myFacebook',jwt_options.verifyOptions)
     var loggedUser = loggedToken.user.email
-    //verificar token e verificar se o logged é igual ao que temos ou nao
     var seletores = new Object()
     seletores.origin_email = email
     var filtros = req.query
@@ -48,12 +47,15 @@ router.get('/:email/filter',passport.authenticate('jwt',{session:false}),(req,re
             seletores.classificacoes = {$in: filtros.hashtags}
         }
         if(filtros.tipos) {
-            if(filtros.tipos.length) {
+            if(filtros.tipos == 'receita' || filtros.tipos == 'ideia' || filtros.tipos =='evento' || filtros.tipos == 'eventoProfissional' || filtros.tipos == 'album' || filtros.tipos == 'formacao' || filtros.tipos == 'desportivo') {
                 var a = new Array()
                 a.push(filtros.tipos)
                 filtros.tipos = a
             }
-            seletores.tipo = {$in : filtros.tipos}
+            seletores.$or = new Array()
+            for(var i = 0; i< filtros.tipos.length;i++) {
+                seletores.$or.push({tipo: filtros.tipos[i]})
+            }
         }
 
         if(filtros.dataMinima) {
@@ -74,13 +76,17 @@ router.get('/:email/filter',passport.authenticate('jwt',{session:false}),(req,re
             }
             seletores.classificacoes = {$in: filtros.hashtags}
         }
+
         if(filtros.tipos) {
-            if(filtros.tipos.length) {
+            if(filtros.tipos == 'receita' || filtros.tipos == 'ideia' || filtros.tipos =='evento' || filtros.tipos == 'eventoProfissional' || filtros.tipos == 'album' || filtros.tipos == 'formacao' || filtros.tipos == 'desportivo') {
                 var a = new Array()
                 a.push(filtros.tipos)
                 filtros.tipos = a
             }
-            seletores.tipo = {$in : filtros.tipos}
+            seletores.$or = new Array()
+            for(var i = 0; i< filtros.tipos.length;i++) {
+                seletores.$or.push({tipo: filtros.tipos[i]})
+            }
         }
 
         if(filtros.dataMinima) {
@@ -160,8 +166,6 @@ router.post('/newPub',passport.authenticate('jwt',{session:false}), async (req,r
     var dados = req.body.dados
     pub.dados =dados
     if (req.body.classificadores!="") pub.classificacoes= req.body.classificacoes.split(",").slice(0,-1)
-    console.log("API:")
-    console.log(pub)
     pubsController.inserir(pub)
     .then( msg => res.jsonp(msg))
     .catch(error => res.status(500).send(JSON.stringify(error)))
