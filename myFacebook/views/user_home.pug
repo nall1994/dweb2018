@@ -8,6 +8,7 @@ block content
             a.w3-bar-item.w3-button.w3-hover-light-grey(href='http://localhost:3000/groups') Grupos
             a.w3-text-white(style="margin-left: 360px;") MyFacebook
             a.w3-bar-item.w3-button.w3-hover-light-grey.w3-right(href='http://localhost:3000/users/logout') Logout
+    
     script(src='/javascripts/user_home_form.js')
     .w3-container(style='padding:70px 16px')
         .w3-row
@@ -325,9 +326,9 @@ block content
                             each pub in userPubs
                                 .w3-card-4.w3-round
                                     p
-                                        a.w3-indigo.w3-left(style='text-decoration:none;' href='http://localhost:3000/pubs/share/' + pub._id) Partilhar no Facebook
-                                        a.w3-blue.w3-center(style='text-decoration:none;' href='http://localhost:3000/pubs/share/' + pub._id) Partilhar no Twitter
-                                        a.w3-teal.w3-right(style='text-decoration:none;' href='http://localhost:3000/pubs/edit/' + pub._id) Editar publicação
+                                        a.w3-button.w3-indigo.w3-left(style='text-decoration:none;' id="sharefb"+contador name=pub ) Partilhar no Facebook
+                                        a.w3-button.w3-blue.w3-center(style='text-decoration:none;' id="sharetwitter"+contador  name=pub ) Partilhar no Twitter
+                                        a.w3-button.w3-teal.w3-right(style='text-decoration:none;' href='http://localhost:3000/pubs/edit/' + pub._id) Editar publicação
                                     hr
                                     if pub.tipo=="ideia"
                                         h3

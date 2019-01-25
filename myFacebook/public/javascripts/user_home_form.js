@@ -85,6 +85,35 @@ $(() => {
             }
             ajaxPostComentario(c,nr)
         })
+
+        $('#sharetwitter'+i).click(e => {
+            var pub=$(e.target).attr("name")
+            var pub_parsed = JSON.parse(pub)
+            var texto = "erro"
+            var tipo = 0
+            if (pub_parsed.tipo=="ideia")texto = shareIdeia(pub_parsed,tipo)
+            if (pub_parsed.tipo=="receita") texto = shareReceita(pub_parsed,tipo)
+            if (pub_parsed.tipo=="evento")texto =  shareEvento(pub_parsed,tipo)
+            if (pub_parsed.tipo=="eventoProfissional")texto =  shareEventoProf(pub_parsed,tipo)
+            if (pub_parsed.tipo=="creditacao")texto =  shareFormacao(pub_parsed,tipo)
+            if (pub_parsed.tipo=="desportivo") texto = shareDesportiva(pub_parsed,tipo)
+            if (pub_parsed.tipo=="album")texto =  shareAlbum(pub_parsed,tipo)
+        })
+    
+        $('#sharefb'+i).click(e => {
+            var pub=$(e.target).attr("name")
+            var pub_parsed = JSON.parse(pub)
+            var texto = "erro"
+            var tipo = 1
+            if (pub_parsed.tipo=="ideia")texto = shareIdeia(pub_parsed,tipo)
+            if (pub_parsed.tipo=="receita") texto = shareReceita(pub_parsed,tipo)
+            if (pub_parsed.tipo=="evento")texto =  shareEvento(pub_parsed,tipo)
+            if (pub_parsed.tipo=="eventoProfissional")texto =  shareEventoProf(pub_parsed,tipo)
+            if (pub_parsed.tipo=="creditacao")texto =  shareFormacao(pub_parsed,tipo)
+            if (pub_parsed.tipo=="desportivo") texto = shareDesportiva(pub_parsed,tipo)
+            if (pub_parsed.tipo=="album")texto =  shareAlbum(pub_parsed,tipo)
+        })
+    
     }
 
     $('#adicionar').click(e => {
@@ -638,4 +667,74 @@ function renderConvidados(convidados) {
         returnString += "<p class='w3-tiny'> " + convidados[i] + "</p>"
     }
     return returnString
+}
+
+function shareIdeia(pub_parsed, tipo) {
+
+    var texto = "Tive uma ideia: "+ pub_parsed.dados.ideia.titulo + "\n" +pub_parsed.dados.ideia.descricao +"\n"
+    for (var hashtag in pub_parsed.classificacoes) texto = texto + "#"+ pub_parsed.classificacoes[hashtag]
+    for (var hashtag in pub_parsed.dados.ideia.classificadores) texto = texto + "#"+ pub_parsed.dados.ideia.classificadores[hashtag]
+    if (tipo==0) //twitter
+        window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(texto)  );
+    if (tipo==1) 
+        alert("face");
+}
+
+function shareReceita(pub_parsed, tipo) {
+
+    var texto = "Receita: "+ pub_parsed.dados.receita.titulo + "\n" +pub_parsed.dados.receita.textoEstruturado +"\n"
+    for (var hashtag in pub_parsed.classificacoes) texto = texto + "#"+ pub_parsed.classificacoes[hashtag]
+    if (tipo==0) //twitter
+        window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(texto)  );
+    if (tipo==1) //face
+        alert("face");
+}
+function shareEvento(pub_parsed, tipo) {
+
+    var texto = pub_parsed.dados.evento.titulo +" decorrerá em " +pub_parsed.dados.evento.dataEvento + " em " + pub_parsed.dados.evento.local
+    texto = texto +   "\n" + pub_parsed.dados.evento.descricao + "\nEstão convidados :\n " + pub_parsed.dados.evento.convidados.toString().replace(/,/g," ")  +"\n"
+    
+    for (var hashtag in pub_parsed.classificacoes) texto = texto + "#"+ pub_parsed.classificacoes[hashtag]
+    if (tipo==0) //twitter
+        window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(texto)  );
+    if (tipo==1) //face
+        alert("face");
+}
+function shareFormacao(pub_parsed, tipo) {
+
+    var texto = pub_parsed.dados.formacao.titulo + "\nRecebi a creditação: "  +pub_parsed.dados.formacao.creditacao +" da instituição " +pub_parsed.dados.formacao.instituicao +"\n" +pub_parsed.dados.formacao.descricao +"\n" 
+    for (var hashtag in pub_parsed.classificacoes) texto = texto + "#"+ pub_parsed.classificacoes[hashtag]
+    if (tipo==0) //twitter
+        window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(texto)  );
+    if (tipo==1) //face
+        alert("face");
+}
+function shareAlbum(pub_parsed, tipo) {
+
+    var texto = "Album: "+ pub_parsed.dados.ideia.titulo + "\n" +pub_parsed.dados.ideia.descricao +"\n"
+    for (var hashtag in pub_parsed.classificacoes) texto = texto + "#"+ pub_parsed.classificacoes[hashtag]
+    if (tipo==0) //twitter
+        window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(texto)  );
+    if (tipo==1) //face
+        alert("face");
+}
+function shareDesportiva(pub_parsed, tipo) {
+
+    var texto = pub_parsed.dados.desportivo.titulo + "\nPratiquei " +pub_parsed.dados.desportivo.atividade +" durante " +pub_parsed.dados.desportivo.duracao +"\n" +pub_parsed.dados.desportivo.descricao +"\n"
+    for (var hashtag in pub_parsed.classificacoes) texto = texto + "#"+ pub_parsed.classificacoes[hashtag]
+    for (var foto  in pub_parsed.dados.desportivo.fotos) texto = texto + pub_parsed.dados.desportivo.fotos[foto]
+    if (tipo==0) //twitter
+        window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(texto)  );
+    if (tipo==1) //face
+        window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(texto)  );
+}
+function shareEventoProf(pub_parsed, tipo) {
+
+    var texto = "O evento : "+ pub_parsed.dados.eventoProfissional.titulo + " decorrerá em " +pub_parsed.dados.eventoProfissional.dataEvento +" no " +pub_parsed.dados.eventoProfissional.local +"\n"+pub_parsed.dados.eventoProfissional.descricao +"\n"
+    var texto = texto + "Com os seguintes oradores : \n " + pub_parsed.dados.eventoProfissional.oradores.toString().replace(/,/g," ") + "\n"
+    for (var hashtag in pub_parsed.classificacoes) texto = texto + "#"+ pub_parsed.classificacoes[hashtag]
+    if (tipo==0) //twitter
+        window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(texto)  );
+    if (tipo==1) //face
+        window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(texto)  );
 }
