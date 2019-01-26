@@ -5,6 +5,7 @@ var jwt = require('jsonwebtoken')
 var jwt_options = require('../../auth/jwt_options')
 var bcrypt = require('bcrypt')
 var passport = require('passport')
+var fs = require('fs')
 
 //Registar utilizador
 router.post('/', async (req,res) => {
@@ -78,6 +79,28 @@ router.get('/',passport.authenticate('jwt',{session:false}), (req,res) => {
       res.jsonp({message: 'Não tem permissão para consultar todos os utilizadores'})
     }
   } 
+})
+
+router.get('/admin/listExports',passport.authenticate('jwt',{session:false}),(req,res) => {
+  console.log('entered')
+  var loggedToken = jwt.verify(req.query.access_token,'myFacebook',jwt_options.verifyOptions)
+  console.log('passed')
+  if(loggedToken.user.role == 'admin') {
+    console.log(__dirname + '/../../public/uploaded/' + loggedToken.user.email + '/exports/')
+    var files = fs.readdirSync(__dirname + '/../../public/uploaded/' + loggedToken.user.email + '/exports/')
+    var farray = new Array()
+    for(var i = 0; i < files.length; i++) {
+      var obj = new Object()
+      var path = 'http://localhost:3000/uploaded/' + loggedToken.user.email + '/exports/'
+      path = path + files[i]
+      obj.nome = files[i]
+      obj.link = path
+      farray.push(obj)
+    }
+    res.jsonp(farray)
+  } else {
+    res.redirect('/users/homepage/' + loggedToken.user.email)
+  }
 })
 
 router.post('/admin/import',passport.authenticate('jwt',{session:false}),(req,res) => {

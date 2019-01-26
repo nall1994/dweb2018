@@ -290,19 +290,25 @@ router.get('/homepage/:email',passport.authenticate('jwt',{session:false, failur
                                           axios.get('http://localhost:3000/api/groups/count',axiosConfig)
                                             .then(gruposCount => {
                                               gruposCount = gruposCount.data.resultado
-                                              data = {
-                                                users: userCount,
-                                                groups: gruposCount,
-                                                pubs: pubsTotal,
-                                                pubsReceita: pubsReceita,
-                                                pubsIdeia: pubsIdeia,
-                                                pubsEvento: pubsEvento,
-                                                pubsEventoProfissional: pubsEventoProfissional,
-                                                pubsDesportivo: pubsDesportivo,
-                                                pubsFormacao: pubsFormacao,
-                                                pubsAlbum: pubsAlbum
-                                              }
-                                              res.render('admin_homepage', {dados: data})
+                                              axios.get('http://localhost:3000/api/users/admin/listExports',axiosConfig)
+                                                .then(filesArray => {
+                                                  filesArray = filesArray.data
+                                                  data = {
+                                                    users: userCount,
+                                                    groups: gruposCount,
+                                                    pubs: pubsTotal,
+                                                    pubsReceita: pubsReceita,
+                                                    pubsIdeia: pubsIdeia,
+                                                    pubsEvento: pubsEvento,
+                                                    pubsEventoProfissional: pubsEventoProfissional,
+                                                    pubsDesportivo: pubsDesportivo,
+                                                    pubsFormacao: pubsFormacao,
+                                                    pubsAlbum: pubsAlbum,
+                                                    ficheiros: filesArray
+                                                  }
+                                                  res.render('admin_homepage', {dados: data})
+                                                })
+                                                .catch(error => res.render('error',{e: error}))
                                             }).catch(error => res.render('error',{e: error}))
                                         }).catch(error => res.render('error',{e: error}))
                                     }).catch(error => res.render('error',{e: error}))

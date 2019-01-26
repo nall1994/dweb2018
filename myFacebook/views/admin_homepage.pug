@@ -87,7 +87,7 @@ block content
                         ul.w3-ul
                             each file in dados.ficheiros
                                 li.w3-li
-                                    a(href=file download) Download =file
+                                    a.w3-hover-green(style='text-decoration:none;' href=file.link download) Download #{file.nome}
             br
         br
         .w3-container
