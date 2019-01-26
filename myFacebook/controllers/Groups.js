@@ -13,6 +13,14 @@ module.exports.contar = () => {
     return Group.countDocuments().exec()
 }
 
+module.exports.importar = groupsArray => {
+    return Group.insertMany(groupsArray)
+}
+
+module.exports.listarTodos = () => {
+    return Group.find().exec()
+}
+
 // Registo de um grupo.
 module.exports.inserir = group => {
     return Group

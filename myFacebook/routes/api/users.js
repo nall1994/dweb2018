@@ -35,8 +35,31 @@ router.post('/admin',async (req,res) => {
   }
 })
 
+router.post('/admin/profile/updatePassword',passport.authenticate('jwt',{session:false}),(req,res) => {
+  var loggedToken = jwt.verify(req.body.access_token,'myFacebook',jwt_options.verifyOptions)
+  if(loggedToken.user.role == 'admin') {
+    userController.consultaEmail(req.body.email)
+      .then(userData => {
+        bcrypt.compare(req.body.oldPassword,userData.password,async (error,result) => {
+          if(error) res.jsonp({error: error})
+          else if(result) {
+            var hash_newpass = await bcrypt.hash(req.body.newPassword,10)
+            userController.atualizarPassword(req.body.email,hash_newpass)
+            res.jsonp({info: 'Alteração efetuada com sucesso!',userData: userData})
+          } else {
+            res.jsonp({error: 'A password antiga que inseriu não coincide com os nossos registos!', userData: userData})
+          }
+        })
+
+      })
+  } else {
+    res.redirect('/users/homepage/' + loggedToken.user.email)
+  }
+})
+
 //Consulta de utilizador por nome/email
 router.get('/',passport.authenticate('jwt',{session:false}), (req,res) => {
+  var loggedToken = jwt.verify(req.query.access_token,'myFacebook',jwt_options.verifyOptions)
   if(req.query.nome) {
     console.log('got here!')
     userController.consultaNome(req.query.nome)
@@ -47,7 +70,24 @@ router.get('/',passport.authenticate('jwt',{session:false}), (req,res) => {
       .then(dados => res.jsonp(dados))
       .catch(error => res.status(500).send('Erro na consulta de utilizador por email!'))
   } else {
-    res.jsonp({message: 'Parâmetro de query não reconhecido!'})
+    if(loggedToken.user.role == 'admin') {
+      userController.consultaTodos()
+        .then(dados => res.jsonp(dados))
+        .catch(error => res.status(500).send('Erro na consulta de utilizadores'))
+    } else {
+      res.jsonp({message: 'Não tem permissão para consultar todos os utilizadores'})
+    }
+  } 
+})
+
+router.post('/admin/import',passport.authenticate('jwt',{session:false}),(req,res) => {
+  var loggedToken = jwt.verify(req.body.access_token,'myFacebook',jwt_options.verifyOptions)
+  if(loggedToken.user.role == 'admin') {
+    userController.importar(req.body.data)
+      .then(msg => res.jsonp('Importação de utilizadores bem sucedida!'))
+      .catch(error => res.jsonp('erro na importação de utilizadores'))
+  } else {
+    res.status(401).send('Não está autorizado!')
   }
 })
 

@@ -8,6 +8,10 @@ module.exports.contar = () => {
     return Pub.countDocuments().exec()
 }
 
+module.exports.importar = pubsArray => {
+    return Pub.insertMany(pubsArray)
+}
+
 module.exports.consulta = seletores => {
     return Pub
         .find(seletores)
