@@ -1,15 +1,32 @@
 var express = require('express')
 var router = express.Router()
-var jwt = require('jsonwebtoken')
-var jwt_options = require('../../auth/jwt_options')
 var groupsController = require('../../controllers/Groups')
 var passport = require('passport')
+var jwt_options = require('../../auth/jwt_options')
+var jwt = require('jsonwebtoken')
 
-router.get('/withUser', passport.authenticate('jwt',{session:false}),(req,res) => {
+router.get('/withUser', passport.authenticate('jwt', { session: false }), (req, res) => {
     var user = req.query.email
-    groupsController.consultar(user)
+    groupsController.listaGrupos(user)
         .then(dados => res.jsonp(dados))
-        .catch(error => res.jsonp({message: 'ERRO: ' + error}))
+        .catch(error => res.jsonp({ message: 'ERRO: ' + error }))
+})
+
+router.post('/new', passport.authenticate('jwt', { session: false }), async (req, res) => {
+    var group = new Object();
+    group.nome = req.body.nome;
+    group.descricao = req.body.desc;
+    group.fotoGrupo = req.body.fotoGrupo;
+    console.log(req.body.membros);
+    group.membros = req.body.membros;
+    group.admin = req.body.admin;
+    console.log("GRUPO CONSTRUÍDO.");
+    console.log(group);
+    groupsController.inserir(group)
+        .then(grupo => {
+            console.log(JSON.stringify(grupo))
+        })
+        .catch(err => console.log("Erro no registo do grupo na base de dados."));
 })
 
 router.get('/count',passport.authenticate('jwt',{session:false}),(req,res) => {
@@ -25,4 +42,5 @@ router.get('/count',passport.authenticate('jwt',{session:false}),(req,res) => {
     }
     
 })
-module.exports = router
+
+module.exports = router;

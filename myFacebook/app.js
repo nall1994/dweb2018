@@ -26,7 +26,7 @@ axios.defaults.withCredentials = true
 var app = express();
 
 //Conexão à base de dados
-mongoose.connect('mongodb://127.0.0.1:27017/myFacebook',{useNewUrlParser:true})
+mongoose.connect('mongodb://127.0.0.1:27017/myFacebook', { useNewUrlParser: true })
   .then(() => console.log('Mongo Ready: ' + mongoose.connection.readyState))
   .catch(erro => console.log('erro de conexão: ' + erro))
 
@@ -57,19 +57,19 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/pubs',pubsRouter)
-app.use('/groups',groupsRouter)
+app.use('/pubs', pubsRouter)
+app.use('/groups', groupsRouter)
 app.use('/api/users', apiUsersRouter);
-app.use('/api/groups',apiGroupsRouter);
-app.use('/api/pubs',apiPubsRouter)
+app.use('/api/groups', apiGroupsRouter);
+app.use('/api/pubs', apiPubsRouter)
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

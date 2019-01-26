@@ -1,11 +1,20 @@
-var Group = require('../models/group')
+var Group = require('../models/group');
 
-module.exports.consultar = email => {
+// Obtenção da lista dos grupos de um dado utilizador (identificado pelo email).
+module.exports.listaGrupos = email => {
     return Group
-            .find({'membros.username': email},{nome:true})
-            .exec()    
-}
+        .find({ 'membros': email })
+        .sort({nome: -1})
+        .exec()
+};
 
+// Contagem do número de grupos registados.
 module.exports.contar = () => {
     return Group.countDocuments().exec()
 }
+
+// Registo de um grupo.
+module.exports.inserir = group => {
+    return Group
+        .create(group);
+};

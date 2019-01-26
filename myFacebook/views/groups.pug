@@ -1,0 +1,58 @@
+extends layout
+
+block content
+    .w3-top
+        .w3-bar.w3-blue-grey.w3card.w3-large
+            //Mudar o a que vem para redirecionar para a homepage do utilizador    
+            a.w3-bar-item.w3-button.w3-hover-light-grey(href='http://localhost:3000/users/homepage/' + userData.email) Home
+            a.w3-bar-item.w3-button.w3-hover-light-grey(href='http://localhost:3000/users/profile/' + userData.email) Perfil
+            a.w3-bar-item.w3-button.w3-white(href='http://localhost:3000/groups/' + userData.email) Grupos
+            a.w3-text-white(style="margin-left: 360px;") MyFacebook
+            a.w3-bar-item.w3-button.w3-hover-light-grey.w3-right(href='http://localhost:3000/users/logout') Logout
+    script(src='/javascripts/group_creation.js')
+    .w3-container(style='padding:70px 16px 16px 16px')
+        header.w3-container.w3-indigo
+            h1.w3-center Grupos
+    //- br
+    .w3-container
+        h3.w3-text-indigo.w3-center Criar grupos
+        hr
+        div.w3-card-4(id='createGroup' style="padding: 10px")
+            input.w3-input(type='hidden' id='useremail' value= userData.email)
+            //- form(method='post' action='/groups/new/' + userData.email enctype='multipart/form-data' id="groupCreationForm")
+            form(id="groupCreationForm")
+                label
+                    p.w3-text-teal Foto de Capa
+                input.w3-input.w3-border(type='file' id='foto' name='foto' accept='image/*')
+                label
+                    p.w3-text-teal Nome do Grupo
+                input.w3-input.w3-border(type='text' placeholder="Indique o nome do grupo" id='nome' name='nome' value="")
+                label
+                    p.w3-text-teal Descrição
+                input.w3-input.w3-border(type='text' placeholder="Escreva uma breve descrição do novo grupo" id='desc' name='desc' value="")
+                label
+                    p.w3-text-teal Membros
+                textarea.w3-input.w3-border(type='text' placeholder="Indique os emails de membros do grupo (separados por vírgulas)" id='membros' name='membros' value="")
+                br
+                input.w3-btn.w3-indigo.w3-center.w3-large(type='submit' id='criarGrupo' value='Criar grupo')
+    .w3-container(style="margin: 30px 16px 30px 16px")
+        h3.w3-text-indigo.w3-center Os seus grupos
+        hr
+        if (groupData && numGroups && numGroups > 0)
+            each grupo in groupData
+                div.w3-card-4(style="padding: 10px;")
+                    table
+                        tr
+                            th.w3-text-teal(style="margin: 5px") Nome
+                            td
+                                p.w3-text-black(style="margin: 5px") Nome do Grupo
+                        tr
+                            th.w3-text-teal(style="margin: 5px") Descrição
+                            td 
+                                p.w3-text-black(style="margin: 5px") Descrição do grupo
+        else
+            div.w3-card-4(style="padding: 10px;")
+                p.w3-text-grey Não está inserido em nenhum grupo!
+
+
+

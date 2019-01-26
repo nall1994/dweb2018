@@ -1,15 +1,12 @@
-var mongoose = require('mongoose')
-var Schema = mongoose.Schema
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
 var GroupSchema = new Schema({
-    membros: [{
-        username: {type:String, required:true},
-        groupRole: {type:String, required:true}
-    }],
-    nome: {type:String,required:true},
-    descricao: {type:String, required:true},
-    isPrivate: {type:Boolean, required:true, default: true},
-    fotosGrupo: [String]
-})
+    nome: { type: String, required: true },
+    descricao: { type: String, required: true },
+    fotoGrupo: { type: String, required: true },
+    membros: [String],
+    admin: { type: String, required: true }
+});
 
-module.exports = mongoose.model('Group',GroupSchema,'groups')
+module.exports = mongoose.model('Group', GroupSchema, 'groups');
