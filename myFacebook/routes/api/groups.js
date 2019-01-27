@@ -79,8 +79,17 @@ router.get('/count',passport.authenticate('jwt',{session:false}),(req,res) => {
         .catch(error => res.jsonp(error))
     } else {
         res.jsonp({error: 'Not authorized!'})
-    }
-    
+    }  
 })
+
+router.get('/:group_id', passport.authenticate('jwt',{session:false}),(req,res) => {
+    groupsController.obterGrupo(req.params.group_id)
+        .then(grupo => {
+            res.jsonp(grupo);
+        })
+        .catch(err => {
+            res.jsonp([]);
+        })
+});
 
 module.exports = router;

@@ -43,21 +43,33 @@ router.get('/user/:email', passport.authenticate('jwt', { session: false, failur
     }
 });
 
-router.get('/group_id', passport.authenticate('jwt', { session: false, failureRedirect: '/users/login' }), (req, res) => {
-
-    var profileAsked = req.params.email;
-    var loggedToken = jwt.verify(req.session.token, 'myFacebook', jwt_options.verifyOptions);
-    var loggedUser = loggedToken.user.email;
+router.get('/:group_id', passport.authenticate('jwt', { session: false, failureRedirect: '/users/login' }), (req, res) => {
+    var loggedToken = jwt.verify(req.session.token,'myFacebook',jwt_options.verifyOptions);
     req.query.access_token = req.session.token;
-    req.query.email = loggedUser;
+    req.query.email = req.params.email;
     axiosConfig = {
         params: req.query
     };
-    if (loggedUser != profileAsked) {
-        res.redirect('/users/profile/' + loggedUser)
-    } else {
-
-    }
+    // Obtenção da informação do grupo.
+    axios.get('http://localhost:3000/api/groups/' + req.params.group_id, axiosConfig)
+        .then(group => {
+            if (group.data.length > 0) {
+                console.log(group.data);
+                console.log(group.data[0]);
+                // Preciso das publicações com o group_id.
+                // Preciso de saber se o utilizador loggado é admin.
+                // A página deve apresentar os membros e permitir publicações acessíveis a todos os membros.
+                // O admin deve poder acrescentar membros ao grupo.
+                res.render('group_home', { groupData: group.data[0], loggedEmail: loggedToken.user.email, groupPubs: });
+            }
+            else {
+                console.log(group.data);
+                res.render('error', { error: "O grupo especificado não existe." });
+            }
+        })
+        .catch(err => {
+            res.render('error', { error: err });
+        })
 });
 
 router.post('/new', passport.authenticate('jwt', { session: false, failureRedirect: '/users/login' }), (req, res) => {
