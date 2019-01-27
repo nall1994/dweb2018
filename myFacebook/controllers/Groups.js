@@ -30,3 +30,9 @@ module.exports.inserir = group => {
     return Group
         .create(group);
 };
+
+module.exports.obterGrupo = id => {
+    return Group
+        .find({_id: id})
+        .exec()
+}
