@@ -7,6 +7,7 @@ block content
         a.w3-bar-item.w3-button.w3-padding-large.w3-white(href='http://localhost:3000/users/admin/homepage') Home
         a.w3-bar-item.w3-button.w3-hide-small.w3-padding-large.w3-hover-white(href='http://localhost:3000/users/admin') Registar Administradores
         a.w3-bar-item.w3-button.w3-hide-small.w3-padding-large.w3-hover-white(href='http://localhost:3000/users/admin/profile') Atualizar password
+        a.w3-bar-item.w3-button.w3-hover-white.w3-right(href='http://localhost:3000/users/logout') Logout
     .w3-container(style='padding:60px 16px')
         h1.w3-red.w3-text-white.w3-center Página de Administrador
     script(src='/javascripts/admin_page.js')
@@ -24,29 +25,29 @@ block content
                         hr
                         form(style='text-align:center;' id='importForm')
                             p Escolha o tipo de dados que quer importar consoante o ficheiro que possui.
-                            input.w3-radio(type='radio' name='escolhaImport' value='users')
+                            input.w3-radio(type='radio' id='usersImport' name='escolhaImport' value='users')
                             label(for='users') Utilizadores
                             t
                             t
-                            input.w3-radio(type='radio' name='escolhaImport' value='pubs')
+                            input.w3-radio(type='radio' id='pubsImport' name='escolhaImport' value='pubs')
                             label(for='pubs') Publicações
                             t
                             t
-                            input.w3-radio(type='radio' name='escolhaImport' value='groups')
+                            input.w3-radio(type='radio' id='groupsImport' name='escolhaImport' value='groups')
                             label(for='groups') Grupos
                             t
                             t
-                            input.w3-radio(type='radio' name='escolhaImport' value='all')
+                            input.w3-radio(type='radio' id='allImport' name='escolhaImport' value='all')
                             label(for='all') Todos
                             t
                             t
                             br
                             hr
                             br
-                            input.w3-input.w3-border(type='file' name='ficheiroDados' accept='.json')
+                            input.w3-input.w3-border(type='file' id='ficheiroDados' name='ficheiroDados' accept='.json')
                             hr
                             br
-                            button.w3-btn.w3-indigo(id='importar') Importar
+                            input.w3-btn.w3-indigo(type='submit' id='importar' value='Importar')
                         br
                     br
                 br
@@ -57,29 +58,36 @@ block content
                         hr
                         form(style='text-align:center;' id='exportForm')
                             p Escolha o tipo de dados que quer exportar para ficheiro.
-                            input.w3-radio(type='radio' name='escolhaExport' value='users')
+                            input.w3-radio(type='radio' id='usersExport' name='escolhaExport' value='users')
                             label(for='users') Utilizadores
                             t
                             t
-                            input.w3-radio(type='radio' name='escolhaExport' value='pubs')
+                            input.w3-radio(type='radio' id='pubsExport' name='escolhaExport' value='pubs')
                             label(for='pubs') Publicações
                             t
                             t
-                            input.w3-radio(type='radio' name='escolhaExport' value='groups')
+                            input.w3-radio(type='radio' id='groupsExport' name='escolhaExport' value='groups')
                             label(for='groups') Grupos
                             t
                             t
-                            input.w3-radio(type='radio' name='escolhaExport' value='all')
+                            input.w3-radio(type='radio' id='allExport' name='escolhaExport' value='all')
                             label(for='all') Todos
                             t
                             t
                             br
                             br
-                            button.w3-btn.w3-indigo(id='exportar') Exportar
+                            input.w3-btn.w3-indigo(type='submit' id='exportar' value='Exportar')
                             br
                             br
                     br
-                br
+                .w3-container
+                    .w3-card-4
+                        h4.w3-indigo.w3-text-white.w3-center Ficheiros Exportados
+                        hr
+                        ul.w3-ul
+                            each file in dados.ficheiros
+                                li.w3-li
+                                    a.w3-hover-green(style='text-decoration:none;' href=file.link download) Download #{file.nome}
             br
         br
         .w3-container
@@ -107,7 +115,7 @@ block content
                     b.w3-text-indigo=dados.pubsEvento
                 hr(style='border-top: 1px dotted blue;')
                 p.w3-center 
-                    u Número de presenças eventos profissionais publicadas:
+                    u Número de presenças em eventos profissionais publicadas:
                     b.w3-text-indigo=dados.pubsEventoProfissional
                 hr(style='border-top: 1px dotted blue;')
                 p.w3-center 

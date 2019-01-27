@@ -5,6 +5,28 @@ var passport = require('passport')
 var jwt_options = require('../../auth/jwt_options')
 var jwt = require('jsonwebtoken')
 
+router.get('/',passport.authenticate('jwt',{session:false}),(req,res) => {
+    var loggedToken = jwt.verify(req.query.access_token,'myFacebook',jwt_options.verifyOptions)
+    if(loggedToken.user.role == 'admin') {
+        groupsController.listarTodos()
+            .then(dados => res.jsonp(dados))
+            .catch(error => res.status(500).send('Erro na listagem de grupos!'))
+    } else {
+        res.redirect('/users/homepage/' + loggedToken.user.email)
+    }
+})
+
+router.post('/admin/import',passport.authenticate('jwt',{session:false}),(req,res) => {
+    var loggedToken = jwt.verify(req.body.access_token,'myFacebook',jwt_options.verifyOptions)
+    if(loggedToken.user.role == 'admin') {
+      groupsController.importar(req.body.data)
+        .then(msg => res.jsonp('Importação de grupos bem sucedida!'))
+        .catch(error => res.jsonp('erro na importação de utilizadores'))
+    } else {
+      res.status(401).send('Não está autorizado!')
+    }
+  })
+
 router.get('/withUser', passport.authenticate('jwt', { session: false }), (req, res) => {
     var user = req.query.email
     groupsController.listaGrupos(user)

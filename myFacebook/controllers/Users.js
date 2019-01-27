@@ -9,6 +9,10 @@ module.exports.consultaEmail = email => {
     return User.findOne({email: email}).exec()
 }
 
+module.exports.consultaTodos = () => {
+    return User.find({role: 'user'}).exec()
+}
+
 //Consultar favoritos pelo seu email
 module.exports.consultaFavoritos = (emailUser,emailFav) => {
     return User.findOne({
@@ -27,6 +31,10 @@ module.exports.consultaNome = nome => {
 //Registar um utilizador
 module.exports.inserir = user => {
     return User.create(user)
+}
+
+module.exports.importar = usersArray => {
+    return User.insertMany(usersArray)
 }
 
 //Atualizar dados de utilizador

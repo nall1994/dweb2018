@@ -290,19 +290,25 @@ router.get('/homepage/:email',passport.authenticate('jwt',{session:false, failur
                                           axios.get('http://localhost:3000/api/groups/count',axiosConfig)
                                             .then(gruposCount => {
                                               gruposCount = gruposCount.data.resultado
-                                              data = {
-                                                users: userCount,
-                                                groups: gruposCount,
-                                                pubs: pubsTotal,
-                                                pubsReceita: pubsReceita,
-                                                pubsIdeia: pubsIdeia,
-                                                pubsEvento: pubsEvento,
-                                                pubsEventoProfissional: pubsEventoProfissional,
-                                                pubsDesportivo: pubsDesportivo,
-                                                pubsFormacao: pubsFormacao,
-                                                pubsAlbum: pubsAlbum
-                                              }
-                                              res.render('admin_homepage', {dados: data})
+                                              axios.get('http://localhost:3000/api/users/admin/listExports',axiosConfig)
+                                                .then(filesArray => {
+                                                  filesArray = filesArray.data
+                                                  data = {
+                                                    users: userCount,
+                                                    groups: gruposCount,
+                                                    pubs: pubsTotal,
+                                                    pubsReceita: pubsReceita,
+                                                    pubsIdeia: pubsIdeia,
+                                                    pubsEvento: pubsEvento,
+                                                    pubsEventoProfissional: pubsEventoProfissional,
+                                                    pubsDesportivo: pubsDesportivo,
+                                                    pubsFormacao: pubsFormacao,
+                                                    pubsAlbum: pubsAlbum,
+                                                    ficheiros: filesArray
+                                                  }
+                                                  res.render('admin_homepage', {dados: data})
+                                                })
+                                                .catch(error => res.render('error',{e: error}))
                                             }).catch(error => res.render('error',{e: error}))
                                         }).catch(error => res.render('error',{e: error}))
                                     }).catch(error => res.render('error',{e: error}))
@@ -320,11 +326,201 @@ router.get('/homepage/:email',passport.authenticate('jwt',{session:false, failur
   })
 
   router.post('/admin/import',passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}),(req,res) => {
+    var loggedToken = jwt.verify(req.session.token,'myFacebook',jwt_options.verifyOptions)
+    if(loggedToken.user.role == 'admin') {
+      var form = formidable.IncomingForm()
+      form.parse(req,(erro,fields,files) => {
+        var data_type = fields.data_type
+        var fenviado = files.import_file.path
+        var data = new Date()
+        var ano = data.getFullYear()
+        var mes = data.getMonth() + 1
+        var dia = data.getDay()
+        var hora = data.getHours()
+        var minutos = data.getMinutes()
+        var segundos = data.getSeconds()
+        data = dia + '_' + mes + '_' + ano + '__' + hora + 'h_' + minutos + 'm_' + segundos + 's_'
+        var fnovo = __dirname + '/../public/uploaded/' + loggedToken.user.email + '/imports/' + data + files.import_file.name
+        fs.renameSync(fenviado,fnovo)
+        fs.readFile(fnovo,(erro,dados) => {
+          if(erro) res.jsonp('erro ao ler o ficheiro submetido')
+          else {
+            var data = JSON.parse(dados)
+            axiosConfig = {
+              access_token: req.session.token
+            }
 
+            if(data_type == 'users') {
+              if(!Array.isArray(data)) {
+                res.jsonp('Formato de ficheiro de utilizadores não reconhecido!')
+              } else {
+                axiosConfig.data = data
+                axios.post('http://localhost:3000/api/users/admin/import',axiosConfig)
+                  .then(message => {
+                     fs.unlinkSync(fnovo)
+                     res.jsonp(message.data)
+                  })
+                  .catch(error => res.jsonp('Ocorreu um erro na importação! Tenha a certeza que o ficheiro que inseriu é válido!'))
+              }
+              
+            } else if(data_type =='pubs') {
+              if(!Array.isArray(data)) {
+                res.jsonp('Formato de ficheiro de publicações não reconhecido!')
+              } else {
+                axiosConfig.data = data
+                axios.post('http://localhost:3000/api/pubs/admin/import',axiosConfig)
+                .then(message => {
+                  fs.unlinkSync(fnovo)
+                  res.jsonp(message.data)
+                })
+                .catch(error => res.jsonp('Ocorreu um erro na importação! Tenha a certeza que o ficheiro que inseriu é válido!'))
+              }
+            
+            } else if(data_type == 'groups') {
+              if(!Array.isArray(data)) {
+                res.jsonp('Formato de ficheiro de grupos não reconhecido!')
+              } else {
+                axiosConfig.data = data
+                axios.post('http://localhost:3000/api/groups/admin/import',axiosConfig)
+                .then(message => {
+                  fs.unlinkSync(fnovo)
+                  res.jsonp(message.data)
+                })
+                .catch(error => res.jsonp('Ocorreu um erro na importação! Tenha a certeza que o ficheiro que inseriu é válido!'))
+              }          
+
+            } else if(data_type == 'all') {
+                if(!(data.users && data.pubs && data.groups)) {
+                  res.jsonp('Formato de ficheiro de todos os dados não reconhecido!')
+                } else {
+                  axiosConfig.data = data.users
+                  axios.post('http://localhost:3000/api/users/admin/import',axiosConfig)
+                    .then(msg => {
+                      axiosConfig.data = data.pubs
+                      axios.post('http://localhost:3000/api/pubs/admin/import',axiosConfig)
+                        .then(msg => {
+                          axiosConfig.data = data.groups
+                          axios.post('http://localhost:3000/api/groups/admin/import',axiosConfig)
+                            .then(msg =>{
+                              fs.unlinkSync(fnovo)
+                              res.jsonp('Importação de dados bem sucedida')
+                            })
+                            .catch(error => res.jsonp('Ocorreu um erro na importação! Tenha a certeza que os grupos no ficheiro são válidas!'))
+                        })
+                        .catch(error => res.jsonp('Ocorreu um erro na importação! Tenha a certeza que as publicações no ficheiro são válidas!'))
+                    })
+                    .catch(error => res.jsonp('Ocorreu um erro na importação! Tenha a certeza que os utilizadores no ficheiro são válidas!'))
+                }
+            }
+          }
+        })
+      })
+    } else {
+      res.redirect('/users/homepage/' + loggedToken.user.email)
+    }
   })
 
   router.post('/admin/export',passport.authenticate('jwt',{session:false, failureRedirect:'/users/login'}),(req,res) => {
+    var loggedToken = jwt.verify(req.session.token,'myFacebook',jwt_options.verifyOptions)
+    obj = {
+      access_token: req.session.token
+    }
+    axiosConfig = {
+      params: obj
+    }
+    if(loggedToken.user.role == 'admin') {
+      var data_type = req.body.data_type
+      if(data_type == 'users') {
+        axios.get('http://localhost:3000/api/users',axiosConfig)
+          .then(users => {
+            users = users.data
+            var data = new Date()
+            var ano = data.getFullYear()
+            var mes = data.getMonth() + 1
+            var dia = data.getDay()
+            var hora = data.getHours()
+            var minutos = data.getMinutes()
+            var segundos = data.getSeconds()
+            data = dia + '_' + mes + '_' + ano + '__' + hora + 'h_' + minutos + 'm_' + segundos + 's_'
+            var path = __dirname + '/../public/uploaded/' + loggedToken.user.email + '/exports/' + data + 'users.json'
+            fs.writeFile(path,JSON.stringify(users,null,4), err => {
+              if(err) res.jsonp(JSON.stringify(err))
+              else res.jsonp('Exportação de utilizadores bem sucedida!')
+            })
+          }).catch(error => res.jsonp('ocorreu um erro ao exportar'))
+      } else if(data_type == 'groups') {
+        axios.get('http://localhost:3000/api/groups',axiosConfig)
+          .then(groups => {
+            groups = groups.data
+            var data = new Date()
+            var ano = data.getFullYear()
+            var mes = data.getMonth() + 1
+            var dia = data.getDay()
+            var hora = data.getHours()
+            var minutos = data.getMinutes()
+            var segundos = data.getSeconds()
+            data = dia + '_' + mes + '_' + ano + '__' + hora + 'h_' + minutos + 'm_' + segundos + 's_'
+            var path = __dirname + '/../public/uploaded/' + loggedToken.user.email + '/exports/' + data + 'groups.json'
+            fs.writeFile(path,JSON.stringify(groups,null,4), err => {
+              if(err) res.jsonp(JSON.stringify(err))
+              else res.jsonp('Exportação de grupos bem sucedida!')
+            })
+          }).catch(error => res.jsonp('ocorreu um erro ao exportar'))
 
+      } else if(data_type == 'pubs') {
+        axios.get('http://localhost:3000/api/pubs',axiosConfig)
+          .then(pubs => {
+            pubs = pubs.data
+            var data = new Date()
+            var ano = data.getFullYear()
+            var mes = data.getMonth() + 1
+            var dia = data.getDay()
+            var hora = data.getHours()
+            var minutos = data.getMinutes()
+            var segundos = data.getSeconds()
+            data = dia + '_' + mes + '_' + ano + '__' + hora + 'h_' + minutos + 'm_' + segundos + 's_'
+            var path = __dirname + '/../public/uploaded/' + loggedToken.user.email + '/exports/' + data + 'pubs.json'
+            fs.writeFile(path,JSON.stringify(pubs,null,4), err => {
+              if(err) res.jsonp(JSON.stringify(err))
+              else res.jsonp('Exportação de publicações bem sucedida!')
+            })
+          }).catch(error => res.jsonp('ocorreu um erro ao exportar'))
+
+      } else if(data_type == 'all') {
+        axios.get('http://localhost:3000/api/users',axiosConfig)
+          .then(users => {
+            users = users.data
+            axios.get('http://localhost:3000/api/pubs',axiosConfig)
+              .then(pubs => {
+                pubs = pubs.data
+                axios.get('http://localhost:3000/api/groups',axiosConfig)
+                  .then(groups => {
+                    groups = groups.data
+                    var data = new Date()
+                    var ano = data.getFullYear()
+                    var mes = data.getMonth() + 1
+                    var dia = data.getDay()
+                    var hora = data.getHours()
+                    var minutos = data.getMinutes()
+                    var segundos = data.getSeconds()
+                    data = dia + '_' + mes + '_' + ano + '__' + hora + 'h_' + minutos + 'm_' + segundos + 's_'
+                    var path = __dirname + '/../public/uploaded/' + loggedToken.user.email + '/exports/' + data + 'all.json'
+                    var all = new Object()
+                    all.users = users
+                    all.pubs = pubs
+                    all.groups = groups
+                    fs.writeFile(path,JSON.stringify(all,null,4), err => {
+                      if(err) res.jsonp(JSON.stringify(err))
+                      else res.jsonp('Exportação de todos os dados bem sucedida!')
+                    })
+                  }).catch(error => res.jsonp('ocorreu um erro ao exportar'))
+              }).catch(error => res.jsonp('ocorreu um erro ao exportar'))
+          }).catch(error => res.jsonp('ocorreu um erro ao exportar'))
+
+      }
+    } else {
+      res.redirect('/users/homepage/' + loggedToken.user.email)
+    }
   })
 
   router.get('/admin/profile',passport.authenticate('jwt',{session:false, failureRedirect:'/users/login'}),(req,res) => {
@@ -348,7 +544,41 @@ router.get('/homepage/:email',passport.authenticate('jwt',{session:false, failur
   })
 
   router.post('/admin/profile/updatePassword',passport.authenticate('jwt',{session:false,failureRedirect:'/users/login'}),(req,res) => {
-    //verificar se tem credenciais de administrador
+    var loggedToken = jwt.verify(req.session.token,'myFacebook',jwt_options.verifyOptions)
+    if(loggedToken.user.role == 'admin') {
+      req.body.email = loggedToken.user.email
+      req.body.access_token = req.session.token
+      if(req.body.newPassword != req.body.confirmNewPassword) {
+        obj = {
+          access_token : req.session.token,
+          email: loggedToken.user.email
+        }
+        axiosConfig = {
+          params: obj
+        }
+        axios.get('http://localhost:3000/api/users',axiosConfig)
+          .then(userData => {
+            userData = userData.data
+            res.render('admin_profile',{error: 'Os campos de password nova não coincidem!',userData: userData})
+          })
+        
+      } else {
+        axios.post('http://localhost:3000/api/users/admin/profile/updatePassword',req.body)
+        .then(msg => {
+          if(msg.data.error) {
+            console.log(msg.data.error)
+            res.render('admin_profile',{error: msg.data.error, userData: msg.data.userData})
+          } 
+          else if(msg.data.info) {
+            console.log(msg.data.info)
+            res.render('admin_profile',{info: msg.data.info, userData: msg.data.userData})
+          } 
+        })
+        .catch(error => res.render('error',{e: error}))
+      }  
+    } else {
+      res.redirect('/users/homepage/' + loggedToken.user.email)
+    }
   })
 
   router.get('/admin',passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}),(req,res) => {
@@ -398,11 +628,12 @@ router.get('/homepage/:email',passport.authenticate('jwt',{session:false, failur
   })
 
   router.get('/logout',(req,res) => {
-    req.logout()
-    req.session.destroy(() => {
-      res.clearCookie("connect.sid")
-      res.redirect('/')
-    })
+      req.logout()
+      req.session.destroy(() => {
+        res.clearCookie("connect.sid")
+        res.redirect('/')
+      })
+    
   })
   
   //Fazer o login de um utilizador
