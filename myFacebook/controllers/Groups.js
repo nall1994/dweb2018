@@ -21,6 +21,10 @@ module.exports.listarTodos = () => {
     return Group.find().exec()
 }
 
+module.exports.atualizar = group => {
+    return Group.updateOne({_id: group._id},group)
+}
+
 // Registo de um grupo.
 module.exports.inserir = group => {
     return Group

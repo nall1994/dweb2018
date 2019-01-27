@@ -16,6 +16,20 @@ router.get('/',passport.authenticate('jwt',{session:false}),(req,res) => {
     }
 })
 
+router.post('/update',passport.authenticate('jwt',{session:false}),(req,res) => {
+    var group = req.body
+    var loggedToken = jwt.verify(group.access_token,'myFacebook',jwt_options.verifyOptions)
+    if(loggedToken.user.email == group.admin) {
+        delete group.access_token
+        groupsController.atualizar(group)
+            .then(group => res.jsonp(group))
+            .catch(error => res.jsonp(error))
+    } else {
+        res.jsonp('Não tem autorização para atualizar o grupo')
+    }
+    
+})
+
 router.post('/admin/import',passport.authenticate('jwt',{session:false}),(req,res) => {
     var loggedToken = jwt.verify(req.body.access_token,'myFacebook',jwt_options.verifyOptions)
     if(loggedToken.user.role == 'admin') {

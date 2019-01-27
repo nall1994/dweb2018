@@ -68,10 +68,8 @@ router.post('/new', passport.authenticate('jwt', { session: false, failureRedire
         }
         if (data["foto"]) {
             var fsent = data["foto"].path;
-            var fnew = __dirname + '/../public/uploaded/groups/covers/temp';
-            console.log(fsent);
-            console.log(fnew);
-            fs.rename(fsent, fnew, err => {
+            var ftemp = __dirname + '/../public/uploaded/groups/covers_temp/' + data["foto"].name;
+            fs.rename(fsent, ftemp, err => {
                 if (err) {
                     console.log("Erro no armazenamento da imagem de capa.");
                     res.jsonp("Erro no armazenamento da imagem de capa.");
@@ -103,16 +101,27 @@ router.post('/new', passport.authenticate('jwt', { session: false, failureRedire
         var group = {
                 nome: fields.nome.trim(),
                 desc: fields.desc.trim(),
-                fotoGrupo: 'n/a',
                 membros: members,
                 admin: admin
             }
-        console.log(group);
+        if(data["foto"]) group.fotoGrupo = data["foto"].name
         group.access_token = req.session.token
         axios.post('http://localhost:3000/api/groups/new', group)
             .then(message => {
-                console.log("Grupo criado com sucesso.");
-                res.jsonp("Grupo criado com sucesso.");
+                group = message.data
+                fs.mkdirSync(__dirname + '/../public/uploaded/groups/' + group._id)
+                var fold = __dirname + '/../public/uploaded/groups/covers_temp/' + group.fotoGrupo
+                var fnew = __dirname + '/../public/uploaded/groups/' + group._id + '/' + group.fotoGrupo
+                fs.renameSync(fold,fnew)
+                group.fotoGrupo = 'http://localhost:3000/uploaded/groups/' + group._id + '/' + group.fotoGrupo
+                group.access_token = req.session.token
+                axios.post('http://localhost:3000/api/groups/update',group)
+                    .then(msg => {
+                        console.log("Grupo criado com sucesso.");
+                        res.jsonp("Grupo criado com sucesso.");
+                    })
+                    .catch(err => res.jsonp('Erro na criação do grupo!'))
+                
             })
             .catch(err => {
                 console.log("Erro na criação do grupo.");

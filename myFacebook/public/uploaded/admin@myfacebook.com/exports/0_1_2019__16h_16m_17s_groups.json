@@ -1,0 +1,14 @@
+[
+    {
+        "membros": [
+            "nunouniversidademinho@gmail.com",
+            "nunoleite31@gmail.com"
+        ],
+        "_id": "5c4dd919eefed2479cf3e21e",
+        "nome": "Grupo 1",
+        "descricao": "grupo de teste",
+        "fotoGrupo": "nuno.jpg",
+        "admin": "nunoleite31@gmail.com",
+        "__v": 0
+    }
+]
