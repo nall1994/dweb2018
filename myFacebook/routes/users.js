@@ -33,10 +33,8 @@ router.get('/homepage/:email',passport.authenticate('jwt',{session:false, failur
                     .then((dadosUser) => {
                       console.log("user:");
                       console.log(JSON.stringify(dadosUser.data));
-                      res.render('user_home',{userData: dadosUser.data, userPubs: pubs, numPubs : pubs.length})
-
+                      res.render('user_home',{userData: dadosUser.data, userPubs: pubs, numPubs : pubs.length, groupData: groupsInfo, numGroups: groupsInfo.length});
                     }).catch((err) => {
-                      
                       res.render('error',{error : err})
                 });
             //    res.jsonp(pubs)

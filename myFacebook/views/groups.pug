@@ -6,7 +6,7 @@ block content
             //Mudar o a que vem para redirecionar para a homepage do utilizador    
             a.w3-bar-item.w3-button.w3-hover-light-grey(href='http://localhost:3000/users/homepage/' + userData.email) Home
             a.w3-bar-item.w3-button.w3-hover-light-grey(href='http://localhost:3000/users/profile/' + userData.email) Perfil
-            a.w3-bar-item.w3-button.w3-white(href='http://localhost:3000/groups/' + userData.email) Grupos
+            a.w3-bar-item.w3-button.w3-white(href='http://localhost:3000/groups/user/' + userData.email) Grupos
             a.w3-text-white(style="margin-left: 360px;") MyFacebook
             a.w3-bar-item.w3-button.w3-hover-light-grey.w3-right(href='http://localhost:3000/users/logout') Logout
     script(src='/javascripts/group_creation.js')
@@ -15,7 +15,7 @@ block content
             h1.w3-center Grupos
     //- br
     .w3-container
-        h3.w3-text-indigo.w3-center Criar grupos
+        h3.w3-text-indigo.w3-center Criar grupo
         hr
         div.w3-card-4(id='createGroup' style="padding: 10px")
             input.w3-input(type='hidden' id='useremail' value= userData.email)
@@ -38,18 +38,32 @@ block content
     .w3-container(style="margin: 30px 16px 30px 16px")
         h3.w3-text-indigo.w3-center Os seus grupos
         hr
-        if (groupData && numGroups && numGroups > 0)
-            each grupo in groupData
-                div.w3-card-4(style="padding: 10px;")
-                    table
-                        tr
-                            th.w3-text-teal(style="margin: 5px") Nome
-                            td
-                                p.w3-text-black(style="margin: 5px") Nome do Grupo
-                        tr
-                            th.w3-text-teal(style="margin: 5px") Descrição
-                            td 
-                                p.w3-text-black(style="margin: 5px") Descrição do grupo
+        if (groupsData && numGroups && numGroups > 0)
+            each grupo in groupsData
+                .w3-card-4(style="padding: 10px; margin-bottom: 10px;")
+                    header.w3-container.w3-indigo
+                        //- h1
+                        //-     a(style='text-decoration: none;' href='http://localhost:3000/groups/' + grupo._id)= grupo.nome
+                        a(style='text-decoration: none;' href='http://localhost:3000/groups/' + grupo._id)
+                            h1= grupo.nome
+                    .w3-container
+                        p= grupo.descricao
+                    header.w3-container.w3-indigo
+                        h6 Membros
+                    div(style="display: flex; flex-wrap: wrap;")
+                        each m in grupo.membros
+                            .w3-card-4(style="margin: 6px; padding: 6px;")
+                                a(href='http://localhost:3000/users/homepage/' + m)= m
+                    //- a(style="display: block; height: 100%; width: 100%; text-decoration: none;" href='http://localhost:3000/groups/' + grupo._id)
+                    //- table
+                    //-     tr
+                    //-         th.w3-text-teal(style="margin: 5px") Nome
+                    //-         td
+                    //-             p.w3-text-black(style="margin: 5px")= grupo.nome
+                    //-     tr
+                    //-         th.w3-text-teal(style="margin: 5px") Descrição
+                    //-         td 
+                    //-             p.w3-text-black(style="margin: 5px")= grupo.descricao
         else
             div.w3-card-4(style="padding: 10px;")
                 p.w3-text-grey Não está inserido em nenhum grupo!

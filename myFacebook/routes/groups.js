@@ -8,7 +8,7 @@ var axios = require('axios');
 var formidable = require("formidable");
 var fs = require("fs");
 
-router.get('/:email', passport.authenticate('jwt', { session: false, failureRedirect: '/users/login' }), (req, res) => {
+router.get('/user/:email', passport.authenticate('jwt', { session: false, failureRedirect: '/users/login' }), (req, res) => {
 
     var profileAsked = req.params.email;
     var loggedToken = jwt.verify(req.session.token, 'myFacebook', jwt_options.verifyOptions);
@@ -26,12 +26,12 @@ router.get('/:email', passport.authenticate('jwt', { session: false, failureRedi
                 axios.get('http://localhost:3000/api/users/?email=' + loggedToken.user.email, axiosConfig)
                     .then(dadosUser => {
                         console.log('Dados do user:');
-                        console.log(JSON.stringify(dadosUser.data));
+                        console.log(dadosUser.data);
                         console.log('Grupos do user:');
-                        console.log(JSON.stringify(dadosGroups.data));
+                        console.log(dadosGroups.data);
                         console.log('Num de grupos:');
-                        console.log(dadosGroups.length);
-                        res.render('groups', { userData: dadosUser.data, groupsData: dadosGroups.data, numGroups: dadosGroups.length });
+                        console.log(dadosGroups.data.length);
+                        res.render('groups', { userData: dadosUser.data, groupsData: dadosGroups.data, numGroups: dadosGroups.data.length });
                     })
                     .catch(err => {
                         res.render('error', { error: err });
@@ -40,6 +40,23 @@ router.get('/:email', passport.authenticate('jwt', { session: false, failureRedi
             .catch(err => {
                 res.render('error', { error: err });
             })
+    }
+});
+
+router.get('/group_id', passport.authenticate('jwt', { session: false, failureRedirect: '/users/login' }), (req, res) => {
+
+    var profileAsked = req.params.email;
+    var loggedToken = jwt.verify(req.session.token, 'myFacebook', jwt_options.verifyOptions);
+    var loggedUser = loggedToken.user.email;
+    req.query.access_token = req.session.token;
+    req.query.email = loggedUser;
+    axiosConfig = {
+        params: req.query
+    };
+    if (loggedUser != profileAsked) {
+        res.redirect('/users/profile/' + loggedUser)
+    } else {
+
     }
 });
 
@@ -65,24 +82,30 @@ router.post('/new', passport.authenticate('jwt', { session: false, failureRedire
             })
         }
         var members = [];
+        var admin = fields.admin.trim();
 
         console.log("NOME:")
         console.log(fields.nome);
         console.log("DESC:")
         console.log(fields.desc);
         console.log("ADMIN:")
-        console.log(fields.admin);
+        console.log(admin);
         if (fields.membros) {
             members = fields.membros.split(',');
+        }
+        members = members.map(s => s.trim());
+        // Se o admin não se especificou como membro do grupo...
+        if (members.indexOf(admin) <= -1) {
+            members.push(admin);
         }
         console.log("MEMBROS:")
         console.log(members);
         var group = {
-                nome: fields.nome,
-                desc: fields.desc,
+                nome: fields.nome.trim(),
+                desc: fields.desc.trim(),
                 fotoGrupo: 'n/a',
                 membros: members,
-                admin: fields.admin
+                admin: admin
             }
         console.log(group);
         group.access_token = req.session.token

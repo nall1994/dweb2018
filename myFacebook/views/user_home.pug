@@ -5,7 +5,7 @@ block content
             //Mudar o a que vem para redirecionar para a homepage do utilizador    
             a.w3-bar-item.w3-button.w3-white(href='http://localhost:3000/users/homepage/' + userData.email) Home
             a.w3-bar-item.w3-button.w3-hover-light-grey(href='http://localhost:3000/users/profile/' + userData.email) Perfil
-            a.w3-bar-item.w3-button.w3-hover-light-grey(href='http://localhost:3000/groups/' + userData.email) Grupos
+            a.w3-bar-item.w3-button.w3-hover-light-grey(href='http://localhost:3000/groups/user/' + userData.email) Grupos
             a.w3-text-white(style="margin-left: 360px;") MyFacebook
             a.w3-bar-item.w3-button.w3-hover-light-grey.w3-right(href='http://localhost:3000/users/logout') Logout
     script(src='/javascripts/user_home_form.js')
@@ -24,7 +24,7 @@ block content
                 .w3-container
         .w3-row(style='padding:30px 16px')
             .w3-col.m2
-                .w3-card-4.w3-round
+                .w3-card-4.w3-round(style="padding: 5px;")
                     if userData.foto
                         p.w3-center
                             b.w3-text-indigo= userData.nome
@@ -85,13 +85,13 @@ block content
                             p.w3-center.w3-text-grey Atualize o seu perfil
                 br
                 .w3-card-4.w3-round
-                    header.w3-blue-grey
-                        h5 Grupos
+                    header.w3-blue-grey(style="padding: 2px; padding-left: 20px;")
+                        h4 Grupos
                     if (groupData && numGroups > 0)
                         each grupo in groupData
-                            p.w3-center.w3-text-indigo
-                                a(href='http://localhost:3000/groups/' + grupo.id)= grupo.nome
-                            hr
+                            .w3-card-3.w3-teal
+                                a(style="text-decoration: none;" href='http://localhost:3000/groups/' + grupo._id)
+                                    h5= grupo.nome
                     else
                         p.w3-text-grey Não está inserido em nenhum grupo!
             .w3-col.m1.w3-center

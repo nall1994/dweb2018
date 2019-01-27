@@ -5,7 +5,7 @@ block content
             //Mudar o a que vem para redirecionar para a homepage do utilizador    
             a.w3-bar-item.w3-button.w3-hover-light-grey(href='http://localhost:3000/users/homepage/' + userData.email) Home
             a.w3-bar-item.w3-button.w3-white(href='http://localhost:3000/users/profile/' + userData.email) Perfil
-            a.w3-bar-item.w3-button.w3-hover-light-grey(href='http://localhost:3000/groups/' + userData.email) Grupos
+            a.w3-bar-item.w3-button.w3-hover-light-grey(href='http://localhost:3000/groups/user/' + userData.email) Grupos
             a.w3-text-white(style="margin-left: 360px;") MyFacebook
             a.w3-bar-item.w3-button.w3-hover-light-grey.w3-right(href='http://localhost:3000/users/logout') Logout
     script(src='/javascripts/profileValidator.js')

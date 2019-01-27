@@ -46,9 +46,13 @@ router.post('/new', passport.authenticate('jwt', { session: false }), async (req
     console.log(group);
     groupsController.inserir(group)
         .then(grupo => {
-            console.log(JSON.stringify(grupo))
+            console.log(JSON.stringify(grupo));
+            res.jsonp(grupo);
         })
-        .catch(err => console.log("Erro no registo do grupo na base de dados."));
+        .catch(err => {
+            console.log("Erro no registo do grupo na base de dados.");
+            res.jsonp("Erro no registo do grupo na base de dados.");
+        });
 })
 
 router.get('/count',passport.authenticate('jwt',{session:false}),(req,res) => {

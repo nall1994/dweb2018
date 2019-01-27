@@ -4,7 +4,7 @@ var Group = require('../models/group');
 module.exports.listaGrupos = email => {
     return Group
         .find({ 'membros': email })
-        .sort({nome: -1})
+        .sort({nome: 1})
         .exec()
 };
 
