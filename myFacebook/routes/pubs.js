@@ -121,6 +121,10 @@ router.post('/:pubid/delete',passport.authenticate('jwt',{session:false, failure
     access_token: req.session.token
   }
 
+  axiosConfig = {
+    params: obj
+  }
+
   axios.get('http://localhost:3000/api/pubs/' + pubid,axiosConfig)
     .then(pub => {
       pub = pub.data
@@ -167,8 +171,8 @@ router.post('/:pubid/delete',passport.authenticate('jwt',{session:false, failure
             if(err) throw err
           })
         }
-  
-        axios.post('http://localhost:3000/api/pubs/' + pubid + '/delete',obj)
+        fs.rmdirSync(__dirname + '/../public/uploaded/' + req.user.email + '/' + pub._id)
+        axios.delete('http://localhost:3000/api/pubs/' + pubid + '/delete',axiosConfig)
           .then(m => res.redirect('/users/homepage/' + req.user.email))
           .catch(error => res.render('error',{e: error}))
       } else {

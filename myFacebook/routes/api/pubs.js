@@ -215,7 +215,7 @@ router.post('/:id_pub/edit',passport.authenticate('jwt',{session:false}),(req,re
 
 })
 
-router.post('/:pubid/delete',passport.authenticate('jwt',{session:false}),(req,res) => {
+router.delete('/:pubid/delete',passport.authenticate('jwt',{session:false}),(req,res) => {
     var pubid = req.params.pubid
     pubsController.apagar(pubid)
         .then(m => res.jsonp(m))

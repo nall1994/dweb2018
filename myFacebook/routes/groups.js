@@ -60,7 +60,7 @@ router.get('/:group_id', passport.authenticate('jwt', { session: false, failureR
                 // Preciso de saber se o utilizador loggado é admin.
                 // A página deve apresentar os membros e permitir publicações acessíveis a todos os membros.
                 // O admin deve poder acrescentar membros ao grupo.
-                res.render('group_home', { groupData: group.data[0], loggedEmail: loggedToken.user.email, groupPubs: });
+                //res.render('group_home', { groupData: group.data[0], loggedEmail: loggedToken.user.email, groupPubs: });
             }
             else {
                 console.log(group.data);
