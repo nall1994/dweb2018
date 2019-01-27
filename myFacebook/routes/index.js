@@ -7,12 +7,4 @@ router.get('/', function(req, res, next) {
   res.render('homepage');
 });
 
-router.get('/contacts',(req,res) => {
-  res.render('contacts')
-})
-
-router.get('/about',(req,res) => {
-  res.render('about')
-})
-
 module.exports = router;
