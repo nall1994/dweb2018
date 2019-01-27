@@ -24,15 +24,23 @@ router.get('/homepage/:email',passport.authenticate('jwt',{session:false, failur
         axios.get('http://localhost:3000/api/pubs/fromUser', axiosConfig)
           .then(dadospubs => {
             pubs = dadospubs.data
-            console.log("pubs:");
-            console.log(JSON.stringify(pubs));
+            for(var i = 0; i< pubs.length; i++) {
+              var pubClass = pubs[i].classificacoes
+              var newClass = new Array()
+              for(var j = 0; j < pubClass.length; j++) {
+                var url = 'http://localhost:3000/pubs/' + req.params.email + '/filter?dataMinima=&filtroHashtag=' + pubClass[j]
+                var obj = new Object()
+                obj.nome = pubClass[j]
+                obj.url = url
+                newClass.push(obj)
+              }
+              pubs[i].classificacoes = newClass
+            }
             axios.get('http://localhost:3000/api/groups/withUser', axiosConfig)
               .then(dadosGroups => {
                 groupsInfo = dadosGroups.data
                 axios.get('http://localhost:3000/api/users/?email='+loggedToken.user.email,axiosConfig)
                     .then((dadosUser) => {
-                      console.log("user:");
-                      console.log(JSON.stringify(dadosUser.data));
                       res.render('user_home',{userData: dadosUser.data, userPubs: pubs, numPubs : pubs.length, groupData: groupsInfo, numGroups: groupsInfo.length});
                     }).catch((err) => {
                       res.render('error',{error : err})
@@ -59,9 +67,18 @@ router.get('/homepage/:email',passport.authenticate('jwt',{session:false, failur
               axios.get('http://localhost:3000/api/pubs/fromUser', axiosConfig)
                 .then(dadospubs => {
                   pubs = dadospubs.data
-                  console.log("pubs:");
-                  console.log(JSON.stringify(pubs));
-                   
+                  for(var i = 0; i< pubs.length; i++) {
+                    var pubClass = pubs[i].classificacoes
+                    var newClass = new Array()
+                    for(var j = 0; j < pubClass.length; j++) {
+                      var url = 'http://localhost:3000/pubs/' + req.params.email + '/filter?dataMinima=&filtroHashtag=' + pubClass[j]
+                      var obj = new Object()
+                      obj.nome = pubClass[j]
+                      obj.url = url
+                      newClass.push(obj)
+                    }
+                    pubs[i].classificacoes = newClass
+                  }
                   axios.get('http://localhost:3000/api/groups/withUser', axiosConfig)
                     .then(dadosGroups => {
                       groupsInfo = dadosGroups.data

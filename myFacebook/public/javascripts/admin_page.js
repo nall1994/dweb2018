@@ -17,6 +17,7 @@ $(() => {
                 data : formData,    
                 success : f => {
                     alert(f)
+                    window.location.reload(true)
                 },
                 error : e => {
                     alert('Erro no post: ' + JSON.stringify(e))
@@ -24,8 +25,7 @@ $(() => {
                 }        
             })
         }      
-        $('#ficheiroDados').val('')
-        $('#' + dataToImport + 'Import').prop('checked',false)
+        
             
     })
 
@@ -44,6 +44,7 @@ $(() => {
                 contentType: "application/json; charset=utf-8",
                 success: msg => {
                     alert(msg)
+                    window.location.reload(true)
                 },
                 error: function(msg) {
                     alert('error:'+JSON.stringify(msg));

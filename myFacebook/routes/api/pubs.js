@@ -37,10 +37,7 @@ router.get('/fromUser',passport.authenticate('jwt',{session:false}),(req,res) =>
         seletores.origin_email = fromUser
         seletores.isPrivate = false
     }
-    console.log("seletores:");
-    
-    console.log(seletores);
-    
+    seletores.groupId = {$exists: false}
     pubsController.consulta(seletores)
         .then(dados => res.jsonp(dados))
         .catch(erro => res.jsonp({message: 'Erro: ' + erro}))

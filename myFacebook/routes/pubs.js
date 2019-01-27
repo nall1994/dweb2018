@@ -468,6 +468,8 @@ router.post('/edit/:pubid',passport.authenticate('jwt',{session:false, failureRe
 router.get('/:email/filter',passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}),(req,res) => {
   var dataMinima = req.query.dataMinima
   var hashtags = req.query.filtroHashtag
+  console.log('HASHTAGS')
+  console.log(hashtags)
   var tipos = req.query.filtroTipos
   var loggedUser = req.user.email
   var email = req.params.email
@@ -512,6 +514,18 @@ router.get('/:email/filter',passport.authenticate('jwt',{session:false, failureR
       axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
         .then(pubs => {
           pubs = pubs.data
+          for(var i = 0; i< pubs.length; i++) {
+            var pubClass = pubs[i].classificacoes
+            var newClass = new Array()
+            for(var j = 0; j < pubClass.length; j++) {
+              var url = 'http://localhost:3000/pubs/' + req.params.email + '/filter?dataMinima=&filtroHashtag=' + pubClass[j]
+              var obj = new Object()
+              obj.nome = pubClass[j]
+              obj.url = url
+              newClass.push(obj)
+            }
+            pubs[i].classificacoes = newClass
+          }
           axios.get('http://localhost:3000/api/users',axiosConfig2)
             .then(userData => {
               userData = userData.data
@@ -540,6 +554,18 @@ router.get('/:email/filter',passport.authenticate('jwt',{session:false, failureR
       axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
         .then(pubs => {
           pubs = pubs.data
+          for(var i = 0; i< pubs.length; i++) {
+            var pubClass = pubs[i].classificacoes
+            var newClass = new Array()
+            for(var j = 0; j < pubClass.length; j++) {
+              var url = 'http://localhost:3000/pubs/' + req.params.email + '/filter?dataMinima=&filtroHashtag=' + pubClass[j]
+              var obj = new Object()
+              obj.nome = pubClass[j]
+              obj.url = url
+              newClass.push(obj)
+            }
+            pubs[i].classificacoes = newClass
+          }
           axios.get('http://localhost:3000/api/users',axiosConfig2)
             .then(userData => {
               userData = userData.data
@@ -566,6 +592,18 @@ router.get('/:email/filter',passport.authenticate('jwt',{session:false, failureR
       axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
         .then(pubs => {
           pubs = pubs.data
+          for(var i = 0; i< pubs.length; i++) {
+            var pubClass = pubs[i].classificacoes
+            var newClass = new Array()
+            for(var j = 0; j < pubClass.length; j++) {
+              var url = 'http://localhost:3000/pubs/' + req.params.email + '/filter?dataMinima=&filtroHashtag=' + pubClass[j]
+              var obj = new Object()
+              obj.nome = pubClass[j]
+              obj.url = url
+              newClass.push(obj)
+            }
+            pubs[i].classificacoes = newClass
+          }
           axios.get('http://localhost:3000/api/users',axiosConfig2)
             .then(userData => {
               userData = userData.data
@@ -593,6 +631,18 @@ router.get('/:email/filter',passport.authenticate('jwt',{session:false, failureR
       axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
         .then(pubs => {
           pubs = pubs.data
+          for(var i = 0; i< pubs.length; i++) {
+            var pubClass = pubs[i].classificacoes
+            var newClass = new Array()
+            for(var j = 0; j < pubClass.length; j++) {
+              var url = 'http://localhost:3000/pubs/' + req.params.email + '/filter?dataMinima=&filtroHashtag=' + pubClass[j]
+              var obj = new Object()
+              obj.nome = pubClass[j]
+              obj.url = url
+              newClass.push(obj)
+            }
+            pubs[i].classificacoes = newClass
+          }
           axios.get('http://localhost:3000/api/users',axiosConfig2)
             .then(userData => {
               userData = userData.data
@@ -619,6 +669,18 @@ router.get('/:email/filter',passport.authenticate('jwt',{session:false, failureR
       axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
         .then(pubs => {
           pubs = pubs.data
+          for(var i = 0; i< pubs.length; i++) {
+            var pubClass = pubs[i].classificacoes
+            var newClass = new Array()
+            for(var j = 0; j < pubClass.length; j++) {
+              var url = 'http://localhost:3000/pubs/' + req.params.email + '/filter?dataMinima=&filtroHashtag=' + pubClass[j]
+              var obj = new Object()
+              obj.nome = pubClass[j]
+              obj.url = url
+              newClass.push(obj)
+            }
+            pubs[i].classificacoes = newClass
+          }
           axios.get('http://localhost:3000/api/users',axiosConfig2)
             .then(userData => {
               userData = userData.data
@@ -633,7 +695,6 @@ router.get('/:email/filter',passport.authenticate('jwt',{session:false, failureR
         .catch(erro => res.render('error',{e: error}))
   
     } else if(hashtags) {
-      dataMinima += ' 00h:00m'
       obj = {
         hashtags: hashtags,
         access_token: req.session.token
@@ -645,6 +706,18 @@ router.get('/:email/filter',passport.authenticate('jwt',{session:false, failureR
       axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
         .then(pubs => {
           pubs = pubs.data
+          for(var i = 0; i< pubs.length; i++) {
+            var pubClass = pubs[i].classificacoes
+            var newClass = new Array()
+            for(var j = 0; j < pubClass.length; j++) {
+              var url = 'http://localhost:3000/pubs/' + req.params.email + '/filter?dataMinima=&filtroHashtag=' + pubClass[j]
+              var obj = new Object()
+              obj.nome = pubClass[j]
+              obj.url = url
+              newClass.push(obj)
+            }
+            pubs[i].classificacoes = newClass
+          }
           axios.get('http://localhost:3000/api/users',axiosConfig2)
             .then(userData => {
               userData = userData.data
@@ -671,6 +744,18 @@ router.get('/:email/filter',passport.authenticate('jwt',{session:false, failureR
       axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
         .then(pubs => {
           pubs = pubs.data
+          for(var i = 0; i< pubs.length; i++) {
+            var pubClass = pubs[i].classificacoes
+            var newClass = new Array()
+            for(var j = 0; j < pubClass.length; j++) {
+              var url = 'http://localhost:3000/pubs/' + req.params.email + '/filter?dataMinima=&filtroHashtag=' + pubClass[j]
+              var obj = new Object()
+              obj.nome = pubClass[j]
+              obj.url = url
+              newClass.push(obj)
+            }
+            pubs[i].classificacoes = newClass
+          }
           axios.get('http://localhost:3000/api/users',axiosConfig2)
             .then(userData => {
               userData = userData.data
@@ -710,6 +795,18 @@ router.get('/:email/filter',passport.authenticate('jwt',{session:false, failureR
               axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
                 .then(pubs => {
                   pubs = pubs.data
+                  for(var i = 0; i< pubs.length; i++) {
+                    var pubClass = pubs[i].classificacoes
+                    var newClass = new Array()
+                    for(var j = 0; j < pubClass.length; j++) {
+                      var url = 'http://localhost:3000/pubs/' + req.params.email + '/filter?dataMinima=&filtroHashtag=' + pubClass[j]
+                      var obj = new Object()
+                      obj.nome = pubClass[j]
+                      obj.url = url
+                      newClass.push(obj)
+                    }
+                    pubs[i].classificacoes = newClass
+                  }
                   axios.get('http://localhost:3000/api/users',axiosConfig2)
                     .then(userData => {
                       userData = userData.data
@@ -744,6 +841,18 @@ router.get('/:email/filter',passport.authenticate('jwt',{session:false, failureR
               axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
                 .then(pubs => {
                   pubs = pubs.data
+                  for(var i = 0; i< pubs.length; i++) {
+                    var pubClass = pubs[i].classificacoes
+                    var newClass = new Array()
+                    for(var j = 0; j < pubClass.length; j++) {
+                      var url = 'http://localhost:3000/pubs/' + req.params.email + '/filter?dataMinima=&filtroHashtag=' + pubClass[j]
+                      var obj = new Object()
+                      obj.nome = pubClass[j]
+                      obj.url = url
+                      newClass.push(obj)
+                    }
+                    pubs[i].classificacoes = newClass
+                  }
                   axios.get('http://localhost:3000/api/users',axiosConfig2)
                     .then(userData => {
                       userData = userData.data
@@ -778,6 +887,18 @@ router.get('/:email/filter',passport.authenticate('jwt',{session:false, failureR
               axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
                 .then(pubs => {
                   pubs = pubs.data
+                  for(var i = 0; i< pubs.length; i++) {
+                    var pubClass = pubs[i].classificacoes
+                    var newClass = new Array()
+                    for(var j = 0; j < pubClass.length; j++) {
+                      var url = 'http://localhost:3000/pubs/' + req.params.email + '/filter?dataMinima=&filtroHashtag=' + pubClass[j]
+                      var obj = new Object()
+                      obj.nome = pubClass[j]
+                      obj.url = url
+                      newClass.push(obj)
+                    }
+                    pubs[i].classificacoes = newClass
+                  }
                   axios.get('http://localhost:3000/api/users',axiosConfig2)
                     .then(userData => {
                       userData = userData.data
@@ -813,6 +934,18 @@ router.get('/:email/filter',passport.authenticate('jwt',{session:false, failureR
               axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
                 .then(pubs => {
                   pubs = pubs.data
+                  for(var i = 0; i< pubs.length; i++) {
+                    var pubClass = pubs[i].classificacoes
+                    var newClass = new Array()
+                    for(var j = 0; j < pubClass.length; j++) {
+                      var url = 'http://localhost:3000/pubs/' + req.params.email + '/filter?dataMinima=&filtroHashtag=' + pubClass[j]
+                      var obj = new Object()
+                      obj.nome = pubClass[j]
+                      obj.url = url
+                      newClass.push(obj)
+                    }
+                    pubs[i].classificacoes = newClass
+                  }
                   axios.get('http://localhost:3000/api/users',axiosConfig2)
                     .then(userData => {
                       userData = userData.data
@@ -847,6 +980,18 @@ router.get('/:email/filter',passport.authenticate('jwt',{session:false, failureR
               axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
                 .then(pubs => {
                   pubs = pubs.data
+                  for(var i = 0; i< pubs.length; i++) {
+                    var pubClass = pubs[i].classificacoes
+                    var newClass = new Array()
+                    for(var j = 0; j < pubClass.length; j++) {
+                      var url = 'http://localhost:3000/pubs/' + req.params.email + '/filter?dataMinima=&filtroHashtag=' + pubClass[j]
+                      var obj = new Object()
+                      obj.nome = pubClass[j]
+                      obj.url = url
+                      newClass.push(obj)
+                    }
+                    pubs[i].classificacoes = newClass
+                  }
                   axios.get('http://localhost:3000/api/users',axiosConfig2)
                     .then(userData => {
                       userData = userData.data
@@ -881,6 +1026,18 @@ router.get('/:email/filter',passport.authenticate('jwt',{session:false, failureR
               axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
                 .then(pubs => {
                   pubs = pubs.data
+                  for(var i = 0; i< pubs.length; i++) {
+                    var pubClass = pubs[i].classificacoes
+                    var newClass = new Array()
+                    for(var j = 0; j < pubClass.length; j++) {
+                      var url = 'http://localhost:3000/pubs/' + req.params.email + '/filter?dataMinima=&filtroHashtag=' + pubClass[j]
+                      var obj = new Object()
+                      obj.nome = pubClass[j]
+                      obj.url = url
+                      newClass.push(obj)
+                    }
+                    pubs[i].classificacoes = newClass
+                  }
                   axios.get('http://localhost:3000/api/users',axiosConfig2)
                     .then(userData => {
                       userData = userData.data
@@ -915,6 +1072,18 @@ router.get('/:email/filter',passport.authenticate('jwt',{session:false, failureR
               axios.get('http://localhost:3000/api/pubs/' + email + '/filter',axiosConfig)
                 .then(pubs => {
                   pubs = pubs.data
+                  for(var i = 0; i< pubs.length; i++) {
+                    var pubClass = pubs[i].classificacoes
+                    var newClass = new Array()
+                    for(var j = 0; j < pubClass.length; j++) {
+                      var url = 'http://localhost:3000/pubs/' + req.params.email + '/filter?dataMinima=&filtroHashtag=' + pubClass[j]
+                      var obj = new Object()
+                      obj.nome = pubClass[j]
+                      obj.url = url
+                      newClass.push(obj)
+                    }
+                    pubs[i].classificacoes = newClass
+                  }
                   axios.get('http://localhost:3000/api/users',axiosConfig2)
                     .then(userData => {
                       userData = userData.data

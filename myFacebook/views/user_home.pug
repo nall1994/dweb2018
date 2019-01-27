@@ -424,7 +424,7 @@ block content
                                     p.w3-tiny
                                         each c in pub.classificacoes
                                             span.w3-tag.w3-yellow
-                                                =c
+                                                a(href=c.url)=c.nome
                                             span &nbsp;
                                     p.w3-tiny Publicado em 
                                         =pub.data   
