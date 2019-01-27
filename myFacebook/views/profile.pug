@@ -21,6 +21,7 @@ block content
             if info
                 p.w3-center.w3-text-green= info.info
             form(method='post' action='/users/updateProfile/' + userData.email enctype='multipart/form-data')
+                input.w3-input(type='hidden' value= userData.email)
                 label
                     p.w3-text-teal Foto de Perfil
                 input.w3-input.w3-border(type='file' id = 'foto' name='foto' accept='image/*')
@@ -63,6 +64,19 @@ block content
                         p.w3-text-teal Data de Nascimento
                     input.w3-input.w3-border(type='date' id='dataAniversario' name='dataAniversario')
                 // Permitir adição de classificadores
+                br
+                .w3-card
+                    label
+                        p.w3-text-teal Classificadores de utilizador
+                    each c in userData.classificadores
+                        label= c
+                        span &nbsp;
+                        t
+                        t
+                br
+                label
+                    p.w3-text-teal Acrescentar classificadores
+                input.w3-input.w3-border(type='text' name='novosClass' placeholder='Insira os seus novos classificadores separados por vírgula')
                 br
                 input.w3-btn.w3-indigo.w3-center.w3-large(type='submit' id='atualizarDados' value='Atualizar Dados de Perfil')
         div.w3-card-4(id='passwordUpdate')

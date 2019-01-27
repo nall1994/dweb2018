@@ -187,6 +187,11 @@ router.get('/homepage/:email',passport.authenticate('jwt',{session:false, failur
               user.nome = fields.nome
               user.profissao = fields.profissao
               user.instituicao = fields.instituicao
+              if(fields.novosClass != '') {
+                var classificadores_novos = fields.novosClass.split(',')
+                for(var i = 0; i < classificadores_novos.length; i++)
+                  user.classificadores.push(classificadores_novos[i])
+              }
               user.access_token = req.session.token
               axios.post('http://localhost:3000/api/users/updateProfile',user)
                 .then(message => res.render('profile',{userData: user,info: message.data}))
