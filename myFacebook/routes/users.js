@@ -35,6 +35,47 @@ router.get('/homepage/:email',passport.authenticate('jwt',{session:false, failur
                 newClass.push(obj)
               }
               pubs[i].classificacoes = newClass
+              if(pubs[i].tipo == 'generica') {
+                console.log(pubs[i].dados.generica.ficheiros)
+                var files = pubs[i].dados.generica.ficheiros
+                var new_files = new Array()
+                for(var k = 0; k < files.length; k++) {
+                  var obj = new Object()
+                  var element = files[k].split('.')
+                  var extension = element[element.length - 1]
+                  if(extension == 'jpeg' || extension == 'jpg' || extension == 'png') {
+                    obj.tipo = 'img'
+                    obj.url = files[k]
+                  } else {
+                    obj.tipo = 'other'
+                    obj.url = files[k]
+                    var elem = files[k].split('/')
+                    obj.nome = elem[elem.length - 1].split('.')[0]
+                  }
+                  new_files.push(obj)
+                }
+                pubs[i].dados.generica.ficheiros = new_files
+                console.log(pubs[i].dados.generica.ficheiros)
+              } else if(pubs[i].tipo == 'eventoProfissional') {
+                var files = pubs[i].dados.eventoProfissional.ficheiros
+                var new_files = new Array()
+                for(var k = 0; k < files.length; k++) {
+                  var obj = new Object()
+                  var element = files[k].split('.')
+                  var extension = element[element.length - 1]
+                  if(extension == 'jpeg' || extension == 'jpg' || extension == 'png') {
+                    obj.tipo = 'img'
+                    obj.url = files[k]
+                  } else {
+                    obj.tipo = 'other'
+                    obj.url = files[k]
+                    var elem = files[k].split('/')
+                    obj.nome = elem[elem.length - 1].split('.')[0]
+                  }
+                  new_files.push(obj)
+                }
+                pubs[i].dados.eventoProfissional.ficheiros = new_files
+              }
             }
             axios.get('http://localhost:3000/api/groups/withUser', axiosConfig)
               .then(dadosGroups => {
@@ -78,6 +119,45 @@ router.get('/homepage/:email',passport.authenticate('jwt',{session:false, failur
                       newClass.push(obj)
                     }
                     pubs[i].classificacoes = newClass
+                    if(pubs[i].tipo == 'generica') {
+                      var files = pubs[i].dados.generica.ficheiros
+                      var new_files = new Array()
+                      for(var k = 0; k < files.length; k++) {
+                        var obj = new Object()
+                        var element = files[k].split('.')
+                        var extension = element[element.length - 1]
+                        if(extension == 'jpeg' || extension == 'jpg' || extension == 'png') {
+                          obj.tipo = 'img'
+                          obj.url = files[k]
+                        } else {
+                          obj.tipo = 'other'
+                          obj.url = files[k]
+                          var elem = files[k].split('/')
+                          obj.nome = elem[elem.length - 1].split('.')[0]
+                        }
+                        new_files.push(obj)
+                      }
+                      pubs[i].dados.generica.ficheiros = new_files
+                    } else if(pubs[i].tipo == 'eventoProfissional') {
+                      var files = pubs[i].dados.eventoProfissional.ficheiros
+                      var new_files = new Array()
+                      for(var k = 0; k < files.length; k++) {
+                        var obj = new Object()
+                        var element = files[k].split('.')
+                        var extension = element[element.length - 1]
+                        if(extension == 'jpeg' || extension == 'jpg' || extension == 'png') {
+                          obj.tipo = 'img'
+                          obj.url = files[k]
+                        } else {
+                          obj.tipo = 'other'
+                          obj.url = files[k]
+                          var elem = files[k].split('/')
+                          obj.nome = elem[elem.length - 1].split('.')[0]
+                        }
+                        new_files.push(obj)
+                      }
+                      pubs[i].dados.eventoProfissional.ficheiros = new_files
+                    }
                   }
                   axios.get('http://localhost:3000/api/groups/withUser', axiosConfig)
                     .then(dadosGroups => {

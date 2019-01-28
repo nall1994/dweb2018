@@ -58,6 +58,12 @@ var EventoProfissionalSchema = new Schema({
     ficheiros: [{type:String}]
 })
 
+var GenericaSchema = new Schema({
+    titulo: {type:String, required:true},
+    descricao: {type:String, required:true},
+    ficheiros: [String]
+})
+
 var PubSchema = new Schema({
     receita: {type: ReceitaSchema, required:false},
     desportivo: {type: DesportivoSchema, required:false},
@@ -65,7 +71,8 @@ var PubSchema = new Schema({
     formacao: {type: FormacaoSchema, required:false},
     ideia: {type: IdeiaSchema, required:false},
     album: {type: AlbumSchema, required:false},
-    eventoProfissional: {type: EventoProfissionalSchema, required:false}
+    eventoProfissional: {type: EventoProfissionalSchema, required:false},
+    generica: {type: GenericaSchema, required:false}
 })
 
 var publicacaoSchema = new Schema({

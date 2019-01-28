@@ -11,6 +11,7 @@ $(() => {
         if($('#eventoProfissionalForm').is(':visible')) $('#eventoProfissionalForm').css('display','none')
         if($('#albumForm').is(':visible')) $('#albumForm').css('display','none')
         if($('#formacaoForm').is(':visible')) $('#formacaoForm').css('display','none')
+        if($('#genericaForm').is(':visible')) $('#genericaForm').css('display','block')
         $('#' + $('#postType').val() + "Form").css('display','block')
         $('#hashtagsForm').css('display','inline')
         if ($('#postType').val()=='none') $('#hashtagsForm').css('display','none')
@@ -192,6 +193,30 @@ $(() => {
             ajaxPostEventoProf(evento)
         }
         
+    })
+
+    $('#publicarGenerica').click(e => {
+        e.preventDefault()
+        var form = document.getElementById('genericaForm')
+        var generica = new FormData(form)
+        if(validateGenerica(generica)) {
+            var generica_send = new FormData()
+            generica_send.set('titulo',generica.get('titulo'))
+            generica_send.set('descricao',generica.get('descricao'))
+            generica_send.set('tipo','generica')
+            generica_send.set('origin_email',generica.get('origin_email'))
+            generica_send.set('data',parseDate(new Date()))
+            generica_send.set('privacidade',generica.get('privacidade'))
+            for(var i = 0; i < $('#ficheirosGenerica')[0].files.length; ++i) {
+                generica_send.set("ficheiro" + i,$('#ficheirosGenerica')[0].files[i])
+            }
+            generica_send.set("nFiles",i)
+            generica_send.set("classificacoes",getClassificacoes())
+            ajaxPostGenerica(generica_send)
+            $('#tituloGenerica').val('')
+            $('#descricaoGenerica').val('')
+            $('#ficheirosGenerica').val('')
+        }
     })
 
     $('#publicarEvento').click(e => {
@@ -391,6 +416,20 @@ function parseDate(date) {
     return date
 }
 
+function validateGenerica(generica) {
+    if(generica.get('titulo') == '') {
+        $('#appendedData').remove()
+        $('#bPar').append('<p id="appendedData" class="w3-center w3-text-red"> Tem que indicar o título da publicação! </p>')
+        return false
+    }
+    if(generica.get('descricao') == '') {
+        $('#appendedData').remove()
+        $('#bPar').append('<p id="appendedData" class="w3-center w3-text-red"> Tem que indicar uma descrição do conteúdo! </p>')
+        return false
+    }
+    return true
+}
+
 function validateAdicionarFoto() {
     
     if($('#dataFoto').val() == '') {
@@ -582,6 +621,25 @@ function ajaxPost(pub){
         }
 
     });
+}
+
+function ajaxPostGenerica(pub) {
+    $.ajax({
+        type:"POST",
+        enctype:"form/multipart",
+        processData:false,
+        contentType: false,
+        url: "http://localhost:3000/pubs/newGenerica",
+        data:pub,
+        success : f => {
+            alert("Publicação bem sucedida!")
+            window.location.reload(true)
+        },
+        error: e => {
+            alert('Erro no post: ' + JSON.stringify(e))
+            console.log('Erro no post: ' + e)
+        }
+    })
 }
 
 function ajaxPostEventoProf(pub){

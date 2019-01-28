@@ -39,6 +39,67 @@ router.post('/newPub',passport.authenticate('jwt',{session:false, failureRedirec
 
 })
 
+router.post('/newGenerica',passport.authenticate('jwt',{session:false,failureRedirect: '/users/login'}),(req,res) => {
+  var form = formidable.IncomingForm()
+  form.parse(req,(erro,fields,files)=> {
+    console.log(files)
+    if(erro) res.render('error',{e: 'Ocorreram erros ao publicar: ' + erro})
+    else {
+      var path = []
+      for(var i = 0; i < fields.nFiles;i++) {
+        var fenviado = files["ficheiro"+i].path
+        var fnovo = __dirname + "/../public/uploaded/" + fields.origin_email + '/' + files["ficheiro"+i].name
+        fs.rename(fenviado,fnovo, erro => {
+          if(erro) res.render('error',{e: 'Ocorreram erros no armazenamento do ficheiro: ' + erro})
+        })
+        path.push('http://localhost:3000/uploaded/' + fields.origin_email + '/' + files["ficheiro" + i].name)
+      }
+
+      var data = {
+        titulo: fields.titulo,
+        descricao: fields.descricao,
+        ficheiros: path
+      }
+      data_generica = {generica: data}
+      var generica = {
+        dados: data_generica,
+        isPrivate:fields.privacidade,
+        data:fields.data,
+        tipo:fields.tipo,
+        origin_email: fields.origin_email,
+        classificacoes : fields.classificacoes
+      }
+      generica.access_token = req.session.token
+      axios.post('http://localhost:3000/api/pubs/newPub',generica)
+        .then(message => {
+          pub = message.data
+          var files = pub.dados.generica.ficheiros
+          fs.mkdirSync('public/uploaded/' + pub.origin_email + '/' + pub._id)
+          var old_path = __dirname + '/../public/uploaded/' + pub.origin_email + '/'
+          var new_path = __dirname + '/../public/uploaded/' + pub.origin_email + '/' + pub._id + '/'
+          for(var i = 0; i < files.length; i++) {
+            var element = files[i].split('/')
+            var file_name = element[element.length - 1]
+            var fs_old = old_path + file_name
+            var fs_new = new_path + file_name
+            files[i] = 'http://localhost:3000/uploaded/' + pub.origin_email + '/' + pub._id + '/' + file_name
+            fs.renameSync(fs_old,fs_new)
+            pub.dados.generica.ficheiros = files   
+          }
+
+          var obj = {
+            access_token: req.session.token,
+            pub:pub
+          }
+          axios.post('http://localhost:3000/api/pubs/' + pub._id + '/edit',obj)
+            .then(m => res.jsonp(pub))
+            .catch(error => res.render('error',{e:error}))
+
+        })
+    }
+  })
+})
+
 //Registar publicação evento profissional
 router.post('/newEventoProf',passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}),(req,res)=>{
   console.log("\nPOST\n");
@@ -60,7 +121,7 @@ router.post('/newEventoProf',passport.authenticate('jwt',{session:false, failure
           
         })
         path.push("http://localhost:3000/uploaded/"+ fields.origin_email  + '/'  + data["ficheiro"+i].name)
-      }
+    }
 
       var newDate = ""
       var d = fields.dataEvento.split("-")
@@ -135,9 +196,7 @@ router.post('/:pubid/delete',passport.authenticate('jwt',{session:false, failure
             var element = fotos[i].foto.split('/')
             var file_name = element[element.length - 1]
             var path = __dirname + '/../public/uploaded/' + req.user.email + '/' + pub._id + '/'+ file_name
-            fs.unlink(path,err => {
-              if(err) throw err
-            })
+            fs.unlinkSync(path)
           }
   
         } else if(pub.tipo == 'eventoProfissional') {
@@ -146,9 +205,7 @@ router.post('/:pubid/delete',passport.authenticate('jwt',{session:false, failure
             var element = files_array[i].split('/')
             var file_name = element[element.length-1]
             var path = __dirname + '/../public/uploaded/' + req.user.email + '/' + pub._id + '/' + file_name
-            fs.unlink(path,err => {
-              if(err) throw err
-            })
+            fs.unlinkSync(path)
           }
   
         } else if(pub.tipo == 'desportivo') {
@@ -158,18 +215,21 @@ router.post('/:pubid/delete',passport.authenticate('jwt',{session:false, failure
             var element = fotos_array[i].split('/')
             var file_name = element[element.length-1]
             var path = __dirname + '/../public/uploaded/' + req.user.email + '/' + pub._id + '/' + file_name
-            console.log(path)
-            fs.unlink(path,err => {
-              if(err) throw err
-            })
+            fs.unlinkSync(path)
           }
           var element = gpx_file.split('/')
           var file_name = element[element.length -1]
           var path = __dirname + '/../public/uploaded/' + req.user.email + '/' + pub._id + '/' + file_name
-          console.log(path)
-          fs.unlink(path,err => {
-            if(err) throw err
-          })
+          fs.unlinkSync(path)
+        } else if(pub.tipo == 'generica') {
+          var ficheiros = pub.dados.generica.ficheiros
+          for(var i = 0; i < ficheiros.length;i++) {
+            var element = ficheiros[i].split('/')
+            var file_name = element[element.length - 1]
+            var path = __dirname + '/../public/uploaded/' + req.user.email + '/' + pub._id + '/' + file_name
+            fs.unlinkSync(path)
+          }
+
         }
         fs.rmdirSync(__dirname + '/../public/uploaded/' + req.user.email + '/' + pub._id)
         axios.delete('http://localhost:3000/api/pubs/' + pubid + '/delete',axiosConfig)
@@ -225,8 +285,7 @@ router.get('/edit/:pubid',passport.authenticate('jwt',{session:false, failureRed
             } else if(pub.tipo=='album') {
               var dataHoje = new Date().toISOString().split('T')[0]
               pub.dados.album.dataHoje = dataHoje
-            }
-            console.log(pub)          
+            }         
             res.render('editpub',{publicacao: pub, classificadores: userdata.data.classificadores})
           } )
           .catch(error => res.render('error',{e: error}))    
@@ -464,6 +523,37 @@ router.post('/edit/:pubid',passport.authenticate('jwt',{session:false, failureRe
                   .catch(error => res.render('error',{e: error}))
               }
             }).catch(error => res.render('error',{e:error}))
+      } else if(tipo == 'generica') {
+        axios.get('http://localhost:3000/api/pubs/' + pubid,axiosConfig)
+          .then(pub => {
+            pub = pub.data
+            if(fields.titulo != '') pub.dados.generica.titulo = fields.titulo
+            if(fields.descricao != '') pub.dados.generica.descricao = fields.descricao
+            if(fields.isPrivate == 'true') pub.isPrivate = true
+            else pub.isPrivate = false
+            if(files.ficheiro.size > 0) {
+              var fs_enviado = files.ficheiro.path
+              var fs_novo = __dirname + '/../public/uploaded/' + loggedUser + '/' + pub._id + '/' + files.ficheiro.name
+              fs.renameSync(fs_enviado,fs_novo)
+              pub.dados.generica.ficheiros.push('http://localhost:3000/uploaded/' + pub.origin_email + "/" + pub._id +'/' + files.ficheiro.name)
+              var config = {
+                access_token: req.session.token,
+                pub: pub
+              }
+              axios.post('http://localhost:3000/api/pubs/' + pubid + '/edit',config)
+                .then(m => res.redirect('/users/homepage/' + pub.origin_email))
+                .catch(error => res.render('error',{e: error}))
+            } else {
+              var config = {
+                access_token: req.session.token,
+                pub: pub
+              }
+              axios.post('http://localhost:3000/api/pubs/' + pubid + '/edit',config)
+                .then(m => res.redirect('/users/homepage/' + pub.origin_email))
+                .catch(error => res.render('error',{e: error}))
+              }
+
+          })
       }
     }
   })

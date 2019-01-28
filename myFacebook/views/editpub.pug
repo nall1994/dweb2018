@@ -18,6 +18,16 @@ block content
             form(action='/pubs/edit/' + publicacao._id method='post' enctype='multipart/form-data')
                 input(type='hidden' name='tipo' value=publicacao.tipo)
                 input(type='hidden' name='origin_email' value=publicacao.origin_email)
+                if publicacao.tipo == 'generica'
+                    label
+                        b.w3-text-teal Título
+                    input.w3-input.w3-border(type='text' name='titulo' value=publicacao.dados.generica.titulo)
+                    label
+                        b.w3-text-teal Descrição
+                    input.w3-input.w3-border(type='text' name='descricao' value=publicacao.dados.generica.descricao)
+                    label
+                        b.w3-text-teal Adicionar ficheiro
+                    input.w3-input.w3-border(type='file' name='ficheiro')
                 if publicacao.tipo == 'receita'
                     label
                         b.w3-text-teal Nome do cozinhado

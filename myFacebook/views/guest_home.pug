@@ -102,6 +102,10 @@ block content
                                     label
                                         p.w3-text-teal Filtrar por tipo de publicação
                                     div
+                                        input.w3-check(type='checkbox' name='filtroTipos' value='generica')
+                                        label(for='generica') genérica
+                                        t
+                                        t
                                         input.w3-check(type='checkbox' name='filtroTipos' value='receita')
                                         label(for='receita') receita
                                         t
@@ -141,6 +145,19 @@ block content
                         if userPubs
                             each pub in userPubs
                                 .w3-card-4.w3-round
+                                    if pub.tipo == 'generica'
+                                        h3
+                                            b
+                                                =pub.dados.generica.titulo
+                                        p.w3-small
+                                            =pub.dados.generica.descricao
+                                        each ficheiro in pub.dados.generica.ficheiros
+                                            if(ficheiro.tipo == 'img')
+                                                label
+                                                    a(href=ficheiro.url)
+                                                        img(src=ficheiro.url style='height:120px;width:120px')
+                                            else
+                                                a(href=ficheiro.url)=ficheiro.nome
                                     if pub.tipo=="ideia"
                                         h3
                                             b    
@@ -195,10 +212,13 @@ block content
                                             =pub.dados.eventoProfissional.descricao
                                         p.w3-small Oradores: 
                                             =pub.dados.eventoProfissional.oradores
-                                        each foto in pub.dados.eventoProfissional.ficheiros
-                                            label
-                                                a(href=foto)
-                                                    img(src=foto style='height:120;width:120px')
+                                        each ficheiro in pub.dados.eventoProfissional.ficheiros
+                                            if(ficheiro.tipo == 'img')
+                                                label
+                                                    a(href=ficheiro.url)
+                                                        img(src=ficheiro.url style='height:120px;width:120px')
+                                            else
+                                                a(href=ficheiro.url)=ficheiro.nome
                                         
 
                                     if pub.tipo=="album"

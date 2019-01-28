@@ -100,5 +100,4 @@ $(() => {
         )
     }
 
-    window.history.pushState("","","/users/homepage/" + $('#guest-useremail').val())
 })
