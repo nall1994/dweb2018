@@ -21,7 +21,7 @@ router.post('/', async (req,res) => {
     .catch(error => res.status(500).send(JSON.stringify(error)))
 })
 
-router.post('/admin',async (req,res) => {
+router.post('/admin', passport.authenticate('jwt',{session:false}),async (req,res) => {
   loggedToken = jwt.verify(req.body.access_token,'myFacebook',jwt_options.verifyOptions)
   if(loggedToken.user.role == 'admin') {
     var user = new Object()
@@ -36,7 +36,7 @@ router.post('/admin',async (req,res) => {
   }
 })
 
-router.post('/admin/profile/updatePassword',passport.authenticate('jwt',{session:false}),(req,res) => {
+router.put('/admin',passport.authenticate('jwt',{session:false}),(req,res) => {
   var loggedToken = jwt.verify(req.body.access_token,'myFacebook',jwt_options.verifyOptions)
   if(loggedToken.user.role == 'admin') {
     userController.consultaEmail(req.body.email)
@@ -82,9 +82,7 @@ router.get('/',passport.authenticate('jwt',{session:false}), (req,res) => {
 })
 
 router.get('/admin/listExports',passport.authenticate('jwt',{session:false}),(req,res) => {
-  console.log('entered')
   var loggedToken = jwt.verify(req.query.access_token,'myFacebook',jwt_options.verifyOptions)
-  console.log('passed')
   if(loggedToken.user.role == 'admin') {
     console.log(__dirname + '/../../public/uploaded/' + loggedToken.user.email + '/exports/')
     var files = fs.readdirSync(__dirname + '/../../public/uploaded/' + loggedToken.user.email + '/exports/')
@@ -115,7 +113,7 @@ router.post('/admin/import',passport.authenticate('jwt',{session:false}),(req,re
 })
 
 //Consulta dos favoritos de um user
-router.get('/isFav',passport.authenticate('jwt',{session:false}), (req,res) => {
+router.get('/favorites',passport.authenticate('jwt',{session:false}), (req,res) => {
     var loggedemail = req.user.email
     var emailFav = req.query.emailFav
     userController.consultaFavoritos(loggedemail,emailFav)
@@ -174,7 +172,7 @@ router.post('/admin/login', async (req,res,next) => {
   })(req,res,next)
 })
 
-router.post('/addToFavorites',passport.authenticate('jwt',{session:false}),(req,res) => {
+router.post('/favorites',passport.authenticate('jwt',{session:false}),(req,res) => {
   var data = {
     email: req.body.favoriteEmail,
     nome: req.body.favoriteNome
@@ -184,13 +182,12 @@ router.post('/addToFavorites',passport.authenticate('jwt',{session:false}),(req,
   res.jsonp({info: "Favorito adicionado com sucesso!"})
 })
 
-router.post('/remFromFavorites',passport.authenticate('jwt',{session:false}),(req,res) => {
+router.delete('/favorites',passport.authenticate('jwt',{session:false}),(req,res) => {
   var data = {
-    email: req.body.favoriteEmail,
-    nome: req.body.favoriteNome
+    email: req.query.favoriteEmail,
+    nome: req.query.favoriteNome
   }
-  console.log(data)
-  userController.removerFavorito(req.body.email,data)
+  userController.removerFavorito(req.query.email,data)
   res.jsonp({info: "Favorito removido com sucesso!"})
 })
 
@@ -219,36 +216,18 @@ router.post('/search',passport.authenticate('jwt',{session:false}),(req,res) => 
     .catch(error => res.status(500).send('Erro na consulta por nome!'))
 })
 
-router.post('/updateProfile',passport.authenticate('jwt',{session:false}), (req,res) => {
-  var user = req.body
-  var loggedToken = jwt.verify(user.access_token,'myFacebook',jwt_options.verifyOptions)
-  var loggedUser = loggedToken.user.email 
-  if(loggedUser != user.email) {
-    res.jsonp({info: "Não é possível atualizar algo que não seja do seu perfil!"})
-  }  else {
-      delete user.access_token
-      userController.atualizarDados(user.email,user)
-      .then(() => res.jsonp({info: 'Atualização bem sucedida!'}))
-      .catch(error => res.status(500).send(JSON.stringify(error)) )
-  }
-  
-})
-
-router.post('/updatePassword', passport.authenticate('jwt',{session:false}),(req,res) => {
+router.put('/',passport.authenticate('jwt',{session:false}),(req,res) => {
   var data = req.body
   var loggedToken = jwt.verify(data.access_token,'myFacebook',jwt_options.verifyOptions)
-  var loggedUser = loggedToken.user.email 
-  if(loggedUser != data.email) {
-    res.jsonp({info: "Não é possível alterar a password para este utilizador!"})
-  } else {
-    userController.consultaEmail(data.email)
+  if(loggedToken.user.email == data.email) {
+    if(data.oldPass) {
+      //update password
+      userController.consultaEmail(data.email)
       .then(userData => {
         bcrypt.compare(data.oldPass,userData.password,async (error,result) => {
           if(error) res.jsonp({info: error})
           else if(result) {
             var hash_newpass = await bcrypt.hash(data.newPass,10)
-            console.log("email -> " + data.email)
-            console.log("pass -> "  + data.newPass)
             userController.atualizarPassword(data.email,hash_newpass)
             res.jsonp({info: 'Alteração efetuada com sucesso!'})
           } else {
@@ -258,8 +237,16 @@ router.post('/updatePassword', passport.authenticate('jwt',{session:false}),(req
           
           
       })
+    } else {
+      //update profile data
+      var user = data
+      delete user.access_token
+      userController.atualizarDados(user.email,user)
+        .then(() => res.jsonp({info: 'Atualização bem sucedida!'}))
+        .catch(error => res.status(500).send(JSON.stringify(error)) )
+    }
   }
-
+    
 })
 
 module.exports = router;

@@ -34,6 +34,9 @@ $(() => {
                 }
         
             });
+            $('#oldPassword').val('')
+            $('#newPassword').val('')
+            $('#confirmNewPassword').val('')
         }
     })
 

@@ -95,13 +95,11 @@ router.get('/homepage/:email', passport.authenticate('jwt', { session: false, fa
 
   } else {
     //present guest_home
-    axios.get('http://localhost:3000/api/users/isFav/?emailFav=' + req.params.email, axiosConfig)
+    axios.get('http://localhost:3000/api/users/favorites?emailFav=' + req.params.email, axiosConfig)
       .then(dados => {
         var isFav = false
-        console.log("teste");
         if (dados.data) isFav = true
         else isFav = false
-        console.log("isfav:" + isFav);
 
         var pubs = new Object()
         var groupsInfo = new Object()
@@ -219,7 +217,7 @@ router.post('/addToFavorites', passport.authenticate('jwt', { session: false, fa
   var loggedToken = jwt.verify(req.session.token, 'myFacebook', jwt_options.verifyOptions)
   req.body.access_token = req.session.token
   req.body.email = loggedToken.user.email
-  axios.post('http://localhost:3000/api/users/addToFavorites', req.body)
+  axios.post('http://localhost:3000/api/users/favorites', req.body)
     .then(msg => {
       res.jsonp({ info: msg.data.info })
     })
@@ -228,9 +226,17 @@ router.post('/addToFavorites', passport.authenticate('jwt', { session: false, fa
 
 router.post('/remFromFavorites', passport.authenticate('jwt', { session: false, failureRedirect: '/users/login' }), (req, res) => {
   var loggedToken = jwt.verify(req.session.token, 'myFacebook', jwt_options.verifyOptions)
-  req.body.access_token = req.session.token
-  req.body.email = loggedToken.user.email
-  axios.post('http://localhost:3000/api/users/remFromFavorites', req.body)
+  obj = {
+    access_token: req.session.token,
+    email: loggedToken.user.email,
+    favoriteEmail: req.body.favoriteEmail,
+    favoriteNome: req.body.favoriteNome
+  }
+  axiosConfig = {
+    params:obj
+  }
+
+  axios.delete('http://localhost:3000/api/users/favorites', axiosConfig)
     .then(msg => {
       res.jsonp({ info: msg.data.info })
     })
@@ -273,7 +279,7 @@ router.post('/updateProfile/:email', passport.authenticate('jwt', { session: fal
               user.classificadores.push(classificadores_novos[i])
           }
           user.access_token = req.session.token
-          axios.post('http://localhost:3000/api/users/updateProfile', user)
+          axios.put('http://localhost:3000/api/users', user)
             .then(message => res.render('profile', { userData: user, info: message.data }))
             .catch(error => res.render('error', { e: error }))
         })
@@ -291,7 +297,7 @@ router.post('/updatePassword/:email', passport.authenticate('jwt', { session: fa
   } else {
     req.body.email = loggedUser
     req.body.access_token = req.session.token
-    axios.post('http://localhost:3000/api/users/updatePassword', req.body)
+    axios.put('http://localhost:3000/api/users', req.body)
       .then(msg => res.jsonp({ info: msg.data.info }))
       .catch(error => res.render('error', { e: error }))
   }
@@ -663,7 +669,7 @@ router.post('/admin/profile/updatePassword', passport.authenticate('jwt', { sess
         })
 
     } else {
-      axios.post('http://localhost:3000/api/users/admin/profile/updatePassword', req.body)
+      axios.put('http://localhost:3000/api/users/admin', req.body)
         .then(msg => {
           if (msg.data.error) {
             console.log(msg.data.error)

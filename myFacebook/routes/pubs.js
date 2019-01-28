@@ -33,7 +33,7 @@ router.post('/newPub',passport.authenticate('jwt',{session:false, failureRedirec
   }
   
   
-  axios.post('http://localhost:3000/api/pubs/newPub',req.body)
+  axios.post('http://localhost:3000/api/pubs',req.body)
                 .then(message => res.jsonp(message))
                 .catch(erro => res.render('error', {e: erro}))
 
@@ -70,7 +70,7 @@ router.post('/newGenerica',passport.authenticate('jwt',{session:false,failureRed
         classificacoes : fields.classificacoes
       }
       generica.access_token = req.session.token
-      axios.post('http://localhost:3000/api/pubs/newPub',generica)
+      axios.post('http://localhost:3000/api/pubs',generica)
         .then(message => {
           pub = message.data
           var files = pub.dados.generica.ficheiros
@@ -91,7 +91,7 @@ router.post('/newGenerica',passport.authenticate('jwt',{session:false,failureRed
             access_token: req.session.token,
             pub:pub
           }
-          axios.post('http://localhost:3000/api/pubs/' + pub._id + '/edit',obj)
+          axios.put('http://localhost:3000/api/pubs/' + pub._id,obj)
             .then(m => res.jsonp(pub))
             .catch(error => res.render('error',{e:error}))
 
@@ -102,7 +102,6 @@ router.post('/newGenerica',passport.authenticate('jwt',{session:false,failureRed
 
 //Registar publicação evento profissional
 router.post('/newEventoProf',passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}),(req,res)=>{
-  console.log("\nPOST\n");
 
   var form = new formidable.IncomingForm()
   form.parse(req,(erro,fields,data)=>{
@@ -147,7 +146,7 @@ router.post('/newEventoProf',passport.authenticate('jwt',{session:false, failure
                 classificacoes : fields.classificacoes
       }
       evento.access_token = req.session.token
-      axios.post('http://localhost:3000/api/pubs/newPub',evento)
+      axios.post('http://localhost:3000/api/pubs',evento)
                 .then(message => {
                   pub = message.data
                     var files = pub.dados.eventoProfissional.ficheiros
@@ -167,7 +166,7 @@ router.post('/newEventoProf',passport.authenticate('jwt',{session:false, failure
                       access_token : req.session.token,
                       pub: pub
                     }
-                    axios.post('http://localhost:3000/api/pubs/' + pub._id + '/edit',obj)
+                    axios.put('http://localhost:3000/api/pubs/' + pub._id,obj)
                       .then(m => res.jsonp(pub))
                       .catch(error => res.render('error',{e:error}))                   
                 })
@@ -232,7 +231,7 @@ router.post('/:pubid/delete',passport.authenticate('jwt',{session:false, failure
 
         }
         fs.rmdirSync(__dirname + '/../public/uploaded/' + req.user.email + '/' + pub._id)
-        axios.delete('http://localhost:3000/api/pubs/' + pubid + '/delete',axiosConfig)
+        axios.delete('http://localhost:3000/api/pubs/' + pubid,axiosConfig)
           .then(m => res.redirect('/users/homepage/' + req.user.email))
           .catch(error => res.render('error',{e: error}))
       } else {
@@ -325,7 +324,7 @@ router.post('/edit/:pubid',passport.authenticate('jwt',{session:false, failureRe
               access_token: req.session.token,
               pub: pub
             }
-            axios.post('http://localhost:3000/api/pubs/' + pubid + '/edit',config)
+            axios.put('http://localhost:3000/api/pubs/' + pubid,config)
               .then(m => res.redirect('/users/homepage/' + loggedUser))
               .catch(error => res.render('error',{e:error}))
           }).catch(error => res.render('error',{e: error}))
@@ -343,7 +342,7 @@ router.post('/edit/:pubid',passport.authenticate('jwt',{session:false, failureRe
               access_token: req.session.token,
               pub: pub
             }
-            axios.post('http://localhost:3000/api/pubs/' + pubid + "/edit",config)
+            axios.put('http://localhost:3000/api/pubs/' + pubid,config)
               .then(m => res.redirect('/users/homepage/' + loggedUser))
               .catch(error => res.render('error',{e: error}))
           }).catch(error => res.render('error', {e: error}))
@@ -369,7 +368,7 @@ router.post('/edit/:pubid',passport.authenticate('jwt',{session:false, failureRe
               access_token: req.session.token,
               pub: pub
             }
-            axios.post('http://localhost:3000/api/pubs/' + pubid + "/edit",config)
+            axios.put('http://localhost:3000/api/pubs/' + pubid,config)
               .then(m => res.redirect('/users/homepage/' + loggedUser))
               .catch(error => res.render('error',{e: error}))
           }).catch(error => res.render('error', {e: error}))
@@ -400,7 +399,7 @@ router.post('/edit/:pubid',passport.authenticate('jwt',{session:false, failureRe
                       access_token: req.session.token,
                       pub: pub
                     }
-                    axios.post('http://localhost:3000/api/pubs/' + pubid + '/edit',config)
+                    axios.put('http://localhost:3000/api/pubs/' + pubid,config)
                       .then(m => res.redirect('/users/homepage/' + pub.origin_email))
                       .catch(error => res.render('error',{e: error}))
                 })
@@ -409,7 +408,7 @@ router.post('/edit/:pubid',passport.authenticate('jwt',{session:false, failureRe
                   access_token: req.session.token,
                   pub: pub
                 }
-                axios.post('http://localhost:3000/api/pubs/' + pubid + '/edit',config)
+                axios.put('http://localhost:3000/api/pubs/' + pubid,config)
                   .then(m => res.redirect('/users/homepage/' + pub.origin_email))
                   .catch(error => res.render('error',{e: error}))
 
@@ -432,7 +431,7 @@ router.post('/edit/:pubid',passport.authenticate('jwt',{session:false, failureRe
                 pub: pub
               }
 
-              axios.post('http://localhost:3000/api/pubs/' + pubid + '/edit',config)
+              axios.put('http://localhost:3000/api/pubs/' + pubid,config)
                 .then(m => res.redirect('/users/homepage/' + pub.origin_email))
                 .catch(error => res.render('error',{e: error}))
               
@@ -463,7 +462,7 @@ router.post('/edit/:pubid',passport.authenticate('jwt',{session:false, failureRe
                   access_token: req.session.token,
                   pub: pub
                 }
-                axios.post('http://localhost:3000/api/pubs/' + pubid + '/edit',config)
+                axios.put('http://localhost:3000/api/pubs/' + pubid,config)
                   .then(m => res.redirect('/users/homepage/' + pub.origin_email))
                   .catch(error => res.render('error',{e: error}))
               } else {
@@ -471,7 +470,7 @@ router.post('/edit/:pubid',passport.authenticate('jwt',{session:false, failureRe
                   access_token: req.session.token,
                   pub: pub
                 }
-                axios.post('http://localhost:3000/api/pubs/' + pubid + '/edit',config)
+                axios.put('http://localhost:3000/api/pubs/' + pubid,config)
                   .then(m => res.redirect('/users/homepage/' + pub.origin_email))
                   .catch(error => res.render('error',{e: error}))
                 }
@@ -509,7 +508,7 @@ router.post('/edit/:pubid',passport.authenticate('jwt',{session:false, failureRe
                       access_token: req.session.token,
                       pub: pub
                     }
-                    axios.post('http://localhost:3000/api/pubs/' + pubid + '/edit',config)
+                    axios.put('http://localhost:3000/api/pubs/' + pubid,config)
                       .then(m => res.redirect('/users/homepage/' + pub.origin_email))
                       .catch(error => res.render('error',{e: error}))
                 })
@@ -518,7 +517,7 @@ router.post('/edit/:pubid',passport.authenticate('jwt',{session:false, failureRe
                   access_token: req.session.token,
                   pub: pub
                 }
-                axios.post('http://localhost:3000/api/pubs/' + pubid + '/edit',config)
+                axios.put('http://localhost:3000/api/pubs/' + pubid,config)
                   .then(m => res.redirect('/users/homepage/' + pub.origin_email))
                   .catch(error => res.render('error',{e: error}))
               }
@@ -540,7 +539,7 @@ router.post('/edit/:pubid',passport.authenticate('jwt',{session:false, failureRe
                 access_token: req.session.token,
                 pub: pub
               }
-              axios.post('http://localhost:3000/api/pubs/' + pubid + '/edit',config)
+              axios.put('http://localhost:3000/api/pubs/' + pubid,config)
                 .then(m => res.redirect('/users/homepage/' + pub.origin_email))
                 .catch(error => res.render('error',{e: error}))
             } else {
@@ -548,7 +547,7 @@ router.post('/edit/:pubid',passport.authenticate('jwt',{session:false, failureRe
                 access_token: req.session.token,
                 pub: pub
               }
-              axios.post('http://localhost:3000/api/pubs/' + pubid + '/edit',config)
+              axios.put('http://localhost:3000/api/pubs/' + pubid,config)
                 .then(m => res.redirect('/users/homepage/' + pub.origin_email))
                 .catch(error => res.render('error',{e: error}))
               }
@@ -562,8 +561,6 @@ router.post('/edit/:pubid',passport.authenticate('jwt',{session:false, failureRe
 router.get('/:email/filter',passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}),(req,res) => {
   var dataMinima = req.query.dataMinima
   var hashtags = req.query.filtroHashtag
-  console.log('HASHTAGS')
-  console.log(hashtags)
   var tipos = req.query.filtroTipos
   var loggedUser = req.user.email
   var email = req.params.email
@@ -879,7 +876,7 @@ router.get('/:email/filter',passport.authenticate('jwt',{session:false, failureR
       axiosConfig = {
         params: obj
       }
-      axios.get('http://localhost:3000/api/users/isFav/?emailFav='+req.params.email,axiosConfig)
+      axios.get('http://localhost:3000/api/users/favorites?emailFav='+req.params.email,axiosConfig)
           .then(dados=>{
               var isFav = false
               console.log("teste");
@@ -927,7 +924,7 @@ router.get('/:email/filter',passport.authenticate('jwt',{session:false, failureR
       axiosConfig = {
         params: obj
       }
-      axios.get('http://localhost:3000/api/users/isFav/?emailFav='+req.params.email,axiosConfig)
+      axios.get('http://localhost:3000/api/users/favorites?emailFav='+req.params.email,axiosConfig)
           .then(dados=>{
               var isFav = false
               if (dados.data) isFav = true
@@ -971,7 +968,7 @@ router.get('/:email/filter',passport.authenticate('jwt',{session:false, failureR
       axiosConfig = {
         params: obj
       }
-      axios.get('http://localhost:3000/api/users/isFav/?emailFav='+req.params.email,axiosConfig)
+      axios.get('http://localhost:3000/api/users/favorites?emailFav='+req.params.email,axiosConfig)
           .then(dados=>{
               var isFav = false
               console.log("teste");
@@ -1018,7 +1015,7 @@ router.get('/:email/filter',passport.authenticate('jwt',{session:false, failureR
       axiosConfig = {
         params: obj
       }
-      axios.get('http://localhost:3000/api/users/isFav/?emailFav='+req.params.email,axiosConfig)
+      axios.get('http://localhost:3000/api/users/favorites?emailFav='+req.params.email,axiosConfig)
           .then(dados=>{
               var isFav = false
               console.log("teste");
@@ -1064,7 +1061,7 @@ router.get('/:email/filter',passport.authenticate('jwt',{session:false, failureR
       axiosConfig = {
         params: obj
       }
-      axios.get('http://localhost:3000/api/users/isFav/?emailFav='+req.params.email,axiosConfig)
+      axios.get('http://localhost:3000/api/users/favorites?emailFav='+req.params.email,axiosConfig)
           .then(dados=>{
               var isFav = false
               console.log("teste");
@@ -1110,7 +1107,7 @@ router.get('/:email/filter',passport.authenticate('jwt',{session:false, failureR
       axiosConfig = {
         params: obj
       }
-      axios.get('http://localhost:3000/api/users/isFav/?emailFav='+req.params.email,axiosConfig)
+      axios.get('http://localhost:3000/api/users/favorites?emailFav='+req.params.email,axiosConfig)
           .then(dados=>{
               var isFav = false
               console.log("teste");
@@ -1156,7 +1153,7 @@ router.get('/:email/filter',passport.authenticate('jwt',{session:false, failureR
       axiosConfig = {
         params: obj
       }
-      axios.get('http://localhost:3000/api/users/isFav/?emailFav='+req.params.email,axiosConfig)
+      axios.get('http://localhost:3000/api/users/favorites?emailFav='+req.params.email,axiosConfig)
           .then(dados=>{
               var isFav = false
               console.log("teste");
@@ -1259,7 +1256,7 @@ router.post('/newDesp',passport.authenticate('jwt',{session:false, failureRedire
                 classificacoes : fields.classificacoes
       }
       desportivo.access_token = req.session.token
-      axios.post('http://localhost:3000/api/pubs/newPub',desportivo)
+      axios.post('http://localhost:3000/api/pubs',desportivo)
                 .then(message => {
                       pub = message.data
                       var fotos = pub.dados.desportivo.fotos
@@ -1287,7 +1284,7 @@ router.post('/newDesp',passport.authenticate('jwt',{session:false, failureRedire
                         access_token : req.session.token,
                         pub: pub
                       }
-                      axios.post('http://localhost:3000/api/pubs/' + pub._id + '/edit',obj)
+                      axios.put('http://localhost:3000/api/pubs/' + pub._id,obj)
                         .then(m => res.jsonp(pub))
                         .catch(error => res.render('error',{e:error})) 
                 })
@@ -1299,7 +1296,6 @@ router.post('/newDesp',passport.authenticate('jwt',{session:false, failureRedire
 
 //Registar publicação album
 router.post('/newAlbum',passport.authenticate('jwt',{session:false, failureRedirect: '/users/login'}),(req,res)=>{
-  console.log("\nPOSTALBUM\n");
 
   var form = new formidable.IncomingForm()
   form.parse(req,(erro,fields,data)=>{
@@ -1345,7 +1341,7 @@ router.post('/newAlbum',passport.authenticate('jwt',{session:false, failureRedir
                 classificacoes : fields.classificacoes
       }
       album.access_token = req.session.token
-      axios.post('http://localhost:3000/api/pubs/newPub',album)
+      axios.post('http://localhost:3000/api/pubs',album)
                 .then(message => {
                       pub = message.data
                       var fotos = pub.dados.album.fotos
@@ -1366,7 +1362,7 @@ router.post('/newAlbum',passport.authenticate('jwt',{session:false, failureRedir
                         access_token : req.session.token,
                         pub: pub
                       }
-                      axios.post('http://localhost:3000/api/pubs/' + pub._id + '/edit',obj)
+                      axios.put('http://localhost:3000/api/pubs/' + pub._id,obj)
                         .then(m => res.jsonp(pub))
                         .catch(error => res.render('error',{e:error})) 
                 })

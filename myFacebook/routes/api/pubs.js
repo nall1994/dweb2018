@@ -141,20 +141,11 @@ router.post('/newComment', passport.authenticate('jwt', { session: false }), (re
 
 })
 
-router.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {
-    pubsController.consultaTodas()
-        .then(dados => res.jsonp(dados))
-        .catch(erro => res.jsonp({ message: 'Erro: ' + erro }))
-
-})
-
 router.get('/count', passport.authenticate('jwt', { session: false }), (req, res) => {
     //verificar se o user é admin
     var loggedToken = jwt.verify(req.query.access_token, 'myFacebook', jwt_options.verifyOptions)
     var userRole = loggedToken.user.role
     tipo = req.query.tipo
-    console.log(tipo)
-    console.log(userRole)
     if (userRole == 'admin') {
         if (tipo == 'receita') {
             pubsController.contarTipo('receita')
@@ -204,7 +195,7 @@ router.get('/:id_pub', passport.authenticate('jwt', { session: false }), (req, r
         .catch(error => res.status(500).send('Erro na consulta de publicação'))
 })
 
-router.post('/:id_pub/edit', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.put('/:id_pub', passport.authenticate('jwt', { session: false }), (req, res) => {
     var idpub = req.params.id_pub
     var access_token = req.body.access_token
     var pub = req.body.pub
@@ -223,14 +214,14 @@ router.post('/:id_pub/edit', passport.authenticate('jwt', { session: false }), (
 
 })
 
-router.delete('/:pubid/delete', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.delete('/:pubid', passport.authenticate('jwt', { session: false }), (req, res) => {
     var pubid = req.params.pubid
     pubsController.apagar(pubid)
         .then(m => res.jsonp(m))
         .catch(error => res.jsonp(JSON.stringify(error)))
 })
 
-router.post('/newPub', passport.authenticate('jwt', { session: false }), async (req, res) => {
+router.post('/', passport.authenticate('jwt', { session: false }), async (req, res) => {
     var pub = new Object()
     pub.origin_email = req.body.origin_email
     pub.tipo = req.body.tipo
