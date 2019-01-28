@@ -16,6 +16,14 @@ router.get('/', passport.authenticate('jwt', { session: false }), (req, res) => 
     }
 })
 
+router.delete('/', passport.authenticate('jwt', { session: false }), (req, res) => {
+    console.log(req.body);
+    var loggedToken = jwt.verify(req.query.access_token, 'myFacebook', jwt_options.verifyOptions)
+    groupsController.removeGrupo(req.query.group_id)
+        .then(group => res.jsonp(group))
+        .catch(error => res.jsonp(error))
+})
+
 router.post('/update', passport.authenticate('jwt', { session: false }), (req, res) => {
     var group = req.body
     var loggedToken = jwt.verify(group.access_token, 'myFacebook', jwt_options.verifyOptions)

@@ -177,4 +177,19 @@ router.get('/:group_id', passport.authenticate('jwt', { session: false, failureR
         })
 });
 
+router.delete('/:group_id', passport.authenticate('jwt', { session: false, failureRedirect: '/users/login' }), (req, res) => {
+    req.query.access_token = req.session.token;
+    req.query.group_id = req.params.group_id;
+    axiosConfig = {
+        params: req.query
+    }
+    axios.delete("http://localhost:3000/api/groups", axiosConfig)
+        .then(data => {
+            res.jsonp("Sucesso na remoção do grupo.");
+        })
+        .catch(err => {
+            res.jsonp("Erro na remoção do grupo.");
+        })
+});
+
 module.exports = router;
