@@ -17,14 +17,13 @@ router.get('/', passport.authenticate('jwt', { session: false }), (req, res) => 
 })
 
 router.delete('/', passport.authenticate('jwt', { session: false }), (req, res) => {
-    console.log(req.body);
     var loggedToken = jwt.verify(req.query.access_token, 'myFacebook', jwt_options.verifyOptions)
     groupsController.removeGrupo(req.query.group_id)
         .then(group => res.jsonp(group))
         .catch(error => res.jsonp(error))
 })
 
-router.post('/update', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.put('/', passport.authenticate('jwt', { session: false }), (req, res) => {
     var group = req.body
     var loggedToken = jwt.verify(group.access_token, 'myFacebook', jwt_options.verifyOptions)
     if (loggedToken.user.email == group.admin) {
@@ -37,15 +36,14 @@ router.post('/update', passport.authenticate('jwt', { session: false }), (req, r
     }
 })
 
-router.post('/addUser', passport.authenticate('jwt', { session: false }), (req, res) => {
+router.post('/member', passport.authenticate('jwt', { session: false }), (req, res) => {
     var loggedToken = jwt.verify(req.body.access_token, 'myFacebook', jwt_options.verifyOptions)
     groupsController.addMembro(req.body.group_id, req.body.email)
         .then(group => res.jsonp(group))
         .catch(error => res.jsonp(error))
 })
 
-router.delete('/remUser', passport.authenticate('jwt', { session: false }), (req, res) => {
-    console.log(req.body);
+router.delete('/member', passport.authenticate('jwt', { session: false }), (req, res) => {
     var loggedToken = jwt.verify(req.query.access_token, 'myFacebook', jwt_options.verifyOptions)
     groupsController.removeMembro(req.query.group_id, req.query.email)
         .then(group => res.jsonp(group))
@@ -70,16 +68,13 @@ router.get('/withUser', passport.authenticate('jwt', { session: false }), (req, 
         .catch(error => res.jsonp({ message: 'ERRO: ' + error }))
 })
 
-router.post('/new', passport.authenticate('jwt', { session: false }), async (req, res) => {
+router.post('/', passport.authenticate('jwt', { session: false }), async (req, res) => {
     var group = new Object();
     group.nome = req.body.nome;
     group.descricao = req.body.desc;
     group.fotoGrupo = req.body.fotoGrupo;
-    console.log(req.body.membros);
     group.membros = req.body.membros;
     group.admin = req.body.admin;
-    console.log("GRUPO CONSTRUÍDO.");
-    console.log(group);
     groupsController.inserir(group)
         .then(grupo => {
             console.log(JSON.stringify(grupo));

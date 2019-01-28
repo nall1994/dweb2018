@@ -89,7 +89,7 @@ router.post('/new', passport.authenticate('jwt', { session: false, failureRedire
         }
         if (data["foto"]) group.fotoGrupo = data["foto"].name
         group.access_token = req.session.token
-        axios.post('http://localhost:3000/api/groups/new', group)
+        axios.post('http://localhost:3000/api/groups', group)
             .then(message => {
                 group = message.data
                 fs.mkdirSync(__dirname + '/../public/uploaded/groups/' + group._id)
@@ -98,7 +98,7 @@ router.post('/new', passport.authenticate('jwt', { session: false, failureRedire
                 fs.renameSync(fold, fnew)
                 group.fotoGrupo = 'http://localhost:3000/uploaded/groups/' + group._id + '/' + group.fotoGrupo
                 group.access_token = req.session.token
-                axios.post('http://localhost:3000/api/groups/update', group)
+                axios.put('http://localhost:3000/api/groups', group)
                     .then(msg => {
                         console.log("Grupo criado com sucesso.");
                         res.jsonp("Grupo criado com sucesso.");
@@ -116,7 +116,7 @@ router.post('/new', passport.authenticate('jwt', { session: false, failureRedire
 router.post('/addUser/:group_id', passport.authenticate('jwt', { session: false, failureRedirect: '/users/login' }), (req, res) => {
     req.body.access_token = req.session.token;
     req.body.group_id = req.params.group_id;
-    axios.post("http://localhost:3000/api/groups/addUser", req.body)
+    axios.post("http://localhost:3000/api/groups/member", req.body)
         .then(data => {
             res.jsonp("Sucesso na adição de utilizador ao grupo.");
         })
@@ -132,7 +132,7 @@ router.post('/remUser/:group_id', passport.authenticate('jwt', { session: false,
     axiosConfig = {
         params: req.query
     }
-    axios.delete("http://localhost:3000/api/groups/remUser", axiosConfig)
+    axios.delete("http://localhost:3000/api/groups/member", axiosConfig)
         .then(data => {
             res.jsonp("Sucesso na remoção de utilizador ao grupo.");
         })
