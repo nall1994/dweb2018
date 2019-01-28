@@ -209,17 +209,20 @@ router.post('/:pubid/delete',passport.authenticate('jwt',{session:false, failure
   
         } else if(pub.tipo == 'desportivo') {
           var fotos_array = pub.dados.desportivo.fotos
-          var gpx_file = pub.dados.desportivo.ficheiro_gpx
           for(var i = 0; i< fotos_array.length; i++) {
             var element = fotos_array[i].split('/')
             var file_name = element[element.length-1]
             var path = __dirname + '/../public/uploaded/' + req.user.email + '/' + pub._id + '/' + file_name
             fs.unlinkSync(path)
           }
-          var element = gpx_file.split('/')
-          var file_name = element[element.length -1]
-          var path = __dirname + '/../public/uploaded/' + req.user.email + '/' + pub._id + '/' + file_name
-          fs.unlinkSync(path)
+          if(pub.dados.desportivo.ficheiro_gpx) {
+            var gpx_file = pub.dados.desportivo.ficheiro_gpx
+            var element = gpx_file.split('/')
+            var file_name = element[element.length -1]
+            var path = __dirname + '/../public/uploaded/' + req.user.email + '/' + pub._id + '/' + file_name
+            fs.unlinkSync(path)
+          }
+          
         } else if(pub.tipo == 'generica') {
           var ficheiros = pub.dados.generica.ficheiros
           for(var i = 0; i < ficheiros.length;i++) {
@@ -1209,17 +1212,18 @@ router.post('/newDesp',passport.authenticate('jwt',{session:false, failureRedire
       res.write(res.render('error',{e:'Ocorreram erros no armazenamento do ficheiro'+erro}))
     }
 
-    var fenviadogpx =  data.ficheiro_gpx.path
-    var fnovogpx = __dirname + "/../public/uploaded/" + fields.origin_email  + '/'  + data.ficheiro_gpx.name
-    console.log("\nFNOVO"+fnovogpx)
-    fs.rename(fenviadogpx,fnovogpx,erro => {
+    if(data.ficheiro_gpx) {
+      var fenviadogpx =  data.ficheiro_gpx.path
+      var fnovogpx = __dirname + "/../public/uploaded/" + fields.origin_email  + '/'  + data.ficheiro_gpx.name
+      console.log("\nFNOVO"+fnovogpx)
+      fs.rename(fenviadogpx,fnovogpx,erro => {
           if(erro){ 
               res.write(res.render('error',{e:'Ocorreram erros no armazenamento do ficheiro'}))
           }
           else console.log("Ficheiro gpx armazenado com sucesso");
         })
-    var path_ficheiro_gpx = ("http://localhost:3000/uploaded/"+ fields.origin_email  + '/'  + data.ficheiro_gpx.name)
-
+      var path_ficheiro_gpx = ("http://localhost:3000/uploaded/"+ fields.origin_email  + '/'  + data.ficheiro_gpx.name)
+    }
 
     var path_fotos = []
     for(var i=0; i<fields.nFotos;i++) {
