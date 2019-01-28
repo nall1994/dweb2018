@@ -39,18 +39,20 @@ block content
                                 else
                                     .w3-card-4(style="margin: 6px; padding: 6px;")
                                         a(href='http://localhost:3000/users/homepage/' + m)=m
-                                        button.remUser.w3-button.w3-red(style="padding: 4px; margin-left: 4px;" id=m) X
+                                        .w3-button.remUser.w3-button.w3-red(style="padding: 4px; margin-left: 4px;" id=m) X
                             else
                                 if (m == loggedEmail)
                                     .w3-card-4(style="margin: 6px; padding: 6px;")
                                         a(href='http://localhost:3000/users/homepage/' + m)=m
-                                        button.remUser.w3-button.w3-red(style="padding: 4px; margin-left: 4px;" id=m) X
+                                        .w3.button.remUser.w3-button.w3-red(style="padding: 4px; margin-left: 4px;" id=m) X
                                 else if (m == group.admin)
                                     .w3-card-4.w3-light-blue(style="margin: 6px; padding: 6px;")
                                         a(href='http://localhost:3000/users/homepage/' + m)= m
                                 else
                                     .w3-card-4(style="margin: 6px; padding: 6px;")
                                         a(href='http://localhost:3000/users/homepage/' + m)= m
+                if (loggedEmail == group.admin)
+                    .w3-button.w3-padding-large.w3-xlarge.w3-block.w3-indigo.rem-group(style="margin-top: 20px; height: 60px;" id= group._id) Eliminar Grupo
             //- .w3-col.m1
             //-     .w3-container
             input.w3-input(type='hidden' id='group_id' value= group._id)

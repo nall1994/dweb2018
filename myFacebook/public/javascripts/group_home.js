@@ -62,6 +62,28 @@ $(() => {
         }
     }
 
+    $('body').on('click', '.rem-group', function () { // Make your changes here 
+        var id = $(this).attr('id');
+        console.log("REM GROUP: " + id);
+        console.log(JSON.stringify(id));
+        // var content = { email: id };
+        // console.log("http://localhost:3000/groups/addUser/" + $("#group_id").val());
+        $.ajax({
+            type: "DELETE",
+            url: "http://localhost:3000/groups/" + id,
+            // data: JSON.stringify(content),
+            // contentType: "application/json; charset=utf-8",
+            success: msg => {
+                console.log("Grupo eliminado com sucesso.");
+                window.location.replace("http://localhost:3000/users/homepage/" + $('#admin').val());
+            },
+            error: function (msg) {
+                console.log("Erro na eliminação do grupo.");
+                // window.location.reload(true);
+            }
+        })
+    });
+
     $('body').on('click', '.addUser', function () { // Make your changes here 
         var id = $(this).attr('id');
         console.log("ADD USER: " + id);

@@ -46,3 +46,8 @@ module.exports.addMembro = (id, email) => {
     return Group
         .update({ _id: id }, { $push: { membros: email } });
 }
+
+module.exports.removeGrupo = id => {
+    return Group
+        .remove({ _id: id });
+}
