@@ -158,7 +158,7 @@ router.get('/:group_id', passport.authenticate('jwt', { session: false, failureR
                     .then(pubs => {
                         axios.get('http://localhost:3000/api/users/?email=' + loggedToken.user.email, axiosConfig)
                             .then(userData => {
-                                res.render('group_home', { group: group.data[0], loggedEmail: loggedToken.user.email, groupPubs: pubs.data, userData: userData.data });
+                                res.render('group_home', { group: group.data[0], loggedEmail: loggedToken.user.email, groupPubs: pubs.data, numPubs: pubs.data.length, userData: userData.data });
                             })
                             .catch(err => {
                                 res.render('error', { error: err });

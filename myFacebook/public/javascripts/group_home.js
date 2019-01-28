@@ -55,7 +55,7 @@ $(() => {
                 var user = users[i]
                 $('#searchResults').append(
                     "<div class='w3-card-4'> " +
-                    "<p style='padding: 4px;' class='w3-text-grey'> <a href='http://localhost:3000/users/homepage/" + user.email + "'>" + "<b>" + user.nome + "</b>" + " (" + user.email + ")" + " </a> <button class='addUser w3-button w3-green' id='" + user.email +  "' style='padding: 1px; float: right;'>+</button> </p>"
+                    "<p style='padding: 4px;' class='w3-text-grey'> <a href='http://localhost:3000/users/homepage/" + user.email + "'>" + "<b>" + user.nome + "</b>" + " (" + user.email + ")" + " </a> <button class='addUser w3-button w3-green' id='" + user.email + "' style='padding: 1px; float: right;'>+</button> </p>"
                     + "</div> <br/> <hr>"
                 )
             }
@@ -66,7 +66,7 @@ $(() => {
         var id = $(this).attr('id');
         console.log("ADD USER: " + id);
         console.log(JSON.stringify(id));
-        var content = {email: id};
+        var content = { email: id };
         console.log("http://localhost:3000/groups/addUser/" + $("#group_id").val());
         $.ajax({
             type: "POST",
@@ -88,7 +88,7 @@ $(() => {
         var id = $(this).attr('id');
         console.log("REM USER: " + id);
         console.log(JSON.stringify(id));
-        var content = {email: id};
+        var content = { email: id };
         console.log("http://localhost:3000/groups/remUser/" + $("#group_id").val());
         $.ajax({
             type: "POST",
@@ -240,6 +240,9 @@ $(() => {
             }
             evento.set("nfiles", i)
             evento.set("classificacoes", getClassificacoes())
+            for (var pair of evento.entries()) {
+                console.log(pair[0] + ', ' + pair[1]);
+            }
             ajaxPostEventoProf(evento)
         }
 
