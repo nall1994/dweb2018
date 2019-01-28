@@ -231,6 +231,9 @@ router.post('/', passport.authenticate('jwt', { session: false }), async (req, r
     var dados = req.body.dados
     pub.dados = dados
     if (req.body.classificadores != "") pub.classificacoes = req.body.classificacoes.split(",").slice(0, -1)
+    if (req.body.groupId) {
+        pub.groupId = req.body.groupId;
+    }
     pubsController.inserir(pub)
         .then(msg => {
             res.jsonp(msg)

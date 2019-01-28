@@ -280,8 +280,8 @@ block content
                     - var contador = 0;
                     div(id='pubsView').w3-card-4.w3-round
                         input.w3-input(type='hidden' id='numPubs' value=numPubs)
-                        if userPubs
-                            each pub in userPubs
+                        if groupPubs
+                            each pub in groupPubs
                                 .w3-card-4.w3-round
                                     p
                                         a.w3-button.w3-indigo.w3-left(style='text-decoration:none;' id="sharefb"+contador name=pub ) Partilhar no Facebook
