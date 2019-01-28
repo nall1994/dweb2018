@@ -5,9 +5,9 @@ var passport = require('passport')
 var jwt_options = require('../../auth/jwt_options')
 var jwt = require('jsonwebtoken')
 
-router.get('/',passport.authenticate('jwt',{session:false}),(req,res) => {
-    var loggedToken = jwt.verify(req.query.access_token,'myFacebook',jwt_options.verifyOptions)
-    if(loggedToken.user.role == 'admin') {
+router.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {
+    var loggedToken = jwt.verify(req.query.access_token, 'myFacebook', jwt_options.verifyOptions)
+    if (loggedToken.user.role == 'admin') {
         groupsController.listarTodos()
             .then(dados => res.jsonp(dados))
             .catch(error => res.status(500).send('Erro na listagem de grupos!'))
@@ -16,10 +16,10 @@ router.get('/',passport.authenticate('jwt',{session:false}),(req,res) => {
     }
 })
 
-router.post('/update',passport.authenticate('jwt',{session:false}),(req,res) => {
+router.post('/update', passport.authenticate('jwt', { session: false }), (req, res) => {
     var group = req.body
-    var loggedToken = jwt.verify(group.access_token,'myFacebook',jwt_options.verifyOptions)
-    if(loggedToken.user.email == group.admin) {
+    var loggedToken = jwt.verify(group.access_token, 'myFacebook', jwt_options.verifyOptions)
+    if (loggedToken.user.email == group.admin) {
         delete group.access_token
         groupsController.atualizar(group)
             .then(group => res.jsonp(group))
@@ -27,19 +27,33 @@ router.post('/update',passport.authenticate('jwt',{session:false}),(req,res) => 
     } else {
         res.jsonp('Não tem autorização para atualizar o grupo')
     }
-    
 })
 
-router.post('/admin/import',passport.authenticate('jwt',{session:false}),(req,res) => {
-    var loggedToken = jwt.verify(req.body.access_token,'myFacebook',jwt_options.verifyOptions)
-    if(loggedToken.user.role == 'admin') {
-      groupsController.importar(req.body.data)
-        .then(msg => res.jsonp('Importação de grupos bem sucedida!'))
-        .catch(error => res.jsonp('erro na importação de utilizadores'))
+router.post('/addUser', passport.authenticate('jwt', { session: false }), (req, res) => {
+    var loggedToken = jwt.verify(req.body.access_token, 'myFacebook', jwt_options.verifyOptions)
+    groupsController.addMembro(req.body.group_id, req.body.email)
+        .then(group => res.jsonp(group))
+        .catch(error => res.jsonp(error))
+})
+
+router.delete('/remUser', passport.authenticate('jwt', { session: false }), (req, res) => {
+    console.log(req.body);
+    var loggedToken = jwt.verify(req.query.access_token, 'myFacebook', jwt_options.verifyOptions)
+    groupsController.removeMembro(req.query.group_id, req.query.email)
+        .then(group => res.jsonp(group))
+        .catch(error => res.jsonp(error))
+})
+
+router.post('/admin/import', passport.authenticate('jwt', { session: false }), (req, res) => {
+    var loggedToken = jwt.verify(req.body.access_token, 'myFacebook', jwt_options.verifyOptions)
+    if (loggedToken.user.role == 'admin') {
+        groupsController.importar(req.body.data)
+            .then(msg => res.jsonp('Importação de grupos bem sucedida!'))
+            .catch(error => res.jsonp('erro na importação de utilizadores'))
     } else {
-      res.status(401).send('Não está autorizado!')
+        res.status(401).send('Não está autorizado!')
     }
-  })
+})
 
 router.get('/withUser', passport.authenticate('jwt', { session: false }), (req, res) => {
     var user = req.query.email
@@ -69,20 +83,20 @@ router.post('/new', passport.authenticate('jwt', { session: false }), async (req
         });
 })
 
-router.get('/count',passport.authenticate('jwt',{session:false}),(req,res) => {
+router.get('/count', passport.authenticate('jwt', { session: false }), (req, res) => {
     //verificar se é admin
-    var loggedToken = jwt.verify(req.query.access_token,'myFacebook',jwt_options.verifyOptions)
+    var loggedToken = jwt.verify(req.query.access_token, 'myFacebook', jwt_options.verifyOptions)
     var userRole = loggedToken.user.role
-    if(userRole == 'admin') {
+    if (userRole == 'admin') {
         groupsController.contar()
-        .then(result => res.jsonp({resultado:result}))
-        .catch(error => res.jsonp(error))
+            .then(result => res.jsonp({ resultado: result }))
+            .catch(error => res.jsonp(error))
     } else {
-        res.jsonp({error: 'Not authorized!'})
-    }  
+        res.jsonp({ error: 'Not authorized!' })
+    }
 })
 
-router.get('/:group_id', passport.authenticate('jwt',{session:false}),(req,res) => {
+router.get('/:group_id', passport.authenticate('jwt', { session: false }), (req, res) => {
     groupsController.obterGrupo(req.params.group_id)
         .then(grupo => {
             res.jsonp(grupo);

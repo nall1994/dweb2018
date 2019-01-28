@@ -43,35 +43,6 @@ router.get('/user/:email', passport.authenticate('jwt', { session: false, failur
     }
 });
 
-router.get('/:group_id', passport.authenticate('jwt', { session: false, failureRedirect: '/users/login' }), (req, res) => {
-    var loggedToken = jwt.verify(req.session.token,'myFacebook',jwt_options.verifyOptions);
-    req.query.access_token = req.session.token;
-    req.query.email = req.params.email;
-    axiosConfig = {
-        params: req.query
-    };
-    // Obtenção da informação do grupo.
-    axios.get('http://localhost:3000/api/groups/' + req.params.group_id, axiosConfig)
-        .then(group => {
-            if (group.data.length > 0) {
-                console.log(group.data);
-                console.log(group.data[0]);
-                // Preciso das publicações com o group_id.
-                // Preciso de saber se o utilizador loggado é admin.
-                // A página deve apresentar os membros e permitir publicações acessíveis a todos os membros.
-                // O admin deve poder acrescentar membros ao grupo.
-                //res.render('group_home', { groupData: group.data[0], loggedEmail: loggedToken.user.email, groupPubs: });
-            }
-            else {
-                console.log(group.data);
-                res.render('error', { error: "O grupo especificado não existe." });
-            }
-        })
-        .catch(err => {
-            res.render('error', { error: err });
-        })
-});
-
 router.post('/new', passport.authenticate('jwt', { session: false, failureRedirect: '/users/login' }), (req, res) => {
     var groupForm = formidable.IncomingForm();
     groupForm.parse(req, (err, fields, data) => {
@@ -111,12 +82,12 @@ router.post('/new', passport.authenticate('jwt', { session: false, failureRedire
         console.log("MEMBROS:")
         console.log(members);
         var group = {
-                nome: fields.nome.trim(),
-                desc: fields.desc.trim(),
-                membros: members,
-                admin: admin
-            }
-        if(data["foto"]) group.fotoGrupo = data["foto"].name
+            nome: fields.nome.trim(),
+            desc: fields.desc.trim(),
+            membros: members,
+            admin: admin
+        }
+        if (data["foto"]) group.fotoGrupo = data["foto"].name
         group.access_token = req.session.token
         axios.post('http://localhost:3000/api/groups/new', group)
             .then(message => {
@@ -124,16 +95,16 @@ router.post('/new', passport.authenticate('jwt', { session: false, failureRedire
                 fs.mkdirSync(__dirname + '/../public/uploaded/groups/' + group._id)
                 var fold = __dirname + '/../public/uploaded/groups/covers_temp/' + group.fotoGrupo
                 var fnew = __dirname + '/../public/uploaded/groups/' + group._id + '/' + group.fotoGrupo
-                fs.renameSync(fold,fnew)
+                fs.renameSync(fold, fnew)
                 group.fotoGrupo = 'http://localhost:3000/uploaded/groups/' + group._id + '/' + group.fotoGrupo
                 group.access_token = req.session.token
-                axios.post('http://localhost:3000/api/groups/update',group)
+                axios.post('http://localhost:3000/api/groups/update', group)
                     .then(msg => {
                         console.log("Grupo criado com sucesso.");
                         res.jsonp("Grupo criado com sucesso.");
                     })
                     .catch(err => res.jsonp('Erro na criação do grupo!'))
-                
+
             })
             .catch(err => {
                 console.log("Erro na criação do grupo.");
@@ -141,5 +112,69 @@ router.post('/new', passport.authenticate('jwt', { session: false, failureRedire
             })
     })
 })
+
+router.post('/addUser/:group_id', passport.authenticate('jwt', { session: false, failureRedirect: '/users/login' }), (req, res) => {
+    req.body.access_token = req.session.token;
+    req.body.group_id = req.params.group_id;
+    axios.post("http://localhost:3000/api/groups/addUser", req.body)
+        .then(data => {
+            res.jsonp("Sucesso na adição de utilizador ao grupo.");
+        })
+        .catch(err => {
+            res.jsonp("Erro na adição de utilizador ao grupo.");
+        })
+});
+
+router.post('/remUser/:group_id', passport.authenticate('jwt', { session: false, failureRedirect: '/users/login' }), (req, res) => {
+    req.query.access_token = req.session.token;
+    req.query.group_id = req.params.group_id;
+    req.query.email = req.body.email;
+    axiosConfig = {
+        params: req.query
+    }
+    axios.delete("http://localhost:3000/api/groups/remUser", axiosConfig)
+        .then(data => {
+            res.jsonp("Sucesso na remoção de utilizador ao grupo.");
+        })
+        .catch(err => {
+            res.jsonp("Erro na remoção de utilizador ao grupo.");
+        })
+});
+
+router.get('/:group_id', passport.authenticate('jwt', { session: false, failureRedirect: '/users/login' }), (req, res) => {
+    var loggedToken = jwt.verify(req.session.token, 'myFacebook', jwt_options.verifyOptions);
+    req.query.access_token = req.session.token;
+    req.query.group_id = req.params.group_id;
+    axiosConfig = {
+        params: req.query
+    };
+    // Obtenção da informação do grupo.
+    axios.get('http://localhost:3000/api/groups/' + req.params.group_id, axiosConfig)
+        .then(group => {
+            if (group.data.length > 0) {
+                console.log(group.data);
+                console.log(group.data[0]);
+                axios.get('http://localhost:3000/api/pubs/fromGroup', axiosConfig)
+                    .then(pubs => {
+                        axios.get('http://localhost:3000/api/users/?email=' + loggedToken.user.email, axiosConfig)
+                            .then(userData => {
+                                res.render('group_home', { group: group.data[0], loggedEmail: loggedToken.user.email, groupPubs: pubs.data, userData: userData.data });
+                            })
+                            .catch(err => {
+                                res.render('error', { error: err });
+                            })
+                    })
+                    .catch(err => {
+                        res.render('error', { error: err });
+                    })
+            }
+            else {
+                res.render('error', { error: "O grupo especificado não existe." });
+            }
+        })
+        .catch(err => {
+            res.render('error', { error: err });
+        })
+});
 
 module.exports = router;

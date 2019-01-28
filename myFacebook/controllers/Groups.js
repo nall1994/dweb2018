@@ -4,7 +4,7 @@ var Group = require('../models/group');
 module.exports.listaGrupos = email => {
     return Group
         .find({ 'membros': email })
-        .sort({nome: 1})
+        .sort({ nome: 1 })
         .exec()
 };
 
@@ -22,7 +22,7 @@ module.exports.listarTodos = () => {
 }
 
 module.exports.atualizar = group => {
-    return Group.updateOne({_id: group._id},group)
+    return Group.updateOne({ _id: group._id }, group)
 }
 
 // Registo de um grupo.
@@ -33,6 +33,16 @@ module.exports.inserir = group => {
 
 module.exports.obterGrupo = id => {
     return Group
-        .find({_id: id})
+        .find({ _id: id })
         .exec()
+}
+
+module.exports.removeMembro = (id, email) => {
+    return Group
+        .update({ _id: id }, { $pull: { membros: email } });
+}
+
+module.exports.addMembro = (id, email) => {
+    return Group
+        .update({ _id: id }, { $push: { membros: email } });
 }

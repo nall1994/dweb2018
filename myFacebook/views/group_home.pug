@@ -1,0 +1,416 @@
+extends layout
+block content
+    .w3-top
+        .w3-bar.w3-blue-grey.w3card.w3-large
+            //Mudar o a que vem para redirecionar para a homepage do utilizador
+            a.w3-bar-item.w3-button.w3-hover-light-grey(href='http://localhost:3000/users/homepage/' + loggedEmail) Home
+            a.w3-bar-item.w3-button.w3-hover-light-grey(href='http://localhost:3000/users/profile/' + loggedEmail) Perfil
+            a.w3-bar-item.w3-button.w3-hover-light-grey(href='http://localhost:3000/groups/user/' + loggedEmail) Grupos
+            a.w3-text-white(style="margin-left: 360px;") MyFacebook
+            a.w3-bar-item.w3-button.w3-hover-light-grey.w3-right(href='http://localhost:3000/users/logout') Logout
+    script(src='/javascripts/group_home.js')
+
+    .w3-container(style="margin-top: 60px;")
+        .w3-card-4
+            header.w3-container.w3-indigo
+                a(style='text-decoration: none;' href='http://localhost:3000/groups/' + group._id)
+                    h1= group.nome
+            .w3-container
+                p= group.descricao
+    .w3-container(style="margin-top: 20px;")
+        .w3-row
+            .w3-col.m3(style="margin-top: 24px;")
+                if (loggedEmail == group.admin)
+                        .w3-card-4.w3-round(style="padding: 10px; margin-bottom: 20px;")
+                            .w3-input-container
+                                i.fa.fa-search
+                                input.w3-input-field.w3-border-0.w3-round.w3-center( style="width: 75%;" type='text' id='searchField' name='searchField' placeholder='Adicione membros ao grupo.')
+                                input.w3-btn.w3-blue-grey.w3-small(type='submit' id='userSearch' value='Procurar')
+                            div(id='searchResults').w3-container
+                .w3-card-4
+                    header.w3-container.w3-indigo
+                        h6 Membros
+                    div(style="display: flex; flex-wrap: wrap;")
+                        each m in group.membros
+                            if (loggedEmail == group.admin)
+                                if (m == loggedEmail)
+                                    .w3-card-4.w3-light-blue(style="margin: 6px; padding: 6px;")
+                                        a(href='http://localhost:3000/users/homepage/' + m)= m
+                                else
+                                    .w3-card-4(style="margin: 6px; padding: 6px;")
+                                        a(href='http://localhost:3000/users/homepage/' + m)=m
+                                        button.remUser.w3-button.w3-red(style="padding: 4px; margin-left: 4px;" id=m) X
+                            else
+                                if (m == loggedEmail)
+                                    .w3-card-4(style="margin: 6px; padding: 6px;")
+                                        a(href='http://localhost:3000/users/homepage/' + m)=m
+                                        button.remUser.w3-button.w3-red(style="padding: 4px; margin-left: 4px;" id=m) X
+                                else if (m == group.admin)
+                                    .w3-card-4.w3-light-blue(style="margin: 6px; padding: 6px;")
+                                        a(href='http://localhost:3000/users/homepage/' + m)= m
+                                else
+                                    .w3-card-4(style="margin: 6px; padding: 6px;")
+                                        a(href='http://localhost:3000/users/homepage/' + m)= m
+            //- .w3-col.m1
+            //-     .w3-container
+            input.w3-input(type='hidden' id='group_id' value= group._id)
+            input.w3-input(type='hidden' id='admin' value= group.admin)
+            .w3-col.m6.w3-center(style="margin: 60px; margin-top: 0px;")
+                .w3-card-4.w3-round
+                    p.w3-xlarge.w3-text-indigo.w3-center Publicar
+                    hr
+                    input.w3-input(type='hidden' id='useremail' value= loggedEmail)
+                    select.w3-select.w3-border(id='postType' name='postType')
+                        option(value='none' selected) Escolha o tipo de publicação
+                        option(value='receita') Receita Culinária
+                        option(value='evento') Evento
+                        option(value='eventoProfissional') Evento Profissional
+                        option(value='ideia') Ideia
+                        option(value='formacao') Formação
+                        option(value='desportivo') Desportiva
+                        option(value='album') Álbum
+                    br
+                    br
+                    form(id='hashtagsForm' style='display:none')
+                        p HashTags
+                        div
+                        each hashtag in userData.classificadores
+                            input(class="w3-check" type='checkbox' name="hashtag" value=hashtag)
+                            label(for=hashtag)=hashtag
+                            t
+                            t
+                        br
+                        br
+                    form(id='receitaForm' style='display:none')
+                        p Escreva um ingrediente por linha e uma instrução por linha nos campos respetivos.
+                        input(type='hidden' name='origin_email' value= loggedEmail)
+                        input.w3-input.w3-border(type='text' id='tituloReceita' name='titulo' placeholder="Nome do cozinhado")
+                        br
+                        textarea.w3-input.w3-border(name='ingredientes' id='ingredientes' placeholder='Ingredientes')
+                        br
+                        textarea.w3-input.w3-border(name='instrucoes' id='instrucoes' placeholder='Instruções')
+                        br
+                        input.w3-radio(type='radio' name='privacidade' value='true' checked)
+                        label Publicação privada
+                        input.w3-radio(type='radio' name='privacidade' value='false')
+                        label Publicação pública
+                        br
+                        br
+                        input.w3-btn.w3-indigo(type='submit' id='publicarReceita' value='Publicar')
+                    form(id='ideiaForm' style='display:none')
+                        p Escreva os classificadores separados por vírgula.
+                        input(type='hidden' name='origin_email' value= loggedEmail)
+                        input.w3-input.w3-border(type='text' name='titulo' id='tituloIdeia' placeholder='Título da ideia')
+                        br
+                        textarea.w3-input.w3-border(name='descricao' id='descricaoIdeia' placeholder='Explique a sua ideia...')
+                        br
+                        input.w3-input.w3-border(name='classificadores' id='classificadores' placeholder='Indique classificadores para a publicação.')
+                        br
+                        input.w3-radio(type='radio' name='privacidade' value='true' checked)
+                        label Publicação privada
+                        input.w3-radio(type='radio' name='privacidade' value='false')
+                        label Publicação pública
+                        br
+                        br
+                        input.w3-btn.w3-indigo(type='submit' id='publicarIdeia' value='Publicar')
+                    form(id='desportivoForm' style="display:none")
+                        input(type='hidden' name='origin_email' value= loggedEmail)
+                        input.w3-input.w3-border(type='text' name='titulo' placeholder='Insira o título da sua publicação')
+                        br
+                        input.w3-input.w3-border(type='text' name='atividade' placeholder='Insira o nome da atividade desportiva')
+                        br
+                        input.w3-input.w3-border(type='text' name='duracao' placeholder='Insira a duração da atividade no formato que prefere')
+                        br
+                        textarea.w3-input.w3-border(name='descricao' placeholder='Descreva a atividade desportiva')
+                        br
+                        input.w3-radio(type='radio' name='privacidade' value='true' checked)
+                        label Publicação privada
+                        input.w3-radio(type='radio' name='privacidade' value='false')
+                        label Publicação pública
+                        br
+                        br
+                        label.w3-text-blue-grey Fotos da Atividade
+                        input.w3-input.w3-border(type='file' name='fotos' id='fotos' multiple)
+                        br
+                        label.w3-text-blue-grey Ficheiro GPX
+                        input.w3-input.w3-border(type='file' name='ficheiro_gpx' id='ficheiro_gpx' accept='.gpx')
+                        br
+                        input.w3-btn.w3-indigo(type='submit' id='publicarDesportivo' value='Publicar')
+                    form(id='eventoForm' style='display:none')
+                        input(type='hidden' name='origin_email' value= loggedEmail)
+                        input.w3-input.w3-border(type='text' name='titulo' id='tituloEvento' placeholder='Insira o nome do evento')
+                        br
+                        input.w3-input.w3-border(type='text' name='local' id='local' placeholder='Insira o local onde decorrerá o evento')
+                        br
+                        input.w3-input.w3-border(type='date' name='dataEvento' id='dataEvento')
+                        br
+                        textarea.w3-input.w3-border(name='convidados' id='convidados' placeholder='Indique o email dos convidados, um por linha (poderá adicionar pessoas na mesma posteriormente).')
+                        br
+                        textarea.w3-input.w3-border(name='descricao' id='descricaoEvento' placeholder='descreva o evento')
+                        br
+                        input.w3-radio(type='radio' name='privacidade' value='true' checked)
+                        label Publicação privada
+                        input.w3-radio(type='radio' name='privacidade' value='false')
+                        label Publicação pública
+                        br
+                        br
+                        input.w3-btn.w3-indigo(type='submit' id='publicarEvento' value='Publicar')
+                    form(id='formacaoForm' style='display:none')
+                        input(type='hidden' name='origin_email' value= loggedEmail)
+                        input.w3-input.w3-border(type='text' name='titulo' id='tituloFormacao' placeholder='Insira um nome para a publicação')
+                        br
+                        input.w3-input.w3-border(type='text' name='creditacao' id='creditacao' placeholder='Insira o nome da creditação que obteve')
+                        br
+                        input.w3-input.w3-border(type='text' name='instituicao' id='instituicao' placeholder='Insira o nome da instituição que o creditou')
+                        br
+                        textarea.w3-input.w3-border(name='descricao' id='descricaoFormacao' placeholder='Insira uma descrição para a creditação que obteve')
+                        br
+                        input.w3-radio(type='radio' name='privacidade' value='true' checked)
+                        label Publicação privada
+                        input.w3-radio(type='radio' name='privacidade' value='false')
+                        label Publicação pública
+                        br
+                        br
+                        input.w3-btn.w3-indigo(type='submit' id='publicarFormacao' value='Publicar')
+                    form(id='eventoProfissionalForm' style='display:none')
+                        input(type='hidden' name='origin_email' value= loggedEmail)
+                        input.w3-input.w3-border(type='text' name='titulo' placeholder='Insira o nome do evento')
+                        br
+                        input.w3-input.w3-border(type='text' name='local' placeholder='Insira o local onde decorrerá o evento')
+                        br
+                        input.w3-input.w3-border(type='date' name='dataEvento')
+                        br
+                        textarea.w3-input.w3-border(name='oradores' placeholder='Insira o nome dos oradores,um por linha')
+                        br
+                        textarea.w3-input.w3-border(name='descricao' placeholder='Descreva o evento')
+                        br
+                        input.w3-radio(type='radio' name='privacidade' value='true' checked)
+                        label Publicação privada
+                        input.w3-radio(type='radio' name='privacidade' value='false')
+                        label Publicação pública
+                        br
+                        br
+                        label.w3-text-blue-grey Upload de ficheiros
+                        input.w3-input.w3-border(type='file' id='ficheiros' name='ficheiros' multiple)
+                        input.w3-btn.w3-indigo(type='submit' id='publicarEventoProfissional' value='Publicar')
+                    form(id='albumForm' style='display:none')
+                        input(type='hidden' name='origin_email' value= loggedEmail)
+                        input.w3-input.w3-border(type='text' name='titulo' placeholder='Insira o nome do seu álbum')
+                        br
+                        textarea.w3-input.w3-border(name='descricao' placeholder='Descreva o álbum')
+                        br
+                        input.w3-radio(type='radio' name='privacidade' value='true' checked)
+                        label Publicação privada
+                        input.w3-radio(type='radio' name='privacidade' value='false')
+                        label Publicação pública
+                        br
+                        br
+                        hr
+                        label.w3-text-blue-grey.w3-large Fotos do álbum
+                        p.w3-text-grey.w3-small(id='bPar') Insira uma foto e os seus dados. Se pretender inserir mais carregue no botão '+'. Quando terminar publique.
+                        input.w3-input.w3-border(type='date' name='dataFoto' id='dataFoto' placeholder='data da foto')
+                        input.w3-input.w3-border(type='text' name='local' id='localFoto' placeholder='Insira o local desta foto')
+                        input.w3-input.w3-border(type='file' name='foto' id='foto')
+                        button.w3-btn.w3-circle.w3-indigo(id='adicionar') +
+                        hr
+                        input.w3-btn.w3-indigo(type='submit' id='publicarAlbum' value='Publicar')
+                //Pôr aqui os filtros de cronologia!
+                br
+                br
+                div.w3-card-4
+                    p.w3-xlarge.w3-text-indigo.w3-center As suas publicações
+                    hr(style='border-top: 1px solid teal;')
+                    //Área de filtragem
+                    button.w3-btn.w3-teal(id='mostrarFiltros') Mostrar área de filtragem
+                    br
+                    br
+                    div(id='filterDiv' style='display:none;').w3-card-4.w3-light-grey.w3-border
+                        p.w3-large.w3-text-indigo.w3-center Filtrar publicações
+                            .w3-container
+                                form(method='get' action='/pubs/' + loggedEmail + '/filter')
+                                    hr(style='border-top: 1px solid indigo;')
+                                    label
+                                        p.w3-text-teal Data mínima da publicação
+                                    input.w3-input.w3-border(type='date' name='dataMinima')
+                                    hr(style='border-top: 1px solid indigo;')
+                                    label
+                                        p.w3-text-teal Filtrar por hashtags
+                                    each hashtag in userData.classificadores
+                                        input(class="w3-check" type='checkbox' name="filtroHashtag" value=hashtag)
+                                        label(for=hashtag)=hashtag
+                                        t
+                                        t
+                                    hr(style='border-top: 1px solid indigo;')
+                                    label
+                                        p.w3-text-teal Filtrar por tipo de publicação
+                                    div
+                                        input.w3-check(type='checkbox' name='filtroTipos' value='receita')
+                                        label(for='receita') receita
+                                        t
+                                        t
+                                        input.w3-check(type='checkbox' name='filtroTipos' value='evento')
+                                        label(for='evento') evento
+                                        t
+                                        t
+                                        input.w3-check(type='checkbox' name='filtroTipos' value='eventoProfissional')
+                                        label(for='eventoProfissional') Evento Profissional
+                                        t
+                                        t
+                                        br
+                                        input.w3-check(type='checkbox' name='filtroTipos' value='ideia')
+                                        label(for='ideia') Ideia
+                                        t
+                                        t
+                                        input.w3-check(type='checkbox' name='filtroTipos' value='formacao')
+                                        label(for='formacao') Formação
+                                        t
+                                        t
+                                        input.w3-check(type='checkbox' name='filtroTipos' value='desportivo')
+                                        label(for='desportivo') Desportivo
+                                        t
+                                        t
+                                        input.w3-check(type='checkbox' name='filtroTipos' value='album')
+                                        label(for='album') Álbum
+                                        t
+                                        t
+                                    hr(style='border-top: 1px solid indigo;')
+                                    br
+                                    input.w3-input.w3-border.w3-teal(type='submit' value='Aplicar')
+                    hr(style='border-top: 1px solid teal;')
+                    - var contador = 0;
+                    div(id='pubsView').w3-card-4.w3-round
+                        input.w3-input(type='hidden' id='numPubs' value=numPubs)
+                        if userPubs
+                            each pub in userPubs
+                                .w3-card-4.w3-round
+                                    p
+                                        a.w3-button.w3-indigo.w3-left(style='text-decoration:none;' id="sharefb"+contador name=pub ) Partilhar no Facebook
+                                        a.w3-button.w3-blue.w3-center(style='text-decoration:none;' id="sharetwitter"+contador  name=pub ) Partilhar no Twitter
+                                        a.w3-button.w3-teal.w3-right(style='text-decoration:none;' href='http://localhost:3000/pubs/edit/' + pub._id) Editar publicação
+                                    hr
+                                    if pub.tipo=="ideia"
+                                        h3
+                                            b
+                                                =pub.dados.ideia.titulo
+                                        p.w3-tiny
+                                            each c in pub.dados.ideia.classificadores
+                                                span.w3-tag
+                                                    =c
+                                                span &nbsp;
+                                        p.w3-small
+                                            =pub.dados.ideia.descricao
+                                    if pub.tipo=="receita"
+                                        h3
+                                            b
+                                                =pub.dados.receita.titulo
+                                        p.w3-small
+                                            =pub.dados.receita.textoEstruturado
+                                    if pub.tipo=="evento"
+                                        h3
+                                            b
+                                                =pub.dados.evento.titulo
+                                        p
+                                            span
+                                                =pub.dados.evento.dataEvento
+                                            span &nbsp;
+                                            span
+                                                =pub.dados.evento.local
+                                        p.w3-small
+                                            =pub.dados.evento.descricao
+                                        each convidado in pub.dados.evento.convidados
+                                            p.w3-tiny
+                                                =convidado
+                                    if pub.tipo=="creditacao"
+                                        h3
+                                            b
+                                                =pub.dados.formacao.titulo
+                                        p
+                                            =pub.dados.formacao.creditacao
+                                        p
+                                            =pub.dados.formacao.instituicao
+                                        p.w3-small
+                                            =pub.dados.formacao.descricao
+                                    if pub.tipo=="eventoProfissional"
+                                        h3
+                                                    b
+                                                        =pub.dados.eventoProfissional.titulo
+                                        p.w3-small
+                                            =pub.dados.eventoProfissional.dataEvento
+                                        p.w3-small
+                                            =pub.dados.eventoProfissional.local
+                                        p.w3-small
+                                            =pub.dados.eventoProfissional.descricao
+                                        p.w3-small Oradores:
+                                            =pub.dados.eventoProfissional.oradores
+                                        each foto in pub.dados.eventoProfissional.ficheiros
+                                            label
+                                                a(href=foto)
+                                                    img(src=foto style='height:120;width:120px')
+
+
+                                    if pub.tipo=="album"
+                                        h3
+                                                b
+                                                    =pub.dados.album.titulo
+                                        p.w3-small
+                                            =pub.dados.album.descricao
+                                        each foto in pub.dados.album.fotos
+                                            label
+                                                p.w3-tiny
+                                                    =foto.dataFoto
+                                                a(href=foto.foto)
+                                                    img(src=foto.foto style='height:120px;width:120px' )
+                                                p.w3-tiny
+                                                    =foto.local
+
+                                    if pub.tipo=="desportivo"
+                                        h3
+                                            b
+                                                =pub.dados.desportivo.titulo
+                                        p.w3-small
+                                            =pub.dados.desportivo.atividade
+                                        p.w3-small
+                                            =pub.dados.desportivo.duracao
+                                        p.w3-small
+                                            =pub.dados.desportivo.descricao
+                                        each foto in pub.dados.desportivo.fotos
+                                            label
+                                                a(href=foto)
+                                                    img(src=foto style='height:120px;width:120px')
+                                        hr
+                                        a(href=pub.dados.desportivo.ficheiro_gpx) GPX
+
+                                    p.w3-tiny
+                                        each c in pub.classificacoes
+                                            span.w3-tag.w3-yellow
+                                                a(href=c.url)=c.nome
+                                            span &nbsp;
+                                    p.w3-tiny Publicado em
+                                        =pub.data
+                                    .w3-card-4.w3-round(id='comentarios-card'+contador style='display:none')
+                                        div(id='comentarios-card-comments' + contador)
+                                            each c in pub.comentarios
+                                                p.w3-small
+                                                    b
+                                                        =c.origin_email
+                                                        b  :
+                                                    =c.comentario
+                                                hr
+                                        hr(style="border-top: 1px solid black;")
+                                        form(id='comentariosForm'+contador)
+                                            input.w3-input(type='hidden' id='idpub' name='idpub' value=pub._id)
+                                            input.w3-input(type='hidden' id='emailUser' value= loggedEmail)
+                                            .w3-container
+                                                .w3-row
+                                                    .w3-col.m11
+                                                        textarea.w3-input.w3-border(style='height:100px;' type='text' id='comentario' name="comentario" placeholder="Comenta aqui")
+                                                    .w3-col.m1
+                                                        button.w3-btn.w3-circle.w3-blue-grey.w3-tiny(id='comentar'+contador value=contador) >
+                                    button.w3-btn.w3-block.w3-blue-grey.w3-tiny(id='comentarios'+contador name=contador value=contador) Ver comentários
+                                        - contador = contador + 1
+
+
+                        else
+                            .w3-card.w3-round
+                                p.w3-text-grey Ainda não tem nenhuma publicação!
+                                p.w3-text-grey Começe agora!
