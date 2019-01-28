@@ -99,6 +99,7 @@ $(() => {
             if (pub_parsed.tipo=="creditacao")texto =  shareFormacao(pub_parsed,tipo)
             if (pub_parsed.tipo=="desportivo") texto = shareDesportiva(pub_parsed,tipo)
             if (pub_parsed.tipo=="album")texto =  shareAlbum(pub_parsed,tipo)
+            if(pub_parsed.tipo=="generica") texto = shareGenerica(pub_parsed,tipo)
         })
     
         $('#sharefb'+i).click(e => {
@@ -113,6 +114,7 @@ $(() => {
             if (pub_parsed.tipo=="creditacao")texto =  shareFormacao(pub_parsed,tipo)
             if (pub_parsed.tipo=="desportivo") texto = shareDesportiva(pub_parsed,tipo)
             if (pub_parsed.tipo=="album")texto =  shareAlbum(pub_parsed,tipo)
+            if(pub_parsed.tipo=="generica") texto = shareGenerica(pub_parsed,tipo)
         })
     
     }
@@ -730,7 +732,7 @@ function renderConvidados(convidados) {
 function shareIdeia(pub_parsed, tipo) {
 
     var texto = "Tive uma ideia: "+ pub_parsed.dados.ideia.titulo + "\n" +pub_parsed.dados.ideia.descricao +"\n"
-    for (var hashtag in pub_parsed.classificacoes) texto = texto + "#"+ pub_parsed.classificacoes[hashtag]
+    for (var hashtag in pub_parsed.classificacoes) texto = texto + "#"+ pub_parsed.classificacoes[hashtag].nome
     for (var hashtag in pub_parsed.dados.ideia.classificadores) texto = texto + "#"+ pub_parsed.dados.ideia.classificadores[hashtag]
     if (tipo==0) //twitter
         window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(texto)  );
@@ -741,7 +743,7 @@ function shareIdeia(pub_parsed, tipo) {
 function shareReceita(pub_parsed, tipo) {
 
     var texto = "Receita: "+ pub_parsed.dados.receita.titulo + "\n" +pub_parsed.dados.receita.textoEstruturado +"\n"
-    for (var hashtag in pub_parsed.classificacoes) texto = texto + "#"+ pub_parsed.classificacoes[hashtag]
+    for (var hashtag in pub_parsed.classificacoes) texto = texto + "#"+ pub_parsed.classificacoes[hashtag].nome
     if (tipo==0) //twitter
         window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(texto)  );
     if (tipo==1) //face
@@ -752,7 +754,7 @@ function shareEvento(pub_parsed, tipo) {
     var texto = pub_parsed.dados.evento.titulo +" decorrerá em " +pub_parsed.dados.evento.dataEvento + " em " + pub_parsed.dados.evento.local
     texto = texto +   "\n" + pub_parsed.dados.evento.descricao + "\nEstão convidados :\n " + pub_parsed.dados.evento.convidados.toString().replace(/,/g," ")  +"\n"
     
-    for (var hashtag in pub_parsed.classificacoes) texto = texto + "#"+ pub_parsed.classificacoes[hashtag]
+    for (var hashtag in pub_parsed.classificacoes) texto = texto + "#"+ pub_parsed.classificacoes[hashtag].nome
     if (tipo==0) //twitter
         window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(texto)  );
     if (tipo==1) //face
@@ -761,7 +763,7 @@ function shareEvento(pub_parsed, tipo) {
 function shareFormacao(pub_parsed, tipo) {
 
     var texto = pub_parsed.dados.formacao.titulo + "\nRecebi a creditação: "  +pub_parsed.dados.formacao.creditacao +" da instituição " +pub_parsed.dados.formacao.instituicao +"\n" +pub_parsed.dados.formacao.descricao +"\n" 
-    for (var hashtag in pub_parsed.classificacoes) texto = texto + "#"+ pub_parsed.classificacoes[hashtag]
+    for (var hashtag in pub_parsed.classificacoes) texto = texto + "#"+ pub_parsed.classificacoes[hashtag].nome
     if (tipo==0) //twitter
         window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(texto)  );
     if (tipo==1) //face
@@ -770,7 +772,7 @@ function shareFormacao(pub_parsed, tipo) {
 function shareAlbum(pub_parsed, tipo) {
 
     var texto = "Album: "+ pub_parsed.dados.album.titulo + "\n" +pub_parsed.dados.album.descricao +"\n"
-    for (var hashtag in pub_parsed.classificacoes) texto = texto + "#"+ pub_parsed.classificacoes[hashtag]
+    for (var hashtag in pub_parsed.classificacoes) texto = texto + "#"+ pub_parsed.classificacoes[hashtag].nome
     for (var foto  in pub_parsed.dados.album.fotos) texto = texto+ "\n" + pub_parsed.dados.album.fotos[foto].foto
     if (tipo==0) //twitter
         window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(texto)  );
@@ -780,7 +782,7 @@ function shareAlbum(pub_parsed, tipo) {
 function shareDesportiva(pub_parsed, tipo) {
 
     var texto = pub_parsed.dados.desportivo.titulo + "\nPratiquei " +pub_parsed.dados.desportivo.atividade +" durante " +pub_parsed.dados.desportivo.duracao +"\n" +pub_parsed.dados.desportivo.descricao +"\n"
-    for (var hashtag in pub_parsed.classificacoes) texto = texto + "#"+ pub_parsed.classificacoes[hashtag]
+    for (var hashtag in pub_parsed.classificacoes) texto = texto + "#"+ pub_parsed.classificacoes[hashtag].nome
     for (var foto  in pub_parsed.dados.desportivo.fotos) texto = texto+ "\n" + pub_parsed.dados.desportivo.fotos[foto]
     texto = texto + "\n" +  pub_parsed.dados.desportivo.ficheiro_gpx
     if (tipo==0) //twitter
@@ -792,8 +794,19 @@ function shareEventoProf(pub_parsed, tipo) {
 
     var texto = "O evento : "+ pub_parsed.dados.eventoProfissional.titulo + " decorrerá em " +pub_parsed.dados.eventoProfissional.dataEvento +" no " +pub_parsed.dados.eventoProfissional.local +"\n"+pub_parsed.dados.eventoProfissional.descricao +"\n"
     var texto = texto + "Com os seguintes oradores : \n " + pub_parsed.dados.eventoProfissional.oradores.toString().replace(/,/g," ") + "\n"
-    for (var hashtag in pub_parsed.classificacoes) texto = texto + "#"+ pub_parsed.classificacoes[hashtag]
-    for (var foto  in pub_parsed.dados.eventoProfissional.ficheiros) texto = texto+ "\n" + pub_parsed.dados.eventoProfissional.ficheiros[foto]
+    for (var hashtag in pub_parsed.classificacoes) texto = texto + "#"+ pub_parsed.classificacoes[hashtag].nome
+    for (var ficheiro  in pub_parsed.dados.eventoProfissional.ficheiros) texto = texto+ "\n" + pub_parsed.dados.eventoProfissional.ficheiros[ficheiro].url
+    if (tipo==0) //twitter
+        window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(texto)  );
+    if (tipo==1) //face
+        window.open('https://www.facebook.com/sharer/sharer.php?u=http://google.pt&quote=' + encodeURIComponent(texto)  );
+}
+
+function shareGenerica(pub_parsed,tipo) {
+    var texto = "Título: " + pub_parsed.dados.generica.titulo + "\n"
+    texto = texto + "Descrição: " + pub_parsed.dados.generica.descricao + "\n"
+    for (var hashtag in pub_parsed.classificacoes) texto = texto + "#"+ pub_parsed.classificacoes[hashtag].nome
+    for (var ficheiro  in pub_parsed.dados.generica.ficheiros) texto = texto+ "\n" + pub_parsed.dados.generica.ficheiros[ficheiro].url
     if (tipo==0) //twitter
         window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(texto)  );
     if (tipo==1) //face
