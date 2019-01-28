@@ -64,6 +64,7 @@ block content
                     input.w3-input(type='hidden' id='useremail' value= loggedEmail)
                     select.w3-select.w3-border(id='postType' name='postType')
                         option(value='none' selected) Escolha o tipo de publicação
+                        option(value='generica') Genérica
                         option(value='receita') Receita Culinária
                         option(value='evento') Evento
                         option(value='eventoProfissional') Evento Profissional
@@ -83,6 +84,21 @@ block content
                             t
                         br
                         br
+                    form(id='genericaForm' style='display:none')
+                        input(type='hidden' name='origin_email' value= userData.email)
+                        input.w3-input.w3-border(type='text' id='tituloGenerica' name='titulo' placeholder='Insira o título da sua publicação')
+                        br
+                        input.w3-input.w3-border(type='text' id='descricaoGenerica' name='descricao' placeholder='Descreva o conteúdo da sua publicação')
+                        br
+                        input.w3-input.w3-border(type='file' id='ficheirosGenerica' name='ficheirosGenerica' multiple)
+                        br
+                        input.w3-radio(type='radio' name='privacidade' value='true' checked)
+                        label Publicação privada
+                        input.w3-radio(type='radio' name='privacidade' value='false')
+                        label Publicação pública
+                        br
+                        br
+                        input.w3-btn.w3-indigo(type='submit' id='publicarGenerica' value='Publicar')
                     form(id='receitaForm' style='display:none')
                         p Escreva um ingrediente por linha e uma instrução por linha nos campos respetivos.
                         input(type='hidden' name='origin_email' value= loggedEmail)
@@ -246,6 +262,10 @@ block content
                                     label
                                         p.w3-text-teal Filtrar por tipo de publicação
                                     div
+                                        input.w3-check(type='checkbox' name='filtroTipos' value='generica')
+                                        label(for='generica') genérica
+                                        t
+                                        t
                                         input.w3-check(type='checkbox' name='filtroTipos' value='receita')
                                         label(for='receita') receita
                                         t
@@ -290,6 +310,19 @@ block content
                                         a.w3-button.w3-blue.w3-center(style='text-decoration:none;' id="sharetwitter"+contador  name=pub ) Partilhar no Twitter
                                         a.w3-button.w3-teal.w3-right(style='text-decoration:none;' href='http://localhost:3000/pubs/edit/' + pub._id) Editar publicação
                                     hr
+                                    if pub.tipo == 'generica'
+                                        h3
+                                            b
+                                                =pub.dados.generica.titulo
+                                        p.w3-small
+                                            =pub.dados.generica.descricao
+                                        each ficheiro in pub.dados.generica.ficheiros
+                                            if(ficheiro.tipo == 'img')
+                                                label
+                                                    a(href=ficheiro.url)
+                                                        img(src=ficheiro.url style='height:120px;width:120px')
+                                            else
+                                                a(href=ficheiro.url)=ficheiro.nome
                                     if pub.tipo=="ideia"
                                         h3
                                             b
@@ -388,7 +421,7 @@ block content
                                                 a(href=c.url)=c.nome
                                             span &nbsp;
                                     p.w3-tiny Publicado em
-                                        =pub.data
+                                        =' ' + pub.data
                                     .w3-card-4.w3-round(id='comentarios-card'+contador style='display:none')
                                         div(id='comentarios-card-comments' + contador)
                                             each c in pub.comentarios

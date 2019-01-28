@@ -463,7 +463,7 @@ block content
                                                 a(href=c.url)=c.nome
                                             span &nbsp;
                                     p.w3-tiny Publicado em 
-                                        =pub.data   
+                                        =' ' + pub.data   
                                     .w3-card-4.w3-round(id='comentarios-card'+contador style='display:none')
                                         div(id='comentarios-card-comments' + contador)
                                             each c in pub.comentarios

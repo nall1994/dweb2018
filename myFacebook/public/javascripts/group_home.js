@@ -62,7 +62,7 @@ $(() => {
         }
     }
 
-    $('body').on('click', '.rem-group', function () { // Make your changes here 
+    $('body').on('click', '.rem-group', function () { // Make your changes here
         var id = $(this).attr('id');
         console.log("REM GROUP: " + id);
         console.log(JSON.stringify(id));
@@ -84,7 +84,7 @@ $(() => {
         })
     });
 
-    $('body').on('click', '.addUser', function () { // Make your changes here 
+    $('body').on('click', '.addUser', function () { // Make your changes here
         var id = $(this).attr('id');
         console.log("ADD USER: " + id);
         console.log(JSON.stringify(id));
@@ -169,6 +169,7 @@ $(() => {
             if (pub_parsed.tipo == "creditacao") texto = shareFormacao(pub_parsed, tipo)
             if (pub_parsed.tipo == "desportivo") texto = shareDesportiva(pub_parsed, tipo)
             if (pub_parsed.tipo == "album") texto = shareAlbum(pub_parsed, tipo)
+            if (pub_parsed.tipo == "generica") texto = shareGenerica(pub_parsed, tipo)
         })
 
         $('#sharefb' + i).click(e => {
@@ -183,6 +184,7 @@ $(() => {
             if (pub_parsed.tipo == "creditacao") texto = shareFormacao(pub_parsed, tipo)
             if (pub_parsed.tipo == "desportivo") texto = shareDesportiva(pub_parsed, tipo)
             if (pub_parsed.tipo == "album") texto = shareAlbum(pub_parsed, tipo)
+            if (pub_parsed.tipo == "generica") texto = shareGenerica(pub_parsed, tipo)
         })
 
     }
@@ -268,6 +270,31 @@ $(() => {
             ajaxPostEventoProf(evento)
         }
 
+    })
+
+    $('#publicarGenerica').click(e => {
+        e.preventDefault()
+        var form = document.getElementById('genericaForm')
+        var generica = new FormData(form)
+        if (validateGenerica(generica)) {
+            var generica_send = new FormData()
+            generica_send.set('titulo', generica.get('titulo'))
+            generica_send.set('descricao', generica.get('descricao'))
+            generica_send.set('tipo', 'generica')
+            generica_send.set('origin_email', generica.get('origin_email'))
+            generica_send.set('groupId', $('#group_id').val())
+            generica_send.set('data', parseDate(new Date()))
+            generica_send.set('privacidade', generica.get('privacidade'))
+            for (var i = 0; i < $('#ficheirosGenerica')[0].files.length; ++i) {
+                generica_send.set("ficheiro" + i, $('#ficheirosGenerica')[0].files[i])
+            }
+            generica_send.set("nFiles", i)
+            generica_send.set("classificacoes", getClassificacoes())
+            ajaxPostGenerica(generica_send)
+            $('#tituloGenerica').val('')
+            $('#descricaoGenerica').val('')
+            $('#ficheirosGenerica').val('')
+        }
     })
 
     $('#publicarEvento').click(e => {
@@ -472,6 +499,20 @@ function parseDate(date) {
     return date
 }
 
+function validateGenerica(generica) {
+    if (generica.get('titulo') == '') {
+        $('#appendedData').remove()
+        $('#bPar').append('<p id="appendedData" class="w3-center w3-text-red"> Tem que indicar o título da publicação! </p>')
+        return false
+    }
+    if (generica.get('descricao') == '') {
+        $('#appendedData').remove()
+        $('#bPar').append('<p id="appendedData" class="w3-center w3-text-red"> Tem que indicar uma descrição do conteúdo! </p>')
+        return false
+    }
+    return true
+}
+
 function validateAdicionarFoto() {
 
     if ($('#dataFoto').val() == '') {
@@ -665,6 +706,25 @@ function ajaxPost(pub) {
     });
 }
 
+function ajaxPostGenerica(pub) {
+    $.ajax({
+        type: "POST",
+        enctype: "form/multipart",
+        processData: false,
+        contentType: false,
+        url: "http://localhost:3000/pubs/newGenerica",
+        data: pub,
+        success: f => {
+            alert("Publicação bem sucedida!")
+            window.location.reload(true)
+        },
+        error: e => {
+            alert('Erro no post: ' + JSON.stringify(e))
+            console.log('Erro no post: ' + e)
+        }
+    })
+}
+
 function ajaxPostEventoProf(pub) {
     $.ajax({
         type: "POST",
@@ -808,7 +868,7 @@ function shareDesportiva(pub_parsed, tipo) {
     texto = texto + "\n" + pub_parsed.dados.desportivo.ficheiro_gpx
     if (tipo == 0) //twitter
         window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(texto));
-    if (tipo == 1) //face 
+    if (tipo == 1) //face
         window.open('https://www.facebook.com/sharer/sharer.php?u=http://google.pt&quote=' + encodeURIComponent(texto));
 }
 function shareEventoProf(pub_parsed, tipo) {
@@ -817,6 +877,17 @@ function shareEventoProf(pub_parsed, tipo) {
     var texto = texto + "Com os seguintes oradores : \n " + pub_parsed.dados.eventoProfissional.oradores.toString().replace(/,/g, " ") + "\n"
     for (var hashtag in pub_parsed.classificacoes) texto = texto + "#" + pub_parsed.classificacoes[hashtag]
     for (var foto in pub_parsed.dados.eventoProfissional.ficheiros) texto = texto + "\n" + pub_parsed.dados.eventoProfissional.ficheiros[foto]
+    if (tipo == 0) //twitter
+        window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(texto));
+    if (tipo == 1) //face
+        window.open('https://www.facebook.com/sharer/sharer.php?u=http://google.pt&quote=' + encodeURIComponent(texto));
+}
+
+function shareGenerica(pub_parsed, tipo) {
+    var texto = "Título: " + pub_parsed.dados.generica.titulo + "\n"
+    texto = texto + "Descrição: " + pub_parsed.dados.generica.descricao + "\n"
+    for (var hashtag in pub_parsed.classificacoes) texto = texto + "#" + pub_parsed.classificacoes[hashtag].nome
+    for (var ficheiro in pub_parsed.dados.generica.ficheiros) texto = texto + "\n" + pub_parsed.dados.generica.ficheiros[ficheiro].url
     if (tipo == 0) //twitter
         window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(texto));
     if (tipo == 1) //face
