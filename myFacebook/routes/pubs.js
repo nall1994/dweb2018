@@ -344,7 +344,13 @@ router.post('/edit/:pubid', passport.authenticate('jwt', { session: false, failu
               pub: pub
             }
             axios.put('http://localhost:3000/api/pubs/' + pubid, config)
-              .then(m => res.redirect('/users/homepage/' + loggedUser))
+              .then(m => {
+                if(pub.groupId) {
+                  res.redirect('/groups/' + pub.groupId)
+                } else {
+                  res.redirect('/users/homepage/' + loggedUser)
+                }   
+              })
               .catch(error => res.render('error', { e: error }))
           }).catch(error => res.render('error', { e: error }))
 
@@ -362,7 +368,13 @@ router.post('/edit/:pubid', passport.authenticate('jwt', { session: false, failu
               pub: pub
             }
             axios.put('http://localhost:3000/api/pubs/' + pubid, config)
-              .then(m => res.redirect('/users/homepage/' + loggedUser))
+              .then(m => {
+                if(pub.groupId) {
+                  res.redirect('/groups/' + pub.groupId)
+                } else {
+                  res.redirect('/users/homepage/' + loggedUser)
+                }   
+              })
               .catch(error => res.render('error', { e: error }))
           }).catch(error => res.render('error', { e: error }))
 
@@ -388,7 +400,13 @@ router.post('/edit/:pubid', passport.authenticate('jwt', { session: false, failu
               pub: pub
             }
             axios.put('http://localhost:3000/api/pubs/' + pubid, config)
-              .then(m => res.redirect('/users/homepage/' + loggedUser))
+              .then(m => {
+                if(pub.groupId) {
+                  res.redirect('/groups/' + pub.groupId)
+                } else {
+                  res.redirect('/users/homepage/' + loggedUser)
+                }   
+              })
               .catch(error => res.render('error', { e: error }))
           }).catch(error => res.render('error', { e: error }))
 
@@ -428,7 +446,13 @@ router.post('/edit/:pubid', passport.authenticate('jwt', { session: false, failu
                 pub: pub
               }
               axios.put('http://localhost:3000/api/pubs/' + pubid, config)
-                .then(m => res.redirect('/users/homepage/' + pub.origin_email))
+                .then(m => {
+                  if(pub.groupId) {
+                    res.redirect('/groups/' + pub.groupId)
+                  } else {
+                    res.redirect('/users/homepage/' + loggedUser)
+                  }   
+                })
                 .catch(error => res.render('error', { e: error }))
 
             }
@@ -451,7 +475,13 @@ router.post('/edit/:pubid', passport.authenticate('jwt', { session: false, failu
             }
 
             axios.put('http://localhost:3000/api/pubs/' + pubid, config)
-              .then(m => res.redirect('/users/homepage/' + pub.origin_email))
+              .then(m => {
+                if(pub.groupId) {
+                  res.redirect('/groups/' + pub.groupId)
+                } else {
+                  res.redirect('/users/homepage/' + loggedUser)
+                }   
+              })
               .catch(error => res.render('error', { e: error }))
 
           }).catch(error => res.render('error', { e: error }))
@@ -482,7 +512,13 @@ router.post('/edit/:pubid', passport.authenticate('jwt', { session: false, failu
                 pub: pub
               }
               axios.put('http://localhost:3000/api/pubs/' + pubid, config)
-                .then(m => res.redirect('/users/homepage/' + pub.origin_email))
+                .then(m => {
+                  if(pub.groupId) {
+                    res.redirect('/groups/' + pub.groupId)
+                  } else {
+                    res.redirect('/users/homepage/' + loggedUser)
+                  }   
+                })
                 .catch(error => res.render('error', { e: error }))
             } else {
               var config = {
@@ -490,7 +526,13 @@ router.post('/edit/:pubid', passport.authenticate('jwt', { session: false, failu
                 pub: pub
               }
               axios.put('http://localhost:3000/api/pubs/' + pubid, config)
-                .then(m => res.redirect('/users/homepage/' + pub.origin_email))
+                .then(m => {
+                  if(pub.groupId) {
+                    res.redirect('/groups/' + pub.groupId)
+                  } else {
+                    res.redirect('/users/homepage/' + loggedUser)
+                  }   
+                })
                 .catch(error => res.render('error', { e: error }))
             }
           }).catch(error => res.render('error', { e: error }))
@@ -528,7 +570,13 @@ router.post('/edit/:pubid', passport.authenticate('jwt', { session: false, failu
                   pub: pub
                 }
                 axios.put('http://localhost:3000/api/pubs/' + pubid, config)
-                  .then(m => res.redirect('/users/homepage/' + pub.origin_email))
+                  .then(m => {
+                    if(pub.groupId) {
+                      res.redirect('/groups/' + pub.groupId)
+                    } else {
+                      res.redirect('/users/homepage/' + loggedUser)
+                    }   
+                  })
                   .catch(error => res.render('error', { e: error }))
               })
             } else {
@@ -537,7 +585,13 @@ router.post('/edit/:pubid', passport.authenticate('jwt', { session: false, failu
                 pub: pub
               }
               axios.put('http://localhost:3000/api/pubs/' + pubid, config)
-                .then(m => res.redirect('/users/homepage/' + pub.origin_email))
+                .then(m => {
+                  if(pub.groupId) {
+                    res.redirect('/groups/' + pub.groupId)
+                  } else {
+                    res.redirect('/users/homepage/' + loggedUser)
+                  }   
+                })
                 .catch(error => res.render('error', { e: error }))
             }
           }).catch(error => res.render('error', { e: error }))
@@ -559,7 +613,13 @@ router.post('/edit/:pubid', passport.authenticate('jwt', { session: false, failu
                 pub: pub
               }
               axios.put('http://localhost:3000/api/pubs/' + pubid, config)
-                .then(m => res.redirect('/users/homepage/' + pub.origin_email))
+                .then(m => {
+                  if(pub.groupId) {
+                    res.redirect('/groups/' + pub.groupId)
+                  } else {
+                    res.redirect('/users/homepage/' + loggedUser)
+                  }   
+                })
                 .catch(error => res.render('error', { e: error }))
             } else {
               var config = {
@@ -567,7 +627,13 @@ router.post('/edit/:pubid', passport.authenticate('jwt', { session: false, failu
                 pub: pub
               }
               axios.put('http://localhost:3000/api/pubs/' + pubid, config)
-                .then(m => res.redirect('/users/homepage/' + pub.origin_email))
+                .then(m => {
+                  if(pub.groupId) {
+                    res.redirect('/groups/' + pub.groupId)
+                  } else {
+                    res.redirect('/users/homepage/' + loggedUser)
+                  }   
+                })
                 .catch(error => res.render('error', { e: error }))
             }
 
