@@ -1,0 +1,126 @@
+[
+    {
+        "classificacoes": [
+            "doméstico"
+        ],
+        "isPrivate": true,
+        "_id": "5c4fb961a828c22b3c607cba",
+        "origin_email": "nunoleite31@gmail.com",
+        "tipo": "receita",
+        "data": "01/29/2019 02h:24m",
+        "dados": {
+            "_id": "5c4fb961a828c22b3c607cbb",
+            "receita": {
+                "_id": "5c4fb961a828c22b3c607cbc",
+                "titulo": "Massa à bolonhesa",
+                "textoEstruturado": "200g Carne picada\nMassa esparguete\nPolpa de tomate\npimenta\nSal\ncopo de vinho;Cozer a massa\nFazer o estrugido\nJuntar a carne\nJuntar molho de tomate e copo de vinho\nServir"
+            }
+        },
+        "comentarios": [],
+        "__v": 0
+    },
+    {
+        "classificacoes": [
+            "segurança"
+        ],
+        "isPrivate": false,
+        "_id": "5c4fb918a828c22b3c607cb3",
+        "origin_email": "nunoleite31@gmail.com",
+        "tipo": "generica",
+        "data": "01/29/2019 02h:23m",
+        "dados": {
+            "_id": "5c4fb918a828c22b3c607cb4",
+            "generica": {
+                "ficheiros": [
+                    "http://localhost:3000/uploaded/nunoleite31@gmail.com/5c4fb918a828c22b3c607cb3/sec1.png",
+                    "http://localhost:3000/uploaded/nunoleite31@gmail.com/5c4fb918a828c22b3c607cb3/sec2.png"
+                ],
+                "_id": "5c4fb918a828c22b3c607cb5",
+                "titulo": "Imagens Segurança em redes",
+                "descricao": "2 imagens interessantes encontradas na internet sobre segurança"
+            }
+        },
+        "comentarios": [],
+        "__v": 0
+    },
+    {
+        "classificacoes": [
+            "educação",
+            "aulas"
+        ],
+        "isPrivate": true,
+        "_id": "5c4fb79fa828c22b3c607ca4",
+        "origin_email": "jsilva@gmail.com",
+        "tipo": "ideia",
+        "data": "01/29/2019 02h:17m",
+        "dados": {
+            "_id": "5c4fb79fa828c22b3c607ca5",
+            "ideia": {
+                "classificadores": [
+                    "teste",
+                    "aulas",
+                    "consulta"
+                ],
+                "_id": "5c4fb79fa828c22b3c607ca6",
+                "titulo": "Possibilitar consulta no teste",
+                "descricao": "Ainda não sei se hei-de possibilitar consulta de slides no teste ou não. Algo a pensar"
+            }
+        },
+        "comentarios": [],
+        "__v": 0
+    },
+    {
+        "classificacoes": [
+            "aulas"
+        ],
+        "isPrivate": false,
+        "_id": "5c4fb761a828c22b3c607c9d",
+        "origin_email": "jsilva@gmail.com",
+        "tipo": "generica",
+        "data": "01/29/2019 02h:16m",
+        "dados": {
+            "_id": "5c4fb761a828c22b3c607c9e",
+            "generica": {
+                "ficheiros": [
+                    "http://localhost:3000/uploaded/jsilva@gmail.com/5c4fb761a828c22b3c607c9d/1.jpg"
+                ],
+                "_id": "5c4fb761a828c22b3c607c9f",
+                "titulo": "Imagem CP",
+                "descricao": "Imagem engraçada que encontrei"
+            }
+        },
+        "comentarios": [],
+        "__v": 0
+    },
+    {
+        "classificacoes": [
+            "educação",
+            "profissional",
+            "evento"
+        ],
+        "isPrivate": true,
+        "_id": "5c4fb440a828c22b3c607c93",
+        "origin_email": "nunoleite31@gmail.com",
+        "tipo": "eventoProfissional",
+        "data": "01/29/2019 02h:02m",
+        "dados": {
+            "_id": "5c4fb440a828c22b3c607c94",
+            "eventoProfissional": {
+                "oradores": [
+                    "Teacher1,,Teacher2"
+                ],
+                "ficheiros": [
+                    "http://localhost:3000/uploaded/nunoleite31@gmail.com/5c4fb440a828c22b3c607c93/1.jpg"
+                ],
+                "_id": "5c4fb440a828c22b3c607c95",
+                "titulo": "Palestra sobre computação quântica",
+                "descricao": "Aspetos sobre computação quântica",
+                "dataEvento": "02-02-2019",
+                "local": "Universidade do Minho - Departamento de Informática"
+            }
+        },
+        "groupId": "5c4fb2777feebc38202cbcfe",
+        "comentarios": [],
+        "__v": 0
+    }
+]

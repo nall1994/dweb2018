@@ -1,0 +1,55 @@
+[
+    {
+        "classificadores": [
+            "desporto",
+            "família",
+            "educação",
+            "profissional",
+            "evento",
+            "doméstico",
+            "aulas",
+            "segurança"
+        ],
+        "_id": "5c4fb2517feebc38202cbcfd",
+        "role": "user",
+        "password": "$2b$10$gXEtXeklEAwkKEwVYir7GutSpE4i8WNBI8cLHymX3L0fXazGnrdRW",
+        "email": "nunoleite31@gmail.com",
+        "nome": "Nuno Leite",
+        "favoritos": [],
+        "__v": 0,
+        "dataAniversario": "1994-04-19",
+        "foto": "http://localhost:3000/uploaded/nunoleite31@gmail.com/nuno.jpg",
+        "instituicao": "Universidade do Minho",
+        "morada": "Póvoa de Lanhoso",
+        "profissao": "Estudante"
+    },
+    {
+        "classificadores": [
+            "desporto",
+            "família",
+            "educação",
+            "profissional",
+            "evento",
+            "doméstico",
+            "aulas"
+        ],
+        "_id": "5c4fb6eea828c22b3c607c9c",
+        "role": "user",
+        "password": "$2b$10$h22DPaX4u4mTKj0d3k39tuPJ4AyJXEeQm7aEfKig6Vs1wnlLxc9s6",
+        "email": "jsilva@gmail.com",
+        "nome": "José Silva",
+        "favoritos": [
+            {
+                "_id": "5c4fb98ba828c22b3c607cc7",
+                "email": "nunoleite31@gmail.com",
+                "nome": "Nuno Leite"
+            }
+        ],
+        "__v": 1,
+        "dataAniversario": "1971-01-26",
+        "foto": "http://localhost:3000/uploaded/jsilva@gmail.com/user.jpg",
+        "instituicao": "Universidade do Minho",
+        "morada": "Braga",
+        "profissao": "Professor"
+    }
+]
