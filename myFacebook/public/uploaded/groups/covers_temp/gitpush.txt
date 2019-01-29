@@ -1,0 +1,1 @@
+Ficheiro existe apenas para que o git faça push desta pasta que é necessária
