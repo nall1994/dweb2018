@@ -245,7 +245,13 @@ router.post('/:pubid/delete', passport.authenticate('jwt', { session: false, fai
         }
         fs.rmdirSync(__dirname + '/../public/uploaded/' + req.user.email + '/' + pub._id)
         axios.delete('http://localhost:3000/api/pubs/' + pubid, axiosConfig)
-          .then(m => res.redirect('/users/homepage/' + req.user.email))
+          .then(m => {
+            if(pub.groupId) {
+              res.redirect('/groups/' + pub.groupId)
+            } else {
+              res.redirect('/users/homepage/' + req.user.email)
+            }   
+          })
           .catch(error => res.render('error', { e: error }))
       } else {
         res.redirect('/users/homepage/' + req.user.email)
