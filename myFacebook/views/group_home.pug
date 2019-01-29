@@ -21,8 +21,8 @@ block content
         .w3-row
             .w3-col.m3(style="margin-top: 24px;")
                 if (group.fotoGrupo)
-                    .w3-card-4
-                        img(alt="Imagem de Capa" src= group.fotoGrupo)
+                    .w3-card-4(style="margin-bottom: 20px;")
+                        img(style="max-width: 100%; height: auto;" alt="Imagem de Capa" src= group.fotoGrupo)
                 if (loggedEmail == group.admin)
                         .w3-card-4.w3-round(style="padding: 10px; margin-bottom: 20px;")
                             .w3-input-container
