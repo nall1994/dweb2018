@@ -11,7 +11,7 @@ $(() => {
         if ($('#eventoProfissionalForm').is(':visible')) $('#eventoProfissionalForm').css('display', 'none')
         if ($('#albumForm').is(':visible')) $('#albumForm').css('display', 'none')
         if ($('#formacaoForm').is(':visible')) $('#formacaoForm').css('display', 'none')
-        if ($('#genericaForm').is(':visible')) $('#genericaForm').css('display', 'block')
+        if ($('#genericaForm').is(':visible')) $('#genericaForm').css('display', 'none')
         $('#' + $('#postType').val() + "Form").css('display', 'block')
         $('#hashtagsForm').css('display', 'inline')
         if ($('#postType').val() == 'none') $('#hashtagsForm').css('display', 'none')

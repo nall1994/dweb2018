@@ -11,6 +11,7 @@ $(() => {
         if ($('#eventoProfissionalForm').is(':visible')) $('#eventoProfissionalForm').css('display', 'none')
         if ($('#albumForm').is(':visible')) $('#albumForm').css('display', 'none')
         if ($('#formacaoForm').is(':visible')) $('#formacaoForm').css('display', 'none')
+        if ($('#genericaForm').is(':visible')) $('#genericaForm').css('display', 'none')
         $('#' + $('#postType').val() + "Form").css('display', 'block')
         $('#hashtagsForm').css('display', 'inline')
         if ($('#postType').val() == 'none') $('#hashtagsForm').css('display', 'none')
@@ -886,7 +887,7 @@ function shareEventoProf(pub_parsed, tipo) {
 function shareGenerica(pub_parsed, tipo) {
     var texto = "Título: " + pub_parsed.dados.generica.titulo + "\n"
     texto = texto + "Descrição: " + pub_parsed.dados.generica.descricao + "\n"
-    for (var hashtag in pub_parsed.classificacoes) texto = texto + "#" + pub_parsed.classificacoes[hashtag].nome
+    for (var hashtag in pub_parsed.classificacoes) texto = texto + "#" + pub_parsed.classificacoes[hashtag]
     for (var ficheiro in pub_parsed.dados.generica.ficheiros) texto = texto + "\n" + pub_parsed.dados.generica.ficheiros[ficheiro].url
     if (tipo == 0) //twitter
         window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(texto));

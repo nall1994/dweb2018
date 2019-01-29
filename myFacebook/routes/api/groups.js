@@ -26,11 +26,8 @@ router.delete('/', passport.authenticate('jwt', { session: false }), (req, res) 
 router.put('/', passport.authenticate('jwt', { session: false }), (req, res) => {
     var group = req.body
     var loggedToken = jwt.verify(group.access_token, 'myFacebook', jwt_options.verifyOptions)
-    console.log('GRUPO ATUALIZACAO')
-    console.log(group)
     if (loggedToken.user.email == group.admin) {
         delete group.access_token
-        console.log('before updating group!')
         groupsController.atualizar(group)
             .then(group => res.jsonp(group))
             .catch(error => res.jsonp(error))

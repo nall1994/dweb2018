@@ -64,13 +64,6 @@ router.post('/new', passport.authenticate('jwt', { session: false, failureRedire
         }
         var members = [];
         var admin = fields.admin.trim();
-
-        console.log("NOME:")
-        console.log(fields.nome);
-        console.log("DESC:")
-        console.log(fields.desc);
-        console.log("ADMIN:")
-        console.log(admin);
         if (fields.membros) {
             members = fields.membros.split(',');
         }
@@ -79,8 +72,6 @@ router.post('/new', passport.authenticate('jwt', { session: false, failureRedire
         if (members.indexOf(admin) <= -1) {
             members.push(admin);
         }
-        console.log("MEMBROS:")
-        console.log(members);
         var group = {
             nome: fields.nome.trim(),
             desc: fields.desc.trim(),
@@ -152,14 +143,56 @@ router.get('/:group_id', passport.authenticate('jwt', { session: false, failureR
     axios.get('http://localhost:3000/api/groups/' + req.params.group_id, axiosConfig)
         .then(group => {
             if (group.data.length > 0) {
-                console.log(group.data);
-                console.log(group.data[0]);
                 axios.get('http://localhost:3000/api/pubs/fromGroup', axiosConfig)
                     .then(pubs => {
+                        pubs = pubs.data
+                        for (var i = 0; i < pubs.length; i++) {
+                            if (pubs[i].tipo == 'generica') {
+                              console.log(pubs[i].dados.generica.ficheiros)
+                              var files = pubs[i].dados.generica.ficheiros
+                              var new_files = new Array()
+                              for (var k = 0; k < files.length; k++) {
+                                var obj = new Object()
+                                var element = files[k].split('.')
+                                var extension = element[element.length - 1]
+                                if (extension == 'jpeg' || extension == 'jpg' || extension == 'png') {
+                                  obj.tipo = 'img'
+                                  obj.url = files[k]
+                                } else {
+                                  obj.tipo = 'other'
+                                  obj.url = files[k]
+                                  var elem = files[k].split('/')
+                                  obj.nome = elem[elem.length - 1].split('.')[0]
+                                }
+                                new_files.push(obj)
+                              }
+                              pubs[i].dados.generica.ficheiros = new_files
+                            } else if (pubs[i].tipo == 'eventoProfissional') {
+                              var files = pubs[i].dados.eventoProfissional.ficheiros
+                              var new_files = new Array()
+                              for (var k = 0; k < files.length; k++) {
+                                var obj = new Object()
+                                var element = files[k].split('.')
+                                var extension = element[element.length - 1]
+                                if (extension == 'jpeg' || extension == 'jpg' || extension == 'png') {
+                                  obj.tipo = 'img'
+                                  obj.url = files[k]
+                                } else {
+                                  obj.tipo = 'other'
+                                  obj.url = files[k]
+                                  var elem = files[k].split('/')
+                                  obj.nome = elem[elem.length - 1].split('.')[0]
+                                }
+                                new_files.push(obj)
+                              }
+                              pubs[i].dados.eventoProfissional.ficheiros = new_files
+                            }
+                        }
                         axios.get('http://localhost:3000/api/users/?email=' + loggedToken.user.email, axiosConfig)
                             .then(userData => {
-                                console.log(group.data[0])
-                                res.render('group_home', { group: group.data[0], loggedEmail: loggedToken.user.email, groupPubs: pubs.data, numPubs: pubs.data.length, userData: userData.data });
+                                console.log('PUBS')
+                                console.log(pubs)  
+                                res.render('group_home', { group: group.data[0], loggedEmail: loggedToken.user.email, groupPubs: pubs, numPubs: pubs.length, userData: userData.data });
                             })
                             .catch(err => {
                                 res.render('error', { error: err });

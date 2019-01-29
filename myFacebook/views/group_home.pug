@@ -241,67 +241,6 @@ block content
                 div.w3-card-4
                     p.w3-xlarge.w3-text-indigo.w3-center As suas publicações
                     hr(style='border-top: 1px solid teal;')
-                    //Área de filtragem
-                    button.w3-btn.w3-teal(id='mostrarFiltros') Mostrar área de filtragem
-                    br
-                    br
-                    div(id='filterDiv' style='display:none;').w3-card-4.w3-light-grey.w3-border
-                        p.w3-large.w3-text-indigo.w3-center Filtrar publicações
-                            .w3-container
-                                form(method='get' action='/pubs/' + loggedEmail + '/filter')
-                                    hr(style='border-top: 1px solid indigo;')
-                                    label
-                                        p.w3-text-teal Data mínima da publicação
-                                    input.w3-input.w3-border(type='date' name='dataMinima')
-                                    hr(style='border-top: 1px solid indigo;')
-                                    label
-                                        p.w3-text-teal Filtrar por hashtags
-                                    each hashtag in userData.classificadores
-                                        input(class="w3-check" type='checkbox' name="filtroHashtag" value=hashtag)
-                                        label(for=hashtag)=hashtag
-                                        t
-                                        t
-                                    hr(style='border-top: 1px solid indigo;')
-                                    label
-                                        p.w3-text-teal Filtrar por tipo de publicação
-                                    div
-                                        input.w3-check(type='checkbox' name='filtroTipos' value='generica')
-                                        label(for='generica') genérica
-                                        t
-                                        t
-                                        input.w3-check(type='checkbox' name='filtroTipos' value='receita')
-                                        label(for='receita') receita
-                                        t
-                                        t
-                                        input.w3-check(type='checkbox' name='filtroTipos' value='evento')
-                                        label(for='evento') evento
-                                        t
-                                        t
-                                        input.w3-check(type='checkbox' name='filtroTipos' value='eventoProfissional')
-                                        label(for='eventoProfissional') Evento Profissional
-                                        t
-                                        t
-                                        br
-                                        input.w3-check(type='checkbox' name='filtroTipos' value='ideia')
-                                        label(for='ideia') Ideia
-                                        t
-                                        t
-                                        input.w3-check(type='checkbox' name='filtroTipos' value='formacao')
-                                        label(for='formacao') Formação
-                                        t
-                                        t
-                                        input.w3-check(type='checkbox' name='filtroTipos' value='desportivo')
-                                        label(for='desportivo') Desportivo
-                                        t
-                                        t
-                                        input.w3-check(type='checkbox' name='filtroTipos' value='album')
-                                        label(for='album') Álbum
-                                        t
-                                        t
-                                    hr(style='border-top: 1px solid indigo;')
-                                    br
-                                    input.w3-input.w3-border.w3-teal(type='submit' value='Aplicar')
-                    hr(style='border-top: 1px solid teal;')
                     - var contador = 0;
                     div(id='pubsView').w3-card-4.w3-round
                         input.w3-input(type='hidden' id='numPubs' value=numPubs)
@@ -380,10 +319,13 @@ block content
                                             =pub.dados.eventoProfissional.descricao
                                         p.w3-small Oradores:
                                             =pub.dados.eventoProfissional.oradores
-                                        each foto in pub.dados.eventoProfissional.ficheiros
-                                            label
-                                                a(href=foto)
-                                                    img(src=foto style='height:120;width:120px')
+                                        each ficheiro in pub.dados.eventoProfissional.ficheiros
+                                            if(ficheiro.tipo == 'img')
+                                                label
+                                                    a(href=ficheiro.url)
+                                                        img(src=ficheiro.url style='height:120px;width:120px')
+                                            else
+                                                a(href=ficheiro.url)=ficheiro.nome
 
 
                                     if pub.tipo=="album"
@@ -421,7 +363,7 @@ block content
                                     p.w3-tiny
                                         each c in pub.classificacoes
                                             span.w3-tag.w3-yellow
-                                                a(href=c.url)=c.nome
+                                                =c
                                             span &nbsp;
                                     p.w3-tiny Publicado em
                                         =' ' + pub.data
